@@ -363,6 +363,7 @@ $ministries = getActiveMinistries();
           </div>
           <div class="col-lg-6">
             <div class="footer-bottom-links">
+              <a href="admin/login.php"><i class="bi bi-shield-lock me-1"></i>Admin</a>
               <a href="#">Privacy Policy</a>
               <a href="#">Terms of Service</a>
               <a href="#">Cookie Policy</a>
