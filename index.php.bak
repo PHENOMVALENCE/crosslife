@@ -71,7 +71,7 @@
             <li><a href="index.html#about">About</a></li>
             <li><a href="index.html#features">Core Beliefs</a></li>
             <li><a href="index.html#leadership">Leadership</a></li>
-            <li><a href="ministries.html">Ministries</a></li>
+            <li><a href="ministries.php">Ministries</a></li>
             <li><a href="sermons.html">Sermons</a></li>
             <li><a href="discipleship.html">Discipleship</a></li>
             <li><a href="events.html">Events</a></li>
@@ -1020,7 +1020,7 @@
         { id: 'statement-of-faith', title: 'Statement of Faith', keywords: 'faith beliefs doctrine scripture godhead jesus holy spirit', page: 'index.html' },
         { id: 'features', title: 'Core Beliefs', keywords: 'beliefs core godhead jesus christ holy spirit identity', page: 'index.html' },
         { id: 'leadership', title: 'Leadership', keywords: 'leadership pastor lenhard kyamba executive board', page: 'index.html' },
-        { id: 'ministries', title: 'Ministries', keywords: 'ministries teaching discipleship prayer outreach worship fellowship', page: 'ministries.html' },
+        { id: 'ministries', title: 'Ministries', keywords: 'ministries teaching discipleship prayer outreach worship fellowship', page: 'ministries.php' },
         { id: 'sermons', title: 'Sermons', keywords: 'sermons teaching video audio youtube crosslife tv', page: 'sermons.html' },
         { id: 'discipleship', title: 'Discipleship', keywords: 'discipleship school of christ academy foundation leadership ministry sonship', page: 'discipleship.html' },
         { id: 'events', title: 'Events', keywords: 'events calendar services bible study prayer meetings', page: 'events.html' },

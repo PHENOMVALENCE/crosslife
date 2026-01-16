@@ -80,13 +80,13 @@ $upcomingEvents = getUpcomingEvents(4);
           <ul>
             <li><a href="index.php#hero" class="active">Home</a></li>
             <li><a href="index.php#about">About</a></li>
-            <li><a href="index.php#features">Core Beliefs</a></li>
+            <li><a href="index.php#statement-of-faith">Statement of Faith</a></li>
             <li><a href="index.php#leadership">Leadership</a></li>
             <li><a href="ministries.php">Ministries</a></li>
             <li><a href="sermons.php">Sermons</a></li>
             <li><a href="discipleship.php">Discipleship</a></li>
-            <li><a href="events.php">Events</a></li>
-            <li><a href="contacts.php">Contact</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="contacts.html">Contact</a></li>
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
@@ -145,7 +145,7 @@ $upcomingEvents = getUpcomingEvents(4);
               <p data-aos="fade-up" data-aos-delay="200">We live in Zion, the realm of Christ. Eternal Life is our present reality. A community of Life, Love, Sonship, and Prayer, welcoming people from diverse backgrounds, ages, and walks of life.</p>
               <div class="hero-buttons" data-aos="fade-up" data-aos-delay="300">
                 <a href="#about" class="btn btn-primary">Learn More</a>
-                <a href="contacts.php" class="btn btn-outline-light">Contact Us</a>
+                <a href="contacts.html" class="btn btn-outline-light">Contact Us</a>
               </div>
             </div>
           </div>
@@ -171,17 +171,16 @@ $upcomingEvents = getUpcomingEvents(4);
           <div class="col-lg-6" data-aos="fade-right" data-aos-delay="200">
             <div class="content">
               <h2>Our Mandate</h2>
-              <p class="lead">CMN exists to manifest Sons of God who understand their identity in Christ and what Christ can accomplish through them.</p>
-              <p>We emphasize experiential knowledge of God, enabling believers to walk in New Creation realities and Eternal Ordinations for the work of the Ministry of Christ. CMN also seeks to establish a global network of manifested Sons of God unified by one message, one mandate, and one mission.</p>
+              <p class="lead">To manifest Sons of God who know who they are in Christ, and what Christ can do through them.</p>
               
               <h3 class="mt-4">Our Vision</h3>
-              <p>To be a global network of awakened Sons of God living in New Creation realities, manifesting Christ through the preaching of the Gospel of the Cross, the Message of Sonship, the Gospel of the Kingdom of God, and the Gospel of Immortality.</p>
+              <p>To manifest Sons of God walk in the Life of God, express New Creation realities through experiential knowledge of Him, and advance the Eternal Ordinations of Christ across the nations with one message, one mandate, and one mission.</p>
               
               <h3 class="mt-4">Our Mission</h3>
-              <p>To reach the global community by showing the Way, revealing the Truth, and sharing Life through Christ, equipping believers to live from an eternal perspective and fulfill the mandate of Christ on earth.</p>
+              <p><em>To reach the global network by revealing Christ as the Way, the Truth, and the Life; equipping Sons of God to serve effectively in the Kingdom of God through discipleship training, revelational teaching of the (Gospel (s) of the Cross, Glorification, Kingdom of God, and Immortality), spiritual relevancy formation, and life-filled koinonia—manifesting His Spirit, Love, Life, and Power in the Church and the marketplace.</em></p>
               
               <div class="cta-wrapper mt-4">
-                <a href="contacts.php" class="btn-link">
+                <a href="contacts.html" class="btn-link">
                   Connect with us
                   <i class="bi bi-arrow-right"></i>
                 </a>
@@ -195,7 +194,7 @@ $upcomingEvents = getUpcomingEvents(4);
               <div class="floating-element">
                 <div class="quote-content">
                   <blockquote>
-                    "We live in Zion, the realm of Christ. Eternal Life is our present reality."
+                    "Raising Sons, Revealing Christ."
                   </blockquote>
                   <cite>— CrossLife Motto</cite>
                 </div>
@@ -213,9 +212,9 @@ $upcomingEvents = getUpcomingEvents(4);
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
-        <span class="subtitle">Our Faith</span>
-        <h2>Statement of Faith</h2>
-        <p>Our foundation is built upon the truth of God's Word</p>
+        <span class="subtitle">Our Convictions</span>
+        <h2>Statement of Faith | Our Convictions | Our Beliefs</h2>
+        <p>CrossLife Mission Network (CMN) is founded on the following doctrinal convictions that uphold the Gospel of Grace, the mandate of Revival, and the influence of the Gospel in the Marketplace</p>
       </div><!-- End Section Title -->
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -223,57 +222,89 @@ $upcomingEvents = getUpcomingEvents(4);
         <div class="row g-4">
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="150">
             <div class="faith-item">
-              <h4><i class="bi bi-cross me-2"></i>The Scriptures</h4>
-              <p>We believe the Bible is the inspired, infallible, and authoritative Word of God, providing the foundation for our faith and practice.</p>
+              <h4><i class="bi bi-book me-2"></i>1. The Scriptures</h4>
+              <p>We believe that the Holy Bible is the inspired, authoritative, and infallible Word of God—profitable for doctrine, reproof, correction, and training in righteousness. It is the final authority for life, faith, practice, and the expression of Christ in every sphere, including the marketplace.</p>
+              <small class="text-muted">(2 Timothy 3:16–17; Hebrews 4:12; Psalm 119:105; Matthew 4:4)</small>
             </div>
           </div>
 
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
             <div class="faith-item">
-              <h4><i class="bi bi-heart me-2"></i>The Godhead</h4>
-              <p>We believe in the fullness of the Godhead: God the Father, God the Son (Jesus Christ), and God the Holy Spirit - three in one.</p>
+              <h4><i class="bi bi-heart me-2"></i>2. The Triune God</h4>
+              <p>We believe in one eternal God—Father, Son, and Holy Spirit—co-equal and co-existent, Creator of all things, and sovereign over the affairs of men. His redemptive purpose is revealed through His desire to restore humanity into His Life and glory.</p>
+              <small class="text-muted">(Deuteronomy 6:4; Matthew 28:19; Genesis 1:1; Ephesians 1:9–10)</small>
             </div>
           </div>
 
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="250">
             <div class="faith-item">
-              <h4><i class="bi bi-person-check me-2"></i>Jesus Christ</h4>
-              <p>We believe Jesus Christ is the Son of God, fully God and fully man, the Savior of the world from sin, and the Way, the Truth, and the Life.</p>
+              <h4><i class="bi bi-person-check me-2"></i>3. The Lord Jesus Christ</h4>
+              <p>We believe in the deity of Jesus Christ, His virgin birth, sinless life, atoning death, bodily resurrection, ascension, and eternal lordship. He is the only way to salvation, the expression of the Life of God, and the head of His Church. In Him the fullness of grace and truth is revealed.</p>
+              <small class="text-muted">(John 1:1–4, 14; Isaiah 7:14; Hebrews 4:15; 1 Corinthians 15:3–4; Acts 1:9; Colossians 1:18; John 14:6)</small>
             </div>
           </div>
 
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
             <div class="faith-item">
-              <h4><i class="bi bi-wind me-2"></i>The Holy Spirit</h4>
-              <p>We believe the Holy Spirit is the executive agent of God and the helper of believers, empowering us for ministry and leading us into all truth.</p>
+              <h4><i class="bi bi-wind me-2"></i>4. The Holy Spirit</h4>
+              <p>We believe in the person, presence, and power of the Holy Spirit. He indwells, fills, teaches, convicts, empowers, and imparts spiritual gifts for ministry. The Holy Spirit is the catalyst of Revival and the revealer of Christ in the believer.</p>
+              <small class="text-muted">(John 14:16–17, 26; Acts 1:8; Acts 2:1–4; 1 Corinthians 12:4–11; Galatians 5:22–23)</small>
             </div>
           </div>
 
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="350">
             <div class="faith-item">
-              <h4><i class="bi bi-people me-2"></i>Humanity & Salvation</h4>
-              <p>We believe humanity is created in the image and likeness of God, and through faith in Christ, we become Sons of God (John 1:12-13).</p>
+              <h4><i class="bi bi-church me-2"></i>5. The Church</h4>
+              <p>We believe that the Church is the Body of Christ—called to reveal His Life, extend His Kingdom, and disciple nations. The Church is commissioned to be a transformational voice in every sphere of society, including the marketplace, advancing the purposes of God on the earth.</p>
+              <small class="text-muted">(Ephesians 1:22–23; Matthew 28:18–20; Acts 2:42–47; Matthew 5:13–16)</small>
             </div>
           </div>
 
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="400">
             <div class="faith-item">
-              <h4><i class="bi bi-church me-2"></i>The Church</h4>
-              <p>We believe the Church is commissioned to preach the Gospel and manifest Sons of God who understand their identity in Christ.</p>
+              <h4><i class="bi bi-gift me-2"></i>6. Salvation by Grace</h4>
+              <p>We believe that salvation is a free gift of God, received by grace through faith in Christ alone. Through His finished work, believers are forgiven, justified, reconciled to God, and empowered to live in the freedom and victory of the Gospel of Grace.</p>
+              <small class="text-muted">(Ephesians 2:8–9; Romans 3:24; Romans 5:1; Colossians 1:13–14; John 19:30)</small>
             </div>
           </div>
 
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="450">
             <div class="faith-item">
-              <h4><i class="bi bi-music-note-beamed me-2"></i>Worship</h4>
-              <p>We believe worship is central to the life of CrossLife, as we live in Zion, the realm of Christ, where Eternal Life is our present reality.</p>
+              <h4><i class="bi bi-stars me-2"></i>7. The New Creation Realities</h4>
+              <p>We believe that those who receive Christ are regenerated by the Holy Spirit into the New Creation—born of God, indwelt by His Life, and called to manifest His nature. Through this new identity, believers walk in righteousness, holiness, dominion, and the realities of their Sonship in Christ.</p>
+              <small class="text-muted">(2 Corinthians 5:17; John 1:12–13; Romans 8:10–11; Romans 8:14–19; Ephesians 4:24)</small>
             </div>
           </div>
 
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="500">
             <div class="faith-item">
-              <h4><i class="bi bi-arrow-return-left me-2"></i>Christ's Return</h4>
-              <p>We believe in the return of Jesus Christ and the fulfillment of God's eternal purposes through His kingdom.</p>
+              <h4><i class="bi bi-globe me-2"></i>8. Kingdom Influence and Transformation</h4>
+              <p>We believe that God's Kingdom is present, active, and advancing through His people. As Sons of God, believers are called to influence culture, transform systems, and establish God's righteousness in the earth.</p>
+              <small class="text-muted">(Matthew 6:10; Romans 8:19; Matthew 5:13–16; Daniel 7:27; Proverbs 11:11; Habakkuk 2:14)</small>
+            </div>
+          </div>
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="550">
+            <div class="faith-item">
+              <h4><i class="bi bi-briefcase me-2"></i>9. The Gospel in the Marketplace</h4>
+              <p>We believe that the Gospel is not confined to the walls of the Church but is a divine mandate to disciple nations and influence systems. Believers are called as light and salt in the marketplace—carrying integrity, wisdom, excellence, and the Life of Christ into business, leadership, culture, and societal transformation.</p>
+              <small class="text-muted">(Genesis 1:26–28; Matthew 5:13–16; Colossians 3:23–24; Proverbs 11:11; Revelation 11:15)</small>
+            </div>
+          </div>
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="600">
+            <div class="faith-item">
+              <h4><i class="bi bi-fire me-2"></i>10. Revival and the Move of the Spirit</h4>
+              <p>We believe in the continual outpouring of the Holy Spirit, awakening hearts to the Life of God, restoring holiness, igniting passion for Christ, and empowering believers to manifest the Kingdom in power. Revival is the restoration of God's experiential reality among His people and His glory revealed in the earth.</p>
+              <small class="text-muted">(Acts 3:19; Joel 2:28–29; Habakkuk 2:14; Romans 8:11; Psalm 85:6)</small>
+            </div>
+          </div>
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="650">
+            <div class="faith-item">
+              <h4><i class="bi bi-arrow-return-left me-2"></i>11. The Second Coming of Christ</h4>
+              <p>We believe in the blessed hope—the imminent return of our Lord Jesus Christ, the resurrection of the saints, the final judgment, and the establishment of God's eternal Kingdom, wherein righteousness will reign forever.</p>
+              <small class="text-muted">(Titus 2:13; 1 Thessalonians 4:16–17; Revelation 22:12; Matthew 24:30–31; Daniel 7:27)</small>
             </div>
           </div>
         </div>
@@ -282,228 +313,6 @@ $upcomingEvents = getUpcomingEvents(4);
 
     </section><!-- /Statement of Faith Section -->
 
-    <!-- Features Section -->
-    <section id="features" class="features section">
-
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <span class="subtitle">Core Beliefs</span>
-        <h2>Our Core Beliefs</h2>
-        <p>Our foundation is built upon the truth of God's Word and the revelation of Christ in us</p>
-      </div><!-- End Section Title -->
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="tabs-wrapper">
-          <div class="tabs-header" data-aos="fade-up" data-aos-delay="200">
-            <ul class="nav nav-tabs">
-              <li class="nav-item">
-                <a class="nav-link active show" data-bs-toggle="tab" data-bs-target="#features-tab-1">
-                  <div class="tab-content-preview">
-                    <span class="tab-number">01</span>
-                    <div class="tab-text">
-                      <h6>The Godhead</h6>
-                      <small>Father, Son, Holy Spirit</small>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-2">
-                  <div class="tab-content-preview">
-                    <span class="tab-number">02</span>
-                    <div class="tab-text">
-                      <h6>Jesus Christ</h6>
-                      <small>Savior and Lord</small>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-3">
-                  <div class="tab-content-preview">
-                    <span class="tab-number">03</span>
-                    <div class="tab-text">
-                      <h6>Holy Spirit</h6>
-                      <small>Helper and Guide</small>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-4">
-                  <div class="tab-content-preview">
-                    <span class="tab-number">04</span>
-                    <div class="tab-text">
-                      <h6>Our Identity</h6>
-                      <small>Sons of God</small>
-                    </div>
-                  </div>
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div class="tab-content" data-aos="fade-up" data-aos-delay="300">
-
-            <div class="tab-pane fade active show" id="features-tab-1">
-              <div class="row align-items-center">
-                <div class="col-lg-6">
-                  <div class="content-area">
-                    <div class="content-badge">
-                      <i class="bi bi-heart"></i>
-                      <span>Foundation of Faith</span>
-                    </div>
-                    <h3>The Fullness of the Godhead</h3>
-                    <p>We believe in the fullness of the Godhead: God the Father, God the Son, and God the Holy Spirit. This triune nature of God is the foundation of our faith and understanding of the divine nature.</p>
-
-                    <div class="feature-points">
-                      <div class="point-item">
-                        <i class="bi bi-arrow-right"></i>
-                        <span>God the Father - Creator and Sustainer of all things</span>
-                      </div>
-                      <div class="point-item">
-                        <i class="bi bi-arrow-right"></i>
-                        <span>God the Son - Jesus Christ, fully God and fully man</span>
-                      </div>
-                      <div class="point-item">
-                        <i class="bi bi-arrow-right"></i>
-                        <span>God the Holy Spirit - The executive agent and helper</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="visual-content">
-                    <img src="assets/img/_MG_4880.jpg" alt="The Godhead" class="img-fluid">
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tab-pane fade" id="features-tab-2">
-              <div class="row align-items-center">
-                <div class="col-lg-6">
-                  <div class="content-area">
-                    <div class="content-badge">
-                      <i class="bi bi-cross"></i>
-                      <span>Our Foundation</span>
-                    </div>
-                    <h3>Jesus Christ: Savior and Lord</h3>
-                    <p>Jesus Christ is the Savior of the world from sin and is Lord. He is the Son of God, fully God, and the Way, the Truth, and the Life. Through Him, we have access to the Father and eternal life.</p>
-
-                    <div class="feature-points">
-                      <div class="point-item">
-                        <i class="bi bi-arrow-right"></i>
-                        <span>Jesus Christ is the Savior from sin</span>
-                      </div>
-                      <div class="point-item">
-                        <i class="bi bi-arrow-right"></i>
-                        <span>He is fully God and fully man</span>
-                      </div>
-                      <div class="point-item">
-                        <i class="bi bi-arrow-right"></i>
-                        <span>He is the Way, the Truth, and the Life (John 14:6)</span>
-                      </div>
-                      <div class="point-item">
-                        <i class="bi bi-arrow-right"></i>
-                        <span>We believe in His return</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="visual-content">
-                    <img src="assets/img/_MG_4902.jpg" alt="Jesus Christ" class="img-fluid">
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tab-pane fade" id="features-tab-3">
-              <div class="row align-items-center">
-                <div class="col-lg-6">
-                  <div class="content-area">
-                    <div class="content-badge">
-                      <i class="bi bi-wind"></i>
-                      <span>Our Helper</span>
-                    </div>
-                    <h3>The Holy Spirit: Our Guide</h3>
-                    <p>The Holy Spirit is the executive agent of God and the helper of believers. He empowers us, guides us into all truth, and enables us to live according to God's will and purpose.</p>
-
-                    <div class="feature-points">
-                      <div class="point-item">
-                        <i class="bi bi-arrow-right"></i>
-                        <span>The Holy Spirit is the executive agent of God</span>
-                      </div>
-                      <div class="point-item">
-                        <i class="bi bi-arrow-right"></i>
-                        <span>He is our helper and guide</span>
-                      </div>
-                      <div class="point-item">
-                        <i class="bi bi-arrow-right"></i>
-                        <span>He empowers believers for ministry</span>
-                      </div>
-                      <div class="point-item">
-                        <i class="bi bi-arrow-right"></i>
-                        <span>He leads us into all truth</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="visual-content">
-                    <img src="assets/img/_MG_5021.jpg" alt="Holy Spirit" class="img-fluid">
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tab-pane fade" id="features-tab-4">
-              <div class="row align-items-center">
-                <div class="col-lg-6">
-                  <div class="content-area">
-                    <div class="content-badge">
-                      <i class="bi bi-person-heart"></i>
-                      <span>Who We Are</span>
-                    </div>
-                    <h3>Our Identity in Christ</h3>
-                    <p>We believe humanity is created in the image and likeness of God. As believers, we are Sons of God, Kings and Priests, bearers of the Image and Likeness of God, precedents of holiness, immortals, hosts of heaven, carriers of God's presence, and a pure and consecrated people.</p>
-
-                    <div class="feature-points">
-                      <div class="point-item">
-                        <i class="bi bi-arrow-right"></i>
-                        <span>Created in the image and likeness of God</span>
-                      </div>
-                      <div class="point-item">
-                        <i class="bi bi-arrow-right"></i>
-                        <span>Sons of God through faith in Christ (John 1:12-13)</span>
-                      </div>
-                      <div class="point-item">
-                        <i class="bi bi-arrow-right"></i>
-                        <span>Kings and Priests in God's kingdom</span>
-                      </div>
-                      <div class="point-item">
-                        <i class="bi bi-arrow-right"></i>
-                        <span>Carriers of God's presence and glory</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="visual-content">
-                    <img src="assets/img/_MG_5281.jpg" alt="Our Identity" class="img-fluid">
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-
-    </section><!-- /Features Section -->
 
     <!-- Features Cards Section -->
     <section id="features-cards" class="features-cards section">
@@ -531,15 +340,17 @@ $upcomingEvents = getUpcomingEvents(4);
           <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
             <div class="feature-card highlighted">
               <div class="feature-icon">
-                <i class="bi bi-globe"></i>
+                <i class="bi bi-heart"></i>
               </div>
-              <h3>Language & Culture</h3>
-              <p>The ministry functions in both English and Swahili. CMN emphasizes a spiritual language rooted in eternal life consciousness, speaking Spirit and Life. We welcome people from diverse backgrounds, ages, and walks of life.</p>
+              <h3>Our Identity</h3>
+              <p>We are who God says we are. Our identity in Christ defines who we are and how we live.</p>
               <ul class="feature-benefits">
-                <li><i class="bi bi-check-circle-fill"></i> Bilingual ministry (English & Swahili)</li>
-                <li><i class="bi bi-check-circle-fill"></i> Spiritual language of eternal life</li>
-                <li><i class="bi bi-check-circle-fill"></i> Speaking Spirit and Life</li>
-                <li><i class="bi bi-check-circle-fill"></i> Inclusive and welcoming community</li>
+                <li><i class="bi bi-check-circle-fill"></i> We are Sons of God</li>
+                <li><i class="bi bi-check-circle-fill"></i> We are Kings and Priests</li>
+                <li><i class="bi bi-check-circle-fill"></i> We are Custodians of Eternal Ordinances</li>
+                <li><i class="bi bi-check-circle-fill"></i> We are the Hosts of Heaven</li>
+                <li><i class="bi bi-check-circle-fill"></i> We are the Pure Virgins</li>
+                <li><i class="bi bi-check-circle-fill"></i> We are who God says we are</li>
               </ul>
             </div>
           </div>
@@ -547,15 +358,15 @@ $upcomingEvents = getUpcomingEvents(4);
           <div class="col-lg-4" data-aos="fade-up" data-aos-delay="250">
             <div class="feature-card">
               <div class="feature-icon">
-                <i class="bi bi-heart"></i>
+                <i class="bi bi-globe"></i>
               </div>
-              <h3>Our Identity</h3>
-              <p>CMN identifies its members as Sons of God, Kings and Priests, bearers of the Image and Likeness of God, precedents of holiness, immortals, hosts of heaven, carriers of God's presence, and a pure and consecrated people.</p>
+              <h3>Our Culture & Language</h3>
+              <p>Our culture is rooted in Love, Life, and Impact. We speak Spirit and Life, recognizing that Eternal Life is our present reality.</p>
               <ul class="feature-benefits">
-                <li><i class="bi bi-check-circle-fill"></i> Sons of God</li>
-                <li><i class="bi bi-check-circle-fill"></i> Kings and Priests</li>
-                <li><i class="bi bi-check-circle-fill"></i> Carriers of God's presence</li>
-                <li><i class="bi bi-check-circle-fill"></i> Pure and consecrated people</li>
+                <li><i class="bi bi-check-circle-fill"></i> <strong>Our Greeting:</strong> Receive Life - Receive Life in Abundance.</li>
+                <li><i class="bi bi-check-circle-fill"></i> <strong>Our Culture:</strong> Love - Life - Impact</li>
+                <li><i class="bi bi-check-circle-fill"></i> Eternal Life is Our present life.</li>
+                <li><i class="bi bi-check-circle-fill"></i> <strong>Our Language:</strong> We speak Spirit & Life.</li>
               </ul>
             </div>
           </div>
@@ -573,7 +384,7 @@ $upcomingEvents = getUpcomingEvents(4);
                 <div class="quote-icon">
                   <i class="bi bi-quote"></i>
                 </div>
-                <p>"We live in Zion, the realm of Christ. Eternal Life is our present reality. The ministry is committed to creating an environment where believers experience the Life of God and grow in their identity in Christ."</p>
+                <p>"Raising Sons, Revealing Christ."</p>
                 <div class="testimonial-author">
                   <h4>CrossLife Mission Network</h4>
                   <span>Our Motto</span>
@@ -588,32 +399,60 @@ $upcomingEvents = getUpcomingEvents(4);
     </section><!-- /Features Cards Section -->
 
     <!-- Leadership Section -->
-    <section id="leadership" class="leadership section">
+    <section id="leadership" class="leadership section light-background">
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
         <span class="subtitle">Leadership</span>
-        <h2>Our Leadership</h2>
-        <p>Meet the leaders who guide CrossLife Mission Network in manifesting Sons of God</p>
+        <h2>Meet Our Senior Pastor</h2>
+        <p>Meet the Apostolic Head leading CrossLife Mission Network in manifesting Sons of God</p>
       </div><!-- End Section Title -->
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
-        <div class="row g-4 align-items-stretch">
+        <div class="row g-4 align-items-stretch justify-content-center">
           <?php if (empty($leadership)): ?>
             <!-- Default leadership if database is empty -->
-            <div class="col-md-6 col-lg-4">
+            <div class="col-lg-10 col-xl-8">
               <article class="leader-card h-100" data-aos="zoom-in" data-aos-delay="150">
-                <figure class="leader-media">
-                  <img src="assets/img/_MG_5266.jpg" class="img-fluid" alt="Pastor Lenhard Kyamba">
-                </figure>
-                <div class="leader-content">
-                  <h3 class="leader-name">Pastor Lenhard Kyamba</h3>
-                  <p class="leader-role">Senior Pastor</p>
-                  <p class="leader-bio">Leading CrossLife Mission Network in manifesting Sons of God who understand their identity in Christ and what Christ can accomplish through them.</p>
-                  <div class="leader-contact mt-3">
-                    <p class="small mb-1"><i class="bi bi-envelope me-2"></i>lenhard.kyamba@crosslife.org</p>
-                    <p class="small mb-0"><i class="bi bi-telegram me-2"></i>Pastor Lenhard Kyamba</p>
+                <div class="leader-card-inner">
+                  <figure class="leader-media">
+                    <div class="leader-image-wrapper">
+                      <img src="assets/img/_MG_5266.jpg" class="leader-image" alt="Pastor Lenhard Kyamba">
+                      <div class="leader-image-overlay"></div>
+                    </div>
+                    <div class="leader-badge">
+                      <i class="bi bi-award-fill"></i>
+                    </div>
+                  </figure>
+                  <div class="leader-content">
+                    <div class="leader-header">
+                      <h3 class="leader-name">Pastor Lenhard Kyamba</h3>
+                      <p class="leader-initials">(PLK)</p>
+                      <p class="leader-role">
+                        <span class="role-badge">Apostolic Head</span>
+                      </p>
+                    </div>
+                    
+                    <div class="leader-bio-section">
+                      <p class="leader-bio">
+                        Pastor Lenhard Kyamba (PLK) is a Minister of Life leading an army of Sons of God through CrossLife Mission Network, the School of Christ, and the Kingdom Business Forum, with a mandate to manifest Sons of God who know their identity in Christ and understand what Christ can do through them in both Christendom and the wider community.
+                      </p>
+                      <p class="leader-bio">
+                        Alongside this spiritual mandate, PLK is a practicing Advocate in Corporate, International Commerce, and Maritime Law, an academician holding a Master's Degree in International Trade and Maritime Law, and a BA in Theology and Leadership Studies. He is also a KingdomPreneur, business-minded leader, author, and composer of several Kingdom books, including <em>Awakened Person, Manifesting Sons of God, Kingdom Profile, Man Awake, Woman Awake</em>, and others.
+                      </p>
+                    </div>
+                    
+                    <div class="leader-contact">
+                      <div class="contact-item">
+                        <i class="bi bi-envelope-fill"></i>
+                        <a href="mailto:lenhard.kyamba@crosslife.org">lenhard.kyamba@crosslife.org</a>
+                      </div>
+                      <div class="contact-item">
+                        <i class="bi bi-telegram"></i>
+                        <span>Pastor Lenhard Kyamba</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </article>
@@ -622,27 +461,51 @@ $upcomingEvents = getUpcomingEvents(4);
             <?php 
             $delay = 150;
             foreach ($leadership as $leader): 
-              $image = !empty($leader['photo']) ? 'assets/img/uploads/' . htmlspecialchars($leader['photo']) : 'assets/img/_MG_5266.jpg';
+              $image = !empty($leader['image_url']) ? htmlspecialchars($leader['image_url']) : (!empty($leader['photo']) ? 'assets/img/uploads/' . htmlspecialchars($leader['photo']) : 'assets/img/_MG_5266.jpg');
             ?>
-              <div class="col-md-6 col-lg-4">
+              <div class="col-lg-10 col-xl-8">
                 <article class="leader-card h-100" data-aos="zoom-in" data-aos-delay="<?php echo $delay; ?>">
-                  <figure class="leader-media">
-                    <img src="<?php echo $image; ?>" class="img-fluid" alt="<?php echo htmlspecialchars($leader['name']); ?>">
-                  </figure>
-                  <div class="leader-content">
-                    <h3 class="leader-name"><?php echo htmlspecialchars($leader['name']); ?></h3>
-                    <p class="leader-role"><?php echo htmlspecialchars($leader['role'] ?? 'Leader'); ?></p>
-                    <p class="leader-bio"><?php echo htmlspecialchars($leader['bio'] ?? ''); ?></p>
-                    <?php if (!empty($leader['email']) || !empty($leader['phone'])): ?>
-                      <div class="leader-contact mt-3">
-                        <?php if (!empty($leader['email'])): ?>
-                          <p class="small mb-1"><i class="bi bi-envelope me-2"></i><?php echo htmlspecialchars($leader['email']); ?></p>
-                        <?php endif; ?>
-                        <?php if (!empty($leader['phone'])): ?>
-                          <p class="small mb-0"><i class="bi bi-telephone me-2"></i><?php echo htmlspecialchars($leader['phone']); ?></p>
-                        <?php endif; ?>
+                  <div class="leader-card-inner">
+                    <figure class="leader-media">
+                      <div class="leader-image-wrapper">
+                        <img src="<?php echo $image; ?>" class="leader-image" alt="<?php echo htmlspecialchars($leader['name']); ?>">
+                        <div class="leader-image-overlay"></div>
                       </div>
-                    <?php endif; ?>
+                      <div class="leader-badge">
+                        <i class="bi bi-award-fill"></i>
+                      </div>
+                    </figure>
+                    <div class="leader-content">
+                      <div class="leader-header">
+                        <h3 class="leader-name"><?php echo htmlspecialchars($leader['name']); ?></h3>
+                        <p class="leader-role">
+                          <span class="role-badge"><?php echo htmlspecialchars($leader['role'] ?? 'Leader'); ?></span>
+                        </p>
+                      </div>
+                      
+                      <?php if (!empty($leader['bio'])): ?>
+                        <div class="leader-bio-section">
+                          <p class="leader-bio"><?php echo nl2br(htmlspecialchars($leader['bio'])); ?></p>
+                        </div>
+                      <?php endif; ?>
+                      
+                      <?php if (!empty($leader['email']) || !empty($leader['phone'])): ?>
+                        <div class="leader-contact">
+                          <?php if (!empty($leader['email'])): ?>
+                            <div class="contact-item">
+                              <i class="bi bi-envelope-fill"></i>
+                              <a href="mailto:<?php echo htmlspecialchars($leader['email']); ?>"><?php echo htmlspecialchars($leader['email']); ?></a>
+                            </div>
+                          <?php endif; ?>
+                          <?php if (!empty($leader['phone'])): ?>
+                            <div class="contact-item">
+                              <i class="bi bi-telephone-fill"></i>
+                              <a href="tel:<?php echo htmlspecialchars($leader['phone']); ?>"><?php echo htmlspecialchars($leader['phone']); ?></a>
+                            </div>
+                          <?php endif; ?>
+                        </div>
+                      <?php endif; ?>
+                    </div>
                   </div>
                 </article>
               </div>
@@ -733,7 +596,7 @@ $upcomingEvents = getUpcomingEvents(4);
           <div class="col-lg-8 col-md-6 content d-flex flex-column justify-content-center order-last order-md-first">
             <h3>Join Us in <em>Manifesting</em> Sons of God</h3>
             <p>We welcome you to be part of a global network of awakened Sons of God living in New Creation realities. Experience the Life of God and grow in your identity in Christ. Grace and Peace be multiplied to you in Jesus' Name. Receive Life in abundance.</p>
-            <a class="cta-btn align-self-start" href="contacts.php">Connect With Us</a>
+            <a class="cta-btn align-self-start" href="contacts.html">Connect With Us</a>
           </div>
 
           <div class="col-lg-4 col-md-6 order-first order-md-last d-flex align-items-center">
@@ -926,8 +789,8 @@ $upcomingEvents = getUpcomingEvents(4);
             <h4>Ministry</h4>
             <ul>
               <li><a href="#about"><i class="bi bi-chevron-right"></i> About Us</a></li>
-              <li><a href="#features"><i class="bi bi-chevron-right"></i> Core Beliefs</a></li>
-              <li><a href="contacts.php"><i class="bi bi-chevron-right"></i> Contact</a></li>
+              <li><a href="#statement-of-faith"><i class="bi bi-chevron-right"></i> Statement of Faith</a></li>
+              <li><a href="contacts.html"><i class="bi bi-chevron-right"></i> Contact</a></li>
             </ul>
           </div>
         </div>
@@ -1038,15 +901,15 @@ $upcomingEvents = getUpcomingEvents(4);
         { id: 'hero', title: 'Home', keywords: 'home welcome introduction vision mission', page: 'index.php' },
         { id: 'about', title: 'About Us', keywords: 'about mandate vision mission history', page: 'index.php' },
         { id: 'statement-of-faith', title: 'Statement of Faith', keywords: 'faith beliefs doctrine scripture godhead jesus holy spirit', page: 'index.php' },
-        { id: 'features', title: 'Core Beliefs', keywords: 'beliefs core godhead jesus christ holy spirit identity', page: 'index.php' },
+        { id: 'statement-of-faith', title: 'Statement of Faith', keywords: 'statement of faith convictions beliefs doctrine scripture godhead jesus holy spirit', page: 'index.php' },
         { id: 'leadership', title: 'Leadership', keywords: 'leadership pastor lenhard kyamba executive board', page: 'index.php' },
         { id: 'ministries', title: 'Ministries', keywords: 'ministries teaching discipleship prayer outreach worship fellowship', page: 'ministries.php' },
         { id: 'sermons', title: 'Sermons', keywords: 'sermons teaching video audio youtube crosslife tv', page: 'sermons.php' },
         { id: 'discipleship', title: 'Discipleship', keywords: 'discipleship school of christ academy foundation leadership ministry sonship', page: 'discipleship.php' },
-        { id: 'events', title: 'Events', keywords: 'events calendar services bible study prayer meetings', page: 'events.php' },
+        { id: 'events', title: 'Events', keywords: 'events calendar services bible study prayer meetings', page: 'events.html' },
         { id: 'what-we-do', title: 'What We Do', keywords: 'activities programs worship teaching ministry outreach', page: 'index.php' },
         { id: 'giving', title: 'Giving', keywords: 'giving offering support ministry donation', page: 'index.php' },
-        { id: 'contact', title: 'Contact', keywords: 'contact inquiry prayer request feedback', page: 'contacts.php' }
+        { id: 'contact', title: 'Contact', keywords: 'contact inquiry prayer request feedback', page: 'contacts.html' }
       ];
 
       if (searchForm) {

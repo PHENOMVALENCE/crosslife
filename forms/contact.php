@@ -4,7 +4,13 @@
  * Saves contact inquiries to database
  */
 
+// Prevent any output before JSON
+ob_start();
+
 require_once __DIR__ . '/../admin/config/config.php';
+
+// Clear any output buffer
+ob_clean();
 
 header('Content-Type: application/json');
 
@@ -20,12 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if (empty($name) || empty($email) || empty($subject) || empty($message)) {
             $response['message'] = 'Please fill in all required fields.';
+            ob_end_clean();
             echo json_encode($response);
             exit;
         }
         
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $response['message'] = 'Please enter a valid email address.';
+            ob_end_clean();
             echo json_encode($response);
             exit;
         }
@@ -33,6 +41,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $db = getDB();
         $stmt = $db->prepare("INSERT INTO contact_inquiries (name, email, phone, subject, message, status) VALUES (?, ?, ?, ?, ?, 'new')");
         $stmt->execute([$name, $email, $phone, $subject, $message]);
+        
+        // Send email notification (optional - will fail silently if PHPMailer not configured)
+        if (file_exists(__DIR__ . '/../admin/config/email.php')) {
+            require_once __DIR__ . '/../admin/config/email.php';
+            try {
+                sendContactNotification($name, $email, $phone, $subject, $message);
+            } catch (Exception $e) {
+                // Log but don't fail the form submission
+                error_log('Email notification failed: ' . $e->getMessage());
+            }
+        }
         
         $response['status'] = 'success';
         $response['message'] = 'Your message has been sent. Thank you!';
@@ -44,4 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response['message'] = 'Invalid request method.';
 }
 
+// Clean output buffer and send JSON
+ob_end_clean();
 echo json_encode($response);
+exit;

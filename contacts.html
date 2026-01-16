@@ -63,7 +63,7 @@
             <li><a href="index.html#about">About</a></li>
             <li><a href="index.html#features">Core Beliefs</a></li>
             <li><a href="index.html#leadership">Leadership</a></li>
-            <li><a href="ministries.html">Ministries</a></li>
+            <li><a href="ministries.php">Ministries</a></li>
             <li><a href="sermons.html">Sermons</a></li>
             <li><a href="discipleship.html">Discipleship</a></li>
             <li><a href="events.html">Events</a></li>
@@ -112,7 +112,7 @@
 
               <div class="tab-content">
                 <div class="tab-pane fade show active" id="contact-form-tab" role="tabpanel">
-                  <form action="forms/contact.php" method="post" class="php-email-form contact-form">
+                  <form action="forms/contact.php" method="post" class="contact-form">
                     <div class="row">
                       <div class="col-md-6">
                         <div class="form-field">
@@ -164,7 +164,7 @@
                 </div>
 
                 <div class="tab-pane fade" id="prayer-form-tab" role="tabpanel">
-                  <form action="forms/prayer-request.php" method="post" class="php-email-form contact-form">
+                  <form action="forms/prayer-request.php" method="post" class="contact-form">
                     <div class="row">
                       <div class="col-md-6">
                         <div class="form-field">
@@ -288,7 +288,7 @@
 
         <div class="row justify-content-center">
           <div class="col-lg-8">
-            <form action="forms/feedback.php" method="post" class="php-email-form feedback-form">
+            <form action="forms/feedback.php" method="post" class="feedback-form">
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-field">
@@ -307,10 +307,11 @@
 
               <div class="form-field">
                 <select name="feedback_type" class="form-input" id="feedbackType">
-                  <option value="">Select Feedback Type</option>
+                  <option value="other">Select Feedback Type</option>
+                  <option value="praise">Praise/Testimony</option>
                   <option value="suggestion">Suggestion</option>
                   <option value="concern">Concern</option>
-                  <option value="praise">Praise/Testimony</option>
+                  <option value="testimony">Testimony</option>
                   <option value="other">Other</option>
                 </select>
                 <label for="feedbackType" class="field-label">Feedback Type</label>
@@ -322,9 +323,9 @@
               </div>
 
               <div class="my-3">
-                <div class="loading">Loading</div>
-                <div class="error-message"></div>
-                <div class="sent-message">Thank you for your feedback! We appreciate your input.</div>
+                <div class="loading" style="display: none;">Loading</div>
+                <div class="error-message" style="display: none;"></div>
+                <div class="sent-message" style="display: none;">Thank you for your feedback! We appreciate your input.</div>
               </div>
 
               <button type="submit" class="send-button">
@@ -340,6 +341,55 @@
     </section><!-- /Feedback Section -->
 
   </main>
+
+  <!-- Success Modals -->
+  <!-- Contact Form Success Modal -->
+  <div class="modal fade" id="contactSuccessModal" tabindex="-1" aria-labelledby="contactSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content success-modal-content">
+        <div class="modal-body text-center p-5">
+          <div class="success-icon mb-4">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <h3 class="mb-3">Message Sent Successfully!</h3>
+          <p class="mb-4">Thank you for contacting us. We have received your message and will get back to you soon.</p>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prayer Request Success Modal -->
+  <div class="modal fade" id="prayerSuccessModal" tabindex="-1" aria-labelledby="prayerSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content success-modal-content">
+        <div class="modal-body text-center p-5">
+          <div class="success-icon mb-4">
+            <i class="bi bi-heart-fill"></i>
+          </div>
+          <h3 class="mb-3">Prayer Request Received!</h3>
+          <p class="mb-4">Thank you for sharing your prayer request. We will be praying with you. May God bless you abundantly.</p>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feedback Success Modal -->
+  <div class="modal fade" id="feedbackSuccessModal" tabindex="-1" aria-labelledby="feedbackSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content success-modal-content">
+        <div class="modal-body text-center p-5">
+          <div class="success-icon mb-4">
+            <i class="bi bi-star-fill"></i>
+          </div>
+          <h3 class="mb-3">Feedback Submitted!</h3>
+          <p class="mb-4">Thank you for your feedback. We truly appreciate your input and will use it to serve you better.</p>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Search Modal -->
   <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
@@ -383,16 +433,16 @@
 
             <div class="newsletter-form">
               <h5>Stay Updated</h5>
-              <form action="forms/newsletter.php" method="post" class="php-email-form">
+              <form action="forms/newsletter.php" method="post" class="newsletter-form-submit">
                 <div class="input-group">
                   <input type="email" name="email" class="form-control" placeholder="Enter your email" required="">
                   <button type="submit" class="btn-subscribe">
                     <i class="bi bi-send"></i>
                   </button>
                 </div>
-                <div class="loading">Loading</div>
-                <div class="error-message"></div>
-                <div class="sent-message">Thank you for subscribing!</div>
+                <div class="loading" style="display: none;">Loading</div>
+                <div class="error-message" style="display: none;"></div>
+                <div class="sent-message" style="display: none;">Thank you for subscribing!</div>
               </form>
             </div>
           </div>
@@ -500,6 +550,272 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+
+  <!-- Form Submission Handler -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Remove php-email-form class to prevent validate.js from interfering
+      const formsToFix = document.querySelectorAll('#contact-form-tab form, #prayer-form-tab form, .feedback-form, .newsletter-form-submit');
+      formsToFix.forEach(form => {
+        if (form) {
+          form.classList.remove('php-email-form');
+        }
+      });
+
+      // Contact Form Handler
+      const contactForm = document.querySelector('#contact-form-tab form');
+      if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          handleFormSubmission(contactForm, 'contact', '#contactSuccessModal');
+        });
+      }
+
+      // Prayer Request Form Handler
+      const prayerForm = document.querySelector('#prayer-form-tab form');
+      if (prayerForm) {
+        prayerForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          handleFormSubmission(prayerForm, 'prayer', '#prayerSuccessModal');
+        });
+      }
+
+      // Feedback Form Handler
+      const feedbackForm = document.querySelector('.feedback-form');
+      if (feedbackForm) {
+        // Ensure feedback_type has a default value if empty
+        const feedbackTypeSelect = feedbackForm.querySelector('#feedbackType');
+        if (feedbackTypeSelect && !feedbackTypeSelect.value) {
+          feedbackTypeSelect.value = 'other';
+        }
+        
+        feedbackForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // Ensure feedback_type is set before submission
+          if (feedbackTypeSelect && !feedbackTypeSelect.value) {
+            feedbackTypeSelect.value = 'other';
+          }
+          
+          handleFormSubmission(feedbackForm, 'feedback', '#feedbackSuccessModal');
+        });
+      }
+
+      function handleFormSubmission(form, formType, modalId) {
+        const formData = new FormData(form);
+        const submitButton = form.querySelector('button[type="submit"]');
+        const loadingDiv = form.querySelector('.loading');
+        const errorDiv = form.querySelector('.error-message');
+        const sentDiv = form.querySelector('.sent-message');
+        
+        // Ensure feedback_type is set for feedback forms
+        if (formType === 'feedback') {
+          const feedbackTypeSelect = form.querySelector('#feedbackType');
+          if (feedbackTypeSelect && !feedbackTypeSelect.value) {
+            formData.set('feedback_type', 'other');
+          }
+        }
+        
+        // Get form action URL
+        let actionUrl = form.getAttribute('action');
+        if (!actionUrl) {
+          if (formType === 'prayer') {
+            actionUrl = 'forms/prayer-request.php';
+          } else if (formType === 'feedback') {
+            actionUrl = 'forms/feedback.php';
+          } else {
+            actionUrl = 'forms/contact.php';
+          }
+        }
+
+        // Show loading state
+        submitButton.disabled = true;
+        const originalButtonText = submitButton.innerHTML;
+        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Sending...';
+        if (loadingDiv) loadingDiv.style.display = 'block';
+        if (errorDiv) errorDiv.style.display = 'none';
+        if (sentDiv) sentDiv.style.display = 'none';
+
+        // Submit form via AJAX
+        fetch(actionUrl, {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          // Check if response is ok
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          // Check content type
+          const contentType = response.headers.get('content-type');
+          if (!contentType || !contentType.includes('application/json')) {
+            return response.text().then(text => {
+              // Try to parse as JSON even if content-type is wrong
+              try {
+                const jsonData = JSON.parse(text);
+                return jsonData;
+              } catch (e) {
+                throw new Error('Invalid response format');
+              }
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Hide loading
+          if (loadingDiv) loadingDiv.style.display = 'none';
+          
+          // Check if data exists and has status
+          if (!data || typeof data !== 'object') {
+            throw new Error('Invalid response format');
+          }
+          
+          if (data.status === 'success') {
+            // Hide any error messages
+            if (errorDiv) errorDiv.style.display = 'none';
+            if (sentDiv) sentDiv.style.display = 'none';
+            
+            // Show success modal
+            const modalElement = document.querySelector(modalId);
+            if (modalElement) {
+              const modal = new bootstrap.Modal(modalElement);
+              modal.show();
+            }
+            
+            // Reset form
+            form.reset();
+            
+            // Reset feedback type to default if it's a feedback form
+            if (formType === 'feedback') {
+              const feedbackTypeSelect = form.querySelector('#feedbackType');
+              if (feedbackTypeSelect) {
+                feedbackTypeSelect.value = 'other';
+              }
+            }
+            
+            // Reset button
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalButtonText;
+          } else {
+            // Show error - only if status is not success
+            if (errorDiv) {
+              errorDiv.textContent = data.message || 'An error occurred. Please try again.';
+              errorDiv.style.display = 'block';
+            }
+            
+            // Reset button
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalButtonText;
+          }
+        })
+        .catch(error => {
+          console.error('Form submission error:', error);
+          
+          // Hide loading
+          if (loadingDiv) loadingDiv.style.display = 'none';
+          
+          // Show user-friendly error message
+          if (errorDiv) {
+            // Check if error message contains JSON (which shouldn't happen)
+            let errorMessage = error.message || 'Network error. Please check your connection and try again.';
+            
+            // If error message looks like JSON, provide a generic message
+            if (errorMessage.includes('{') && errorMessage.includes('status')) {
+              errorMessage = 'An error occurred while submitting. Please try again.';
+            }
+            
+            errorDiv.textContent = errorMessage;
+            errorDiv.style.display = 'block';
+          }
+          
+          // Reset button
+          submitButton.disabled = false;
+          submitButton.innerHTML = originalButtonText;
+        });
+      }
+
+      // Newsletter Form Handler
+      const newsletterForm = document.querySelector('.newsletter-form-submit');
+      if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          handleNewsletterSubmission(newsletterForm);
+        });
+      }
+
+      function handleNewsletterSubmission(form) {
+        const formData = new FormData(form);
+        const submitButton = form.querySelector('button[type="submit"]');
+        const loadingDiv = form.querySelector('.loading');
+        const errorDiv = form.querySelector('.error-message');
+        const sentDiv = form.querySelector('.sent-message');
+        
+        // Show loading state
+        submitButton.disabled = true;
+        const originalButtonText = submitButton.innerHTML;
+        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        if (loadingDiv) loadingDiv.style.display = 'block';
+        if (errorDiv) errorDiv.style.display = 'none';
+        if (sentDiv) sentDiv.style.display = 'none';
+
+        // Submit form via AJAX
+        fetch('forms/newsletter.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const contentType = response.headers.get('content-type');
+          if (!contentType || !contentType.includes('application/json')) {
+            return response.text().then(text => {
+              try {
+                return JSON.parse(text);
+              } catch (e) {
+                throw new Error('Invalid response format');
+              }
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (loadingDiv) loadingDiv.style.display = 'none';
+          
+          if (data && data.status === 'success') {
+            if (errorDiv) errorDiv.style.display = 'none';
+            if (sentDiv) {
+              sentDiv.textContent = data.message || 'Thank you for subscribing!';
+              sentDiv.style.display = 'block';
+            }
+            form.reset();
+          } else {
+            if (errorDiv) {
+              errorDiv.textContent = data.message || 'An error occurred. Please try again.';
+              errorDiv.style.display = 'block';
+            }
+          }
+          
+          submitButton.disabled = false;
+          submitButton.innerHTML = originalButtonText;
+        })
+        .catch(error => {
+          console.error('Newsletter subscription error:', error);
+          if (loadingDiv) loadingDiv.style.display = 'none';
+          if (errorDiv) {
+            errorDiv.textContent = 'Network error. Please check your connection and try again.';
+            errorDiv.style.display = 'block';
+          }
+          submitButton.disabled = false;
+          submitButton.innerHTML = originalButtonText;
+        });
+      }
+    });
+  </script>
 
 </body>
 

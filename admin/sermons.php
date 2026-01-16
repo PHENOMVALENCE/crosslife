@@ -8,46 +8,88 @@ $id = $_GET['id'] ?? null;
 
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['delete'])) {
-        $stmt = $db->prepare("DELETE FROM sermons WHERE id = ?");
-        $stmt->execute([$_POST['id']]);
-        redirect('sermons.php', 'Sermon deleted successfully.');
-    }
-    
-    $data = [
-        'title' => sanitize($_POST['title'] ?? ''),
-        'description' => sanitize($_POST['description'] ?? ''),
-        'speaker' => sanitize($_POST['speaker'] ?? ''),
-        'sermon_type' => $_POST['sermon_type'] ?? 'video',
-        'youtube_url' => sanitize($_POST['youtube_url'] ?? ''),
-        'audio_url' => sanitize($_POST['audio_url'] ?? ''),
-        'thumbnail_url' => sanitize($_POST['thumbnail_url'] ?? ''),
-        'sermon_date' => $_POST['sermon_date'] ?? null,
-        'category' => sanitize($_POST['category'] ?? ''),
-        'status' => $_POST['status'] ?? 'draft'
-    ];
-    
-    if ($id) {
-        // Update
-        $stmt = $db->prepare("UPDATE sermons SET title = ?, description = ?, speaker = ?, sermon_type = ?, youtube_url = ?, audio_url = ?, thumbnail_url = ?, sermon_date = ?, category = ?, status = ? WHERE id = ?");
-        $stmt->execute([$data['title'], $data['description'], $data['speaker'], $data['sermon_type'], $data['youtube_url'], $data['audio_url'], $data['thumbnail_url'], $data['sermon_date'], $data['category'], $data['status'], $id]);
-        redirect('sermons.php', 'Sermon updated successfully.');
-    } else {
-        // Insert
-        $stmt = $db->prepare("INSERT INTO sermons (title, description, speaker, sermon_type, youtube_url, audio_url, thumbnail_url, sermon_date, category, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$data['title'], $data['description'], $data['speaker'], $data['sermon_type'], $data['youtube_url'], $data['audio_url'], $data['thumbnail_url'], $data['sermon_date'], $data['category'], $data['status']]);
-        redirect('sermons.php', 'Sermon added successfully.');
+    try {
+        if (isset($_POST['delete'])) {
+            if (empty($_POST['id'])) {
+                redirect('sermons.php', 'Invalid sermon ID.', 'danger');
+            }
+            
+            $stmt = $db->prepare("DELETE FROM sermons WHERE id = ?");
+            $stmt->execute([$_POST['id']]);
+            
+            if ($stmt->rowCount() > 0) {
+                redirect('sermons.php', 'Sermon deleted successfully.');
+            } else {
+                redirect('sermons.php', 'Sermon not found or already deleted.', 'warning');
+            }
+        }
+        
+        // Validate required fields
+        if (empty($_POST['title'])) {
+            redirect('sermons.php?action=' . ($id ? 'edit&id=' . $id : 'add'), 'Title is required.', 'danger');
+        }
+        
+        $data = [
+            'title' => sanitize($_POST['title'] ?? ''),
+            'description' => sanitize($_POST['description'] ?? ''),
+            'speaker' => sanitize($_POST['speaker'] ?? ''),
+            'sermon_type' => in_array($_POST['sermon_type'] ?? 'video', ['video', 'audio']) ? $_POST['sermon_type'] : 'video',
+            'youtube_url' => sanitize($_POST['youtube_url'] ?? ''),
+            'audio_url' => sanitize($_POST['audio_url'] ?? ''),
+            'thumbnail_url' => sanitize($_POST['thumbnail_url'] ?? ''),
+            'sermon_date' => !empty($_POST['sermon_date']) ? $_POST['sermon_date'] : null,
+            'category' => sanitize($_POST['category'] ?? ''),
+            'status' => in_array($_POST['status'] ?? 'draft', ['published', 'draft']) ? $_POST['status'] : 'draft'
+        ];
+        
+        $sermonId = $id ?: ($_POST['id'] ?? null);
+        
+        if ($sermonId) {
+            // Verify sermon exists
+            $stmt = $db->prepare("SELECT id FROM sermons WHERE id = ?");
+            $stmt->execute([$sermonId]);
+            if (!$stmt->fetch()) {
+                redirect('sermons.php', 'Sermon not found.', 'danger');
+            }
+            
+            $stmt = $db->prepare("UPDATE sermons SET title = ?, description = ?, speaker = ?, sermon_type = ?, youtube_url = ?, audio_url = ?, thumbnail_url = ?, sermon_date = ?, category = ?, status = ? WHERE id = ?");
+            $stmt->execute([$data['title'], $data['description'], $data['speaker'], $data['sermon_type'], $data['youtube_url'], $data['audio_url'], $data['thumbnail_url'], $data['sermon_date'], $data['category'], $data['status'], $sermonId]);
+            
+            if ($stmt->rowCount() > 0) {
+                redirect('sermons.php', 'Sermon updated successfully.');
+            } else {
+                redirect('sermons.php', 'No changes were made.', 'info');
+            }
+        } else {
+            $stmt = $db->prepare("INSERT INTO sermons (title, description, speaker, sermon_type, youtube_url, audio_url, thumbnail_url, sermon_date, category, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$data['title'], $data['description'], $data['speaker'], $data['sermon_type'], $data['youtube_url'], $data['audio_url'], $data['thumbnail_url'], $data['sermon_date'], $data['category'], $data['status']]);
+            
+            if ($stmt->rowCount() > 0) {
+                redirect('sermons.php', 'Sermon added successfully.');
+            } else {
+                redirect('sermons.php?action=add', 'Failed to add sermon. Please try again.', 'danger');
+            }
+        }
+    } catch (PDOException $e) {
+        redirect('sermons.php', handleDBError($e, 'A database error occurred. Please try again.'), 'danger');
+    } catch (Exception $e) {
+        error_log("Error in sermons.php: " . $e->getMessage());
+        redirect('sermons.php', 'An error occurred: ' . htmlspecialchars($e->getMessage()), 'danger');
     }
 }
 
 if ($action === 'add' || $action === 'edit') {
     $sermon = null;
     if ($id) {
-        $stmt = $db->prepare("SELECT * FROM sermons WHERE id = ?");
-        $stmt->execute([$id]);
-        $sermon = $stmt->fetch();
-        if (!$sermon) {
-            redirect('sermons.php', 'Sermon not found.', 'danger');
+        try {
+            $stmt = $db->prepare("SELECT * FROM sermons WHERE id = ?");
+            $stmt->execute([$id]);
+            $sermon = $stmt->fetch();
+            if (!$sermon) {
+                redirect('sermons.php', 'Sermon not found.', 'danger');
+            }
+        } catch (PDOException $e) {
+            redirect('sermons.php', handleDBError($e, 'Error loading sermon.'), 'danger');
         }
     }
     ?>

@@ -7,36 +7,75 @@ $action = $_GET['action'] ?? 'list';
 $id = $_GET['id'] ?? null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['update_status'])) {
-        $stmt = $db->prepare("UPDATE contact_inquiries SET status = ?, admin_notes = ? WHERE id = ?");
-        $stmt->execute([$_POST['status'], sanitize($_POST['admin_notes'] ?? ''), $_POST['id']]);
-        redirect('contacts.php', 'Inquiry updated successfully.');
-    }
-    
-    if (isset($_POST['delete'])) {
-        $stmt = $db->prepare("DELETE FROM contact_inquiries WHERE id = ?");
-        $stmt->execute([$_POST['id']]);
-        redirect('contacts.php', 'Inquiry deleted successfully.');
+    try {
+        if (isset($_POST['update_status'])) {
+            if (empty($_POST['id'])) {
+                redirect('contacts.html', 'Invalid inquiry ID.', 'danger');
+            }
+            
+            $validStatuses = ['new', 'read', 'replied', 'archived'];
+            $status = in_array($_POST['status'] ?? '', $validStatuses) ? $_POST['status'] : 'read';
+            
+            $stmt = $db->prepare("UPDATE contact_inquiries SET status = ?, admin_notes = ? WHERE id = ?");
+            $stmt->execute([$status, sanitize($_POST['admin_notes'] ?? ''), $_POST['id']]);
+            
+            if ($stmt->rowCount() > 0) {
+                redirect('contacts.html', 'Inquiry updated successfully.');
+            } else {
+                redirect('contacts.html', 'No changes were made or inquiry not found.', 'info');
+            }
+        }
+        
+        if (isset($_POST['delete'])) {
+            if (empty($_POST['id'])) {
+                redirect('contacts.html', 'Invalid inquiry ID.', 'danger');
+            }
+            
+            $stmt = $db->prepare("DELETE FROM contact_inquiries WHERE id = ?");
+            $stmt->execute([$_POST['id']]);
+            
+            if ($stmt->rowCount() > 0) {
+                redirect('contacts.html', 'Inquiry deleted successfully.');
+            } else {
+                redirect('contacts.html', 'Inquiry not found or already deleted.', 'warning');
+            }
+        }
+    } catch (PDOException $e) {
+        redirect('contacts.html', handleDBError($e, 'A database error occurred. Please try again.'), 'danger');
+    } catch (Exception $e) {
+        error_log("Error in contacts.html: " . $e->getMessage());
+        redirect('contacts.html', 'An error occurred: ' . htmlspecialchars($e->getMessage()), 'danger');
     }
 }
 
 if ($action === 'view' && $id) {
-    $stmt = $db->prepare("SELECT * FROM contact_inquiries WHERE id = ?");
-    $stmt->execute([$id]);
-    $inquiry = $stmt->fetch();
-    if (!$inquiry) redirect('contacts.php', 'Inquiry not found.', 'danger');
-    
-    // Mark as read if new
-    if ($inquiry['status'] === 'new') {
-        $updateStmt = $db->prepare("UPDATE contact_inquiries SET status = 'read' WHERE id = ?");
-        $updateStmt->execute([$id]);
-        $inquiry['status'] = 'read';
+    try {
+        $stmt = $db->prepare("SELECT * FROM contact_inquiries WHERE id = ?");
+        $stmt->execute([$id]);
+        $inquiry = $stmt->fetch();
+        if (!$inquiry) {
+            redirect('contacts.html', 'Inquiry not found.', 'danger');
+        }
+        
+        // Mark as read if new
+        if ($inquiry['status'] === 'new') {
+            try {
+                $updateStmt = $db->prepare("UPDATE contact_inquiries SET status = 'read' WHERE id = ?");
+                $updateStmt->execute([$id]);
+                $inquiry['status'] = 'read';
+            } catch (PDOException $e) {
+                error_log("Error updating inquiry status: " . $e->getMessage());
+                // Continue even if status update fails
+            }
+        }
+    } catch (PDOException $e) {
+        redirect('contacts.html', handleDBError($e, 'Error loading inquiry.'), 'danger');
     }
     ?>
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Contact Inquiry Details</h5>
-            <a href="contacts.php" class="btn btn-sm btn-secondary">Back to List</a>
+            <a href="contacts.html" class="btn btn-sm btn-secondary">Back to List</a>
         </div>
         <div class="card-body">
             <div class="row mb-4">
@@ -65,19 +104,26 @@ if ($action === 'view' && $id) {
             
             <form method="POST">
                 <input type="hidden" name="id" value="<?php echo $inquiry['id']; ?>">
-                <div class="mb-3">
-                    <label class="form-label">Status</label>
-                    <select class="form-control" name="status">
-                        <option value="new" <?php echo $inquiry['status'] === 'new' ? 'selected' : ''; ?>>New</option>
-                        <option value="read" <?php echo $inquiry['status'] === 'read' ? 'selected' : ''; ?>>Read</option>
-                        <option value="replied" <?php echo $inquiry['status'] === 'replied' ? 'selected' : ''; ?>>Replied</option>
-                        <option value="archived" <?php echo $inquiry['status'] === 'archived' ? 'selected' : ''; ?>>Archived</option>
-                    </select>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Status *</label>
+                        <select class="form-control" name="status" required>
+                            <option value="new" <?php echo $inquiry['status'] === 'new' ? 'selected' : ''; ?>>New</option>
+                            <option value="read" <?php echo $inquiry['status'] === 'read' ? 'selected' : ''; ?>>Read</option>
+                            <option value="replied" <?php echo $inquiry['status'] === 'replied' ? 'selected' : ''; ?>>Replied</option>
+                            <option value="archived" <?php echo $inquiry['status'] === 'archived' ? 'selected' : ''; ?>>Archived</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Last Updated</label>
+                        <input type="text" class="form-control" value="<?php echo formatDateTime($inquiry['updated_at'] ?? $inquiry['created_at']); ?>" readonly>
+                    </div>
                 </div>
                 
                 <div class="mb-3">
                     <label class="form-label">Admin Notes</label>
-                    <textarea class="form-control" name="admin_notes" rows="3"><?php echo htmlspecialchars($inquiry['admin_notes'] ?? ''); ?></textarea>
+                    <textarea class="form-control" name="admin_notes" rows="3" placeholder="Add notes about this inquiry..."><?php echo htmlspecialchars($inquiry['admin_notes'] ?? ''); ?></textarea>
+                    <small class="form-text text-muted">These notes are only visible to admins.</small>
                 </div>
                 
                 <button type="submit" name="update_status" class="btn btn-primary"><i class="bi bi-save me-2"></i>Update Status</button>
@@ -86,20 +132,50 @@ if ($action === 'view' && $id) {
     </div>
     <?php
 } else {
-    $statusFilter = $_GET['status'] ?? 'all';
-    $page = max(1, intval($_GET['page'] ?? 1));
-    $offset = ($page - 1) * ITEMS_PER_PAGE;
+    try {
+        $statusFilter = $_GET['status'] ?? 'all';
+        $validStatuses = ['new', 'read', 'replied', 'archived'];
+        if ($statusFilter !== 'all' && !in_array($statusFilter, $validStatuses)) {
+            $statusFilter = 'all';
+        }
+        
+        $page = max(1, intval($_GET['page'] ?? 1));
+        $offset = ($page - 1) * ITEMS_PER_PAGE;
+        
+        // Use prepared statement to prevent SQL injection
+        if ($statusFilter !== 'all') {
+            $countStmt = $db->prepare("SELECT COUNT(*) as total FROM contact_inquiries WHERE status = ?");
+            $countStmt->execute([$statusFilter]);
+            $total = $countStmt->fetch()['total'];
+            
+            $stmt = $db->prepare("SELECT * FROM contact_inquiries WHERE status = ? ORDER BY created_at DESC LIMIT ? OFFSET ?");
+            $stmt->bindValue(1, $statusFilter, PDO::PARAM_STR);
+            $stmt->bindValue(2, ITEMS_PER_PAGE, PDO::PARAM_INT);
+            $stmt->bindValue(3, $offset, PDO::PARAM_INT);
+        } else {
+            $countStmt = $db->query("SELECT COUNT(*) as total FROM contact_inquiries");
+            $total = $countStmt->fetch()['total'];
+            
+            $stmt = $db->prepare("SELECT * FROM contact_inquiries ORDER BY created_at DESC LIMIT ? OFFSET ?");
+            $stmt->bindValue(1, ITEMS_PER_PAGE, PDO::PARAM_INT);
+            $stmt->bindValue(2, $offset, PDO::PARAM_INT);
+        }
+        
+        $stmt->execute();
+        $inquiries = $stmt->fetchAll();
+    } catch (PDOException $e) {
+        error_log("Database error loading inquiries: " . $e->getMessage());
+        $inquiries = [];
+        $total = 0;
+        $totalPages = 0;
+        $flash = getFlashMessage();
+        if (!$flash) {
+            $_SESSION['flash_message'] = 'Error loading inquiries. Please refresh the page.';
+            $_SESSION['flash_type'] = 'danger';
+        }
+    }
     
-    $where = $statusFilter !== 'all' ? "WHERE status = '$statusFilter'" : '';
-    $stmt = $db->query("SELECT COUNT(*) as total FROM contact_inquiries $where");
-    $total = $stmt->fetch()['total'];
     $totalPages = ceil($total / ITEMS_PER_PAGE);
-    
-    $stmt = $db->prepare("SELECT * FROM contact_inquiries $where ORDER BY created_at DESC LIMIT ? OFFSET ?");
-    $stmt->bindValue(1, ITEMS_PER_PAGE, PDO::PARAM_INT);
-    $stmt->bindValue(2, $offset, PDO::PARAM_INT);
-    $stmt->execute();
-    $inquiries = $stmt->fetchAll();
     ?>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Contact Inquiries</h2>
@@ -107,6 +183,8 @@ if ($action === 'view' && $id) {
             <a href="?status=all" class="btn btn-sm btn-outline-<?php echo $statusFilter === 'all' ? 'primary' : 'secondary'; ?>">All</a>
             <a href="?status=new" class="btn btn-sm btn-outline-<?php echo $statusFilter === 'new' ? 'primary' : 'secondary'; ?>">New</a>
             <a href="?status=read" class="btn btn-sm btn-outline-<?php echo $statusFilter === 'read' ? 'primary' : 'secondary'; ?>">Read</a>
+            <a href="?status=replied" class="btn btn-sm btn-outline-<?php echo $statusFilter === 'replied' ? 'primary' : 'secondary'; ?>">Replied</a>
+            <a href="?status=archived" class="btn btn-sm btn-outline-<?php echo $statusFilter === 'archived' ? 'primary' : 'secondary'; ?>">Archived</a>
         </div>
     </div>
     
@@ -136,7 +214,7 @@ if ($action === 'view' && $id) {
                                     <td><span class="badge bg-<?php echo $inquiry['status'] === 'new' ? 'primary' : ($inquiry['status'] === 'replied' ? 'success' : 'secondary'); ?>"><?php echo ucfirst($inquiry['status']); ?></span></td>
                                     <td><?php echo formatDate($inquiry['created_at']); ?></td>
                                     <td>
-                                        <a href="contacts.php?action=view&id=<?php echo $inquiry['id']; ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
+                                        <a href="contacts.html?action=view&id=<?php echo $inquiry['id']; ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
                                         <form method="POST" style="display: inline;" onsubmit="return confirm('Delete this inquiry?');">
                                             <input type="hidden" name="id" value="<?php echo $inquiry['id']; ?>">
                                             <button type="submit" name="delete" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>

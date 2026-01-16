@@ -7,29 +7,68 @@ $action = $_GET['action'] ?? 'list';
 $id = $_GET['id'] ?? null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['update_status'])) {
-        $stmt = $db->prepare("UPDATE feedback SET status = ?, admin_notes = ? WHERE id = ?");
-        $stmt->execute([$_POST['status'], sanitize($_POST['admin_notes'] ?? ''), $_POST['id']]);
-        redirect('feedback.php', 'Feedback updated successfully.');
-    }
-    
-    if (isset($_POST['delete'])) {
-        $stmt = $db->prepare("DELETE FROM feedback WHERE id = ?");
-        $stmt->execute([$_POST['id']]);
-        redirect('feedback.php', 'Feedback deleted successfully.');
+    try {
+        if (isset($_POST['update_status'])) {
+            if (empty($_POST['id'])) {
+                redirect('feedback.php', 'Invalid feedback ID.', 'danger');
+            }
+            
+            $validStatuses = ['new', 'reviewed', 'addressed', 'archived'];
+            $status = in_array($_POST['status'] ?? '', $validStatuses) ? $_POST['status'] : 'new';
+            
+            $stmt = $db->prepare("UPDATE feedback SET status = ?, admin_notes = ? WHERE id = ?");
+            $stmt->execute([$status, sanitize($_POST['admin_notes'] ?? ''), $_POST['id']]);
+            
+            if ($stmt->rowCount() > 0) {
+                redirect('feedback.php', 'Feedback updated successfully.');
+            } else {
+                redirect('feedback.php', 'No changes were made or feedback not found.', 'info');
+            }
+        }
+        
+        if (isset($_POST['delete'])) {
+            if (empty($_POST['id'])) {
+                redirect('feedback.php', 'Invalid feedback ID.', 'danger');
+            }
+            
+            $stmt = $db->prepare("DELETE FROM feedback WHERE id = ?");
+            $stmt->execute([$_POST['id']]);
+            
+            if ($stmt->rowCount() > 0) {
+                redirect('feedback.php', 'Feedback deleted successfully.');
+            } else {
+                redirect('feedback.php', 'Feedback not found or already deleted.', 'warning');
+            }
+        }
+    } catch (PDOException $e) {
+        redirect('feedback.php', handleDBError($e, 'A database error occurred. Please try again.'), 'danger');
+    } catch (Exception $e) {
+        error_log("Error in feedback.php: " . $e->getMessage());
+        redirect('feedback.php', 'An error occurred: ' . htmlspecialchars($e->getMessage()), 'danger');
     }
 }
 
 if ($action === 'view' && $id) {
-    $stmt = $db->prepare("SELECT * FROM feedback WHERE id = ?");
-    $stmt->execute([$id]);
-    $feedback = $stmt->fetch();
-    if (!$feedback) redirect('feedback.php', 'Feedback not found.', 'danger');
-    
-    if ($feedback['status'] === 'new') {
-        $updateStmt = $db->prepare("UPDATE feedback SET status = 'reviewed' WHERE id = ?");
-        $updateStmt->execute([$id]);
-        $feedback['status'] = 'reviewed';
+    try {
+        $stmt = $db->prepare("SELECT * FROM feedback WHERE id = ?");
+        $stmt->execute([$id]);
+        $feedback = $stmt->fetch();
+        if (!$feedback) {
+            redirect('feedback.php', 'Feedback not found.', 'danger');
+        }
+        
+        if ($feedback['status'] === 'new') {
+            try {
+                $updateStmt = $db->prepare("UPDATE feedback SET status = 'reviewed' WHERE id = ?");
+                $updateStmt->execute([$id]);
+                $feedback['status'] = 'reviewed';
+            } catch (PDOException $e) {
+                error_log("Error updating feedback status: " . $e->getMessage());
+                // Continue even if status update fails
+            }
+        }
+    } catch (PDOException $e) {
+        redirect('feedback.php', handleDBError($e, 'Error loading feedback.'), 'danger');
     }
     ?>
     <div class="card">
@@ -65,19 +104,26 @@ if ($action === 'view' && $id) {
             
             <form method="POST">
                 <input type="hidden" name="id" value="<?php echo $feedback['id']; ?>">
-                <div class="mb-3">
-                    <label class="form-label">Status</label>
-                    <select class="form-control" name="status">
-                        <option value="new" <?php echo $feedback['status'] === 'new' ? 'selected' : ''; ?>>New</option>
-                        <option value="reviewed" <?php echo $feedback['status'] === 'reviewed' ? 'selected' : ''; ?>>Reviewed</option>
-                        <option value="addressed" <?php echo $feedback['status'] === 'addressed' ? 'selected' : ''; ?>>Addressed</option>
-                        <option value="archived" <?php echo $feedback['status'] === 'archived' ? 'selected' : ''; ?>>Archived</option>
-                    </select>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Status *</label>
+                        <select class="form-control" name="status" required>
+                            <option value="new" <?php echo $feedback['status'] === 'new' ? 'selected' : ''; ?>>New</option>
+                            <option value="reviewed" <?php echo $feedback['status'] === 'reviewed' ? 'selected' : ''; ?>>Reviewed</option>
+                            <option value="addressed" <?php echo $feedback['status'] === 'addressed' ? 'selected' : ''; ?>>Addressed</option>
+                            <option value="archived" <?php echo $feedback['status'] === 'archived' ? 'selected' : ''; ?>>Archived</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Last Updated</label>
+                        <input type="text" class="form-control" value="<?php echo formatDateTime($feedback['updated_at'] ?? $feedback['created_at']); ?>" readonly>
+                    </div>
                 </div>
                 
                 <div class="mb-3">
                     <label class="form-label">Admin Notes</label>
-                    <textarea class="form-control" name="admin_notes" rows="3"><?php echo htmlspecialchars($feedback['admin_notes'] ?? ''); ?></textarea>
+                    <textarea class="form-control" name="admin_notes" rows="3" placeholder="Add notes about this feedback..."><?php echo htmlspecialchars($feedback['admin_notes'] ?? ''); ?></textarea>
+                    <small class="form-text text-muted">These notes are only visible to admins.</small>
                 </div>
                 
                 <button type="submit" name="update_status" class="btn btn-primary"><i class="bi bi-save me-2"></i>Update Status</button>
@@ -86,25 +132,59 @@ if ($action === 'view' && $id) {
     </div>
     <?php
 } else {
-    $statusFilter = $_GET['status'] ?? 'all';
-    $typeFilter = $_GET['type'] ?? 'all';
-    $page = max(1, intval($_GET['page'] ?? 1));
-    $offset = ($page - 1) * ITEMS_PER_PAGE;
-    
-    $where = [];
-    if ($statusFilter !== 'all') $where[] = "status = '$statusFilter'";
-    if ($typeFilter !== 'all') $where[] = "feedback_type = '$typeFilter'";
-    $whereClause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
-    
-    $stmt = $db->query("SELECT COUNT(*) as total FROM feedback $whereClause");
-    $total = $stmt->fetch()['total'];
-    $totalPages = ceil($total / ITEMS_PER_PAGE);
-    
-    $stmt = $db->prepare("SELECT * FROM feedback $whereClause ORDER BY created_at DESC LIMIT ? OFFSET ?");
-    $stmt->bindValue(1, ITEMS_PER_PAGE, PDO::PARAM_INT);
-    $stmt->bindValue(2, $offset, PDO::PARAM_INT);
-    $stmt->execute();
-    $feedbacks = $stmt->fetchAll();
+    try {
+        $statusFilter = $_GET['status'] ?? 'all';
+        $typeFilter = $_GET['type'] ?? 'all';
+        $validStatuses = ['new', 'reviewed', 'addressed', 'archived'];
+        $validTypes = ['praise', 'suggestion', 'concern', 'testimony', 'other'];
+        
+        if ($statusFilter !== 'all' && !in_array($statusFilter, $validStatuses)) {
+            $statusFilter = 'all';
+        }
+        if ($typeFilter !== 'all' && !in_array($typeFilter, $validTypes)) {
+            $typeFilter = 'all';
+        }
+        
+        $page = max(1, intval($_GET['page'] ?? 1));
+        $offset = ($page - 1) * ITEMS_PER_PAGE;
+        
+        // Use prepared statements to prevent SQL injection
+        $where = [];
+        $params = [];
+        if ($statusFilter !== 'all') {
+            $where[] = "status = ?";
+            $params[] = $statusFilter;
+        }
+        if ($typeFilter !== 'all') {
+            $where[] = "feedback_type = ?";
+            $params[] = $typeFilter;
+        }
+        $whereClause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
+        
+        $countStmt = $db->prepare("SELECT COUNT(*) as total FROM feedback $whereClause");
+        $countStmt->execute($params);
+        $total = $countStmt->fetch()['total'];
+        $totalPages = ceil($total / ITEMS_PER_PAGE);
+        
+        $params[] = ITEMS_PER_PAGE;
+        $params[] = $offset;
+        $stmt = $db->prepare("SELECT * FROM feedback $whereClause ORDER BY created_at DESC LIMIT ? OFFSET ?");
+        foreach ($params as $i => $param) {
+            $stmt->bindValue($i + 1, $param, is_int($param) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+        $stmt->execute();
+        $feedbacks = $stmt->fetchAll();
+    } catch (PDOException $e) {
+        error_log("Database error loading feedback: " . $e->getMessage());
+        $feedbacks = [];
+        $total = 0;
+        $totalPages = 0;
+        $flash = getFlashMessage();
+        if (!$flash) {
+            $_SESSION['flash_message'] = 'Error loading feedback. Please refresh the page.';
+            $_SESSION['flash_type'] = 'danger';
+        }
+    }
     ?>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Feedback</h2>

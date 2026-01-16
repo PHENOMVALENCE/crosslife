@@ -7,43 +7,89 @@ $action = $_GET['action'] ?? 'list';
 $id = $_GET['id'] ?? null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['delete'])) {
-        $stmt = $db->prepare("DELETE FROM discipleship_programs WHERE id = ?");
-        $stmt->execute([$_POST['id']]);
-        redirect('discipleship.php', 'Program deleted successfully.');
-    }
-    
-    $features = implode("\n", array_filter(array_map('trim', explode("\n", $_POST['features'] ?? ''))));
-    
-    $data = [
-        'program_name' => sanitize($_POST['program_name'] ?? ''),
-        'description' => sanitize($_POST['description'] ?? ''),
-        'features' => $features,
-        'image_url' => sanitize($_POST['image_url'] ?? ''),
-        'duration' => sanitize($_POST['duration'] ?? ''),
-        'requirements' => sanitize($_POST['requirements'] ?? ''),
-        'status' => $_POST['status'] ?? 'active',
-        'display_order' => intval($_POST['display_order'] ?? 0)
-    ];
-    
-    if ($id) {
-        $stmt = $db->prepare("UPDATE discipleship_programs SET program_name = ?, description = ?, features = ?, image_url = ?, duration = ?, requirements = ?, status = ?, display_order = ? WHERE id = ?");
-        $stmt->execute([$data['program_name'], $data['description'], $data['features'], $data['image_url'], $data['duration'], $data['requirements'], $data['status'], $data['display_order'], $id]);
-        redirect('discipleship.php', 'Program updated successfully.');
-    } else {
-        $stmt = $db->prepare("INSERT INTO discipleship_programs (program_name, description, features, image_url, duration, requirements, status, display_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$data['program_name'], $data['description'], $data['features'], $data['image_url'], $data['duration'], $data['requirements'], $data['status'], $data['display_order']]);
-        redirect('discipleship.php', 'Program added successfully.');
+    try {
+        if (isset($_POST['delete'])) {
+            if (empty($_POST['id'])) {
+                redirect('discipleship.php', 'Invalid program ID.', 'danger');
+            }
+            
+            $stmt = $db->prepare("DELETE FROM discipleship_programs WHERE id = ?");
+            $stmt->execute([$_POST['id']]);
+            
+            if ($stmt->rowCount() > 0) {
+                redirect('discipleship.php', 'Program deleted successfully.');
+            } else {
+                redirect('discipleship.php', 'Program not found or already deleted.', 'warning');
+            }
+        }
+        
+        // Validate required fields
+        if (empty($_POST['program_name']) || empty($_POST['description'])) {
+            redirect('discipleship.php?action=' . ($id ? 'edit&id=' . $id : 'add'), 'Program Name and Description are required fields.', 'danger');
+        }
+        
+        $features = implode("\n", array_filter(array_map('trim', explode("\n", $_POST['features'] ?? ''))));
+        
+        $data = [
+            'program_name' => sanitize($_POST['program_name'] ?? ''),
+            'description' => sanitize($_POST['description'] ?? ''),
+            'features' => $features,
+            'image_url' => sanitize($_POST['image_url'] ?? ''),
+            'duration' => sanitize($_POST['duration'] ?? ''),
+            'requirements' => sanitize($_POST['requirements'] ?? ''),
+            'status' => in_array($_POST['status'] ?? 'active', ['active', 'inactive']) ? $_POST['status'] : 'active',
+            'display_order' => intval($_POST['display_order'] ?? 0)
+        ];
+        
+        $programId = $id ?: ($_POST['id'] ?? null);
+        
+        if ($programId) {
+            // Verify program exists
+            $stmt = $db->prepare("SELECT id FROM discipleship_programs WHERE id = ?");
+            $stmt->execute([$programId]);
+            if (!$stmt->fetch()) {
+                redirect('discipleship.php', 'Program not found.', 'danger');
+            }
+            
+            $stmt = $db->prepare("UPDATE discipleship_programs SET program_name = ?, description = ?, features = ?, image_url = ?, duration = ?, requirements = ?, status = ?, display_order = ? WHERE id = ?");
+            $stmt->execute([$data['program_name'], $data['description'], $data['features'], $data['image_url'], $data['duration'], $data['requirements'], $data['status'], $data['display_order'], $programId]);
+            
+            if ($stmt->rowCount() > 0) {
+                redirect('discipleship.php', 'Program updated successfully.');
+            } else {
+                redirect('discipleship.php', 'No changes were made.', 'info');
+            }
+        } else {
+            $stmt = $db->prepare("INSERT INTO discipleship_programs (program_name, description, features, image_url, duration, requirements, status, display_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$data['program_name'], $data['description'], $data['features'], $data['image_url'], $data['duration'], $data['requirements'], $data['status'], $data['display_order']]);
+            
+            if ($stmt->rowCount() > 0) {
+                redirect('discipleship.php', 'Program added successfully.');
+            } else {
+                redirect('discipleship.php?action=add', 'Failed to add program. Please try again.', 'danger');
+            }
+        }
+    } catch (PDOException $e) {
+        redirect('discipleship.php', handleDBError($e, 'A database error occurred. Please try again.'), 'danger');
+    } catch (Exception $e) {
+        error_log("Error in discipleship.php: " . $e->getMessage());
+        redirect('discipleship.php', 'An error occurred: ' . htmlspecialchars($e->getMessage()), 'danger');
     }
 }
 
 if ($action === 'add' || $action === 'edit') {
     $program = null;
     if ($id) {
-        $stmt = $db->prepare("SELECT * FROM discipleship_programs WHERE id = ?");
-        $stmt->execute([$id]);
-        $program = $stmt->fetch();
-        if (!$program) redirect('discipleship.php', 'Program not found.', 'danger');
+        try {
+            $stmt = $db->prepare("SELECT * FROM discipleship_programs WHERE id = ?");
+            $stmt->execute([$id]);
+            $program = $stmt->fetch();
+            if (!$program) {
+                redirect('discipleship.php', 'Program not found.', 'danger');
+            }
+        } catch (PDOException $e) {
+            redirect('discipleship.php', handleDBError($e, 'Error loading program.'), 'danger');
+        }
     }
     ?>
     <div class="card">

@@ -75,11 +75,11 @@ admin/
 ├── login.php             # Admin login
 ├── logout.php            # Logout handler
 ├── sermons.php           # Sermons management
-├── events.php            # Events management
+├── events.html            # Events management
 ├── ministries.php        # Ministries management
 ├── discipleship.php      # Discipleship programs management
 ├── leadership.php        # Leadership management
-├── contacts.php          # Contact inquiries
+├── contacts.html          # Contact inquiries
 ├── prayer-requests.php   # Prayer requests
 ├── feedback.php          # Feedback management
 └── settings.php          # Site settings

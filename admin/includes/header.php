@@ -228,6 +228,16 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             border-left: 4px solid #0d6efd;
         }
         
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .alert .btn-close {
+            padding: 0.5rem;
+        }
+        
         @media (max-width: 768px) {
             .admin-sidebar {
                 transform: translateX(-100%);
@@ -263,7 +273,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <a href="sermons.php" class="menu-item <?php echo $currentPage === 'sermons.php' ? 'active' : ''; ?>">
                     <i class="bi bi-play-circle"></i>Sermons
                 </a>
-                <a href="events.php" class="menu-item <?php echo $currentPage === 'events.php' ? 'active' : ''; ?>">
+                <a href="events.html" class="menu-item <?php echo $currentPage === 'events.html' ? 'active' : ''; ?>">
                     <i class="bi bi-calendar-event"></i>Events
                 </a>
                 <a href="ministries.php" class="menu-item <?php echo $currentPage === 'ministries.php' ? 'active' : ''; ?>">
@@ -277,7 +287,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </a>
                 
                 <div class="menu-section">Communications</div>
-                <a href="contacts.php" class="menu-item <?php echo $currentPage === 'contacts.php' ? 'active' : ''; ?>">
+                <a href="contacts.html" class="menu-item <?php echo $currentPage === 'contacts.html' ? 'active' : ''; ?>">
                     <i class="bi bi-envelope"></i>Contact Inquiries
                 </a>
                 <a href="prayer-requests.php" class="menu-item <?php echo $currentPage === 'prayer-requests.php' ? 'active' : ''; ?>">
@@ -316,10 +326,29 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <?php
                 $flash = getFlashMessage();
                 if ($flash):
+                    $alertClass = 'alert-' . $flash['type'];
+                    $iconClass = 'bi-';
+                    switch ($flash['type']) {
+                        case 'success':
+                            $iconClass .= 'check-circle-fill';
+                            break;
+                        case 'danger':
+                            $iconClass .= 'exclamation-triangle-fill';
+                            break;
+                        case 'warning':
+                            $iconClass .= 'exclamation-circle-fill';
+                            break;
+                        case 'info':
+                            $iconClass .= 'info-circle-fill';
+                            break;
+                        default:
+                            $iconClass .= 'info-circle-fill';
+                    }
                 ?>
-                    <div class="alert alert-<?php echo $flash['type']; ?>">
-                        <i class="bi bi-<?php echo $flash['type'] === 'success' ? 'check-circle' : ($flash['type'] === 'danger' ? 'exclamation-triangle' : 'info-circle'); ?> me-2"></i>
+                    <div class="alert <?php echo $alertClass; ?> alert-dismissible fade show" role="alert">
+                        <i class="bi <?php echo $iconClass; ?> me-2"></i>
                         <?php echo htmlspecialchars($flash['message']); ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 <?php endif; ?>
 

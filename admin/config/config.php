@@ -142,3 +142,38 @@ function getFlashMessage() {
     return null;
 }
 
+/**
+ * Validate required fields
+ */
+function validateRequired($fields, $data) {
+    $errors = [];
+    foreach ($fields as $field) {
+        if (empty($data[$field])) {
+            $errors[] = ucfirst(str_replace('_', ' ', $field)) . ' is required.';
+        }
+    }
+    return $errors;
+}
+
+/**
+ * Validate email
+ */
+function validateEmail($email) {
+    if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Handle database errors gracefully
+ */
+function handleDBError($e, $defaultMessage = 'A database error occurred.') {
+    error_log("Database error: " . $e->getMessage());
+    $message = $defaultMessage;
+    if (defined('DEBUG') && DEBUG) {
+        $message .= ' Error: ' . $e->getMessage();
+    }
+    return $message;
+}
+

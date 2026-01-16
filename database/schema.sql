@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS feedback (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     email VARCHAR(100),
-    feedback_type ENUM('suggestion', 'concern', 'praise', 'other') DEFAULT 'other',
+    feedback_type ENUM('suggestion', 'concern', 'praise', 'testimony', 'other') DEFAULT 'other',
     message TEXT NOT NULL,
     status ENUM('new', 'reviewed', 'addressed', 'archived') DEFAULT 'new',
     admin_notes TEXT,
@@ -151,6 +151,32 @@ CREATE TABLE IF NOT EXISTS feedback (
     INDEX idx_status (status),
     INDEX idx_feedback_type (feedback_type),
     INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Newsletter Subscriptions Table
+CREATE TABLE IF NOT EXISTS newsletter_subscriptions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    name VARCHAR(255),
+    status ENUM('active', 'unsubscribed', 'bounced') DEFAULT 'active',
+    subscribed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    unsubscribed_at TIMESTAMP NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_status (status),
+    INDEX idx_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Newsletter Subscriptions Table
+CREATE TABLE IF NOT EXISTS newsletter_subscriptions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    name VARCHAR(255),
+    status ENUM('active', 'unsubscribed', 'bounced') DEFAULT 'active',
+    subscribed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    unsubscribed_at TIMESTAMP NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_status (status),
+    INDEX idx_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Site Settings Table

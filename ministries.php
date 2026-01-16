@@ -1,12 +1,23 @@
+<?php
+/**
+ * Ministries Page - CrossLife Mission Network
+ * Dynamic content from database
+ */
+require_once 'includes/db-functions.php';
+require_once 'admin/config/config.php'; // For SITE_URL constant
+
+$settings = getSiteSettings();
+$ministries = getActiveMinistries();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Discipleship - School of Christ Academy - CrossLife Mission Network</title>
-  <meta name="description" content="Join the School of Christ Academy for structured discipleship programs including Foundation Classes, Leadership Training, and Ministry Development.">
-  <meta name="keywords" content="CrossLife, Discipleship, School of Christ Academy, Foundation Class, Leadership, Ministry, Sonship">
+  <title>Ministries - <?php echo htmlspecialchars($settings['site_name'] ?? 'CrossLife Mission Network'); ?></title>
+  <meta name="description" content="Explore the various ministries of CrossLife Mission Network working together to manifest Sons of God.">
+  <meta name="keywords" content="CrossLife, Ministries, Teaching, Discipleship, Prayer, Outreach, Worship, Fellowship">
 
   <!-- Favicons -->
   <link href="assets/img/logo.jpeg" rel="icon">
@@ -34,9 +45,9 @@
     <div class="container-fluid container-xl position-relative">
 
       <div class="top-row d-flex align-items-center justify-content-between">
-        <a href="index.html" class="logo d-flex align-items-center">
+        <a href="index.php" class="logo d-flex align-items-center">
           <img src="assets/img/logo.jpeg" alt="CrossLife Mission Network Logo">
-          <h1 class="sitename">CrossLife Mission Network</h1>
+          <h1 class="sitename"><?php echo htmlspecialchars($settings['site_name'] ?? 'CrossLife Mission Network'); ?></h1>
         </a>
 
         <div class="d-flex align-items-center">
@@ -59,13 +70,13 @@
       <div class="container d-flex justify-content-center position-relative">
         <nav id="navmenu" class="navmenu">
           <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="index.html#about">About</a></li>
-            <li><a href="index.html#features">Core Beliefs</a></li>
-            <li><a href="index.html#leadership">Leadership</a></li>
-            <li><a href="ministries.php">Ministries</a></li>
-            <li><a href="sermons.html">Sermons</a></li>
-            <li><a href="discipleship.html" class="active">Discipleship</a></li>
+            <li><a href="index.php">Home</a></li>
+            <li><a href="index.php#about">About</a></li>
+            <li><a href="index.php#statement-of-faith">Statement of Faith</a></li>
+            <li><a href="index.php#leadership">Leadership</a></li>
+            <li><a href="ministries.php" class="active">Ministries</a></li>
+            <li><a href="sermons.php">Sermons</a></li>
+            <li><a href="discipleship.php">Discipleship</a></li>
             <li><a href="events.html">Events</a></li>
             <li><a href="contacts.html">Contact</a></li>
           </ul>
@@ -79,138 +90,146 @@
   <main class="main">
 
     <!-- Page Header -->
-    <section class="page-header section dark-background" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('assets/img/_MG_5281.jpg') center/cover;">
+    <section class="page-header section dark-background" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('assets/img/_MG_4859.jpg') center/cover;">
       <div class="container">
         <div class="row">
           <div class="col-lg-12 text-center">
-            <h1 data-aos="fade-up">School of Christ Academy</h1>
-            <p data-aos="fade-up" data-aos-delay="100">Structured discipleship programs to equip believers for the work of ministry</p>
+            <h1 data-aos="fade-up">Our Ministries</h1>
+            <p data-aos="fade-up" data-aos-delay="100">Various ministries working together to manifest Sons of God and establish a global network</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Discipleship Section -->
-    <section id="discipleship" class="discipleship section dark-background">
+    <!-- Ministries Section -->
+    <section id="ministries" class="ministries section">
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
-        <div class="row g-4">
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="150">
-            <div class="program-card">
-              <div class="program-header">
-                <i class="bi bi-mortarboard"></i>
-                <h3>CrossLife Foundation Class</h3>
+        <?php if (empty($ministries)): ?>
+          <!-- Default ministries if database is empty -->
+          <div class="row g-4">
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="150">
+              <div class="ministry-card">
+                <h3>Teaching Ministry</h3>
+                <p>Dedicated to preaching the Gospel of the Cross, the Message of Sonship, the Gospel of the Kingdom of God, and the Gospel of Immortality through systematic teaching and exposition of God's Word.</p>
+                <div class="ministry-image mt-3">
+                  <img src="assets/img/_MG_4880.jpg" alt="Teaching Ministry" class="img-fluid rounded">
+                </div>
               </div>
-              <p>Build a solid foundation in your Christian walk. This foundational class covers the basics of faith, identity in Christ, and the core teachings of CrossLife Mission Network.</p>
-              <ul class="program-features">
-                <li><i class="bi bi-check-circle me-2"></i>Video lessons</li>
-                <li><i class="bi bi-check-circle me-2"></i>Interactive tests</li>
-                <li><i class="bi bi-check-circle me-2"></i>Digital certificate upon completion</li>
-                <li><i class="bi bi-check-circle me-2"></i>Registration required before class begins</li>
-              </ul>
-              <div class="program-image mt-3">
-                <img src="assets/img/_MG_4859.jpg" alt="Foundation Class" class="img-fluid rounded">
-              </div>
-              <a href="contacts.html" class="btn btn-outline-light mt-3">Register Now</a>
             </div>
-          </div>
 
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-            <div class="program-card">
-              <div class="program-header">
-                <i class="bi bi-trophy"></i>
-                <h3>School of Leadership</h3>
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+              <div class="ministry-card">
+                <h3>Discipleship Ministry</h3>
+                <p>Through the School of Christ Academy, we provide structured discipleship programs including Foundation Classes, Leadership Training, and Ministry Development to equip believers for the work of ministry.</p>
+                <div class="ministry-image mt-3">
+                  <img src="assets/img/_MG_4902.jpg" alt="Discipleship Ministry" class="img-fluid rounded">
+                </div>
               </div>
-              <p>Develop your leadership skills and learn to lead as a Son of God. This program equips you to serve in various leadership capacities within the church and beyond.</p>
-              <ul class="program-features">
-                <li><i class="bi bi-check-circle me-2"></i>Comprehensive leadership training</li>
-                <li><i class="bi bi-check-circle me-2"></i>Practical ministry application</li>
-                <li><i class="bi bi-check-circle me-2"></i>Digital certificate upon completion</li>
-                <li><i class="bi bi-check-circle me-2"></i>Registration required before class begins</li>
-              </ul>
-              <div class="program-image mt-3">
-                <img src="assets/img/_MG_4880.jpg" alt="School of Leadership" class="img-fluid rounded">
-              </div>
-              <a href="contacts.html" class="btn btn-outline-light mt-3">Register Now</a>
             </div>
-          </div>
 
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="250">
-            <div class="program-card">
-              <div class="program-header">
-                <i class="bi bi-briefcase"></i>
-                <h3>School of Ministry</h3>
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="250">
+              <div class="ministry-card">
+                <h3>Prayer Ministry</h3>
+                <p>A community of Life, Love, Sonship, and Prayer, committed to intercession for the church, the nation, and the global body of Christ.</p>
+                <div class="ministry-image mt-3">
+                  <img src="assets/img/_MG_5021.jpg" alt="Prayer Ministry" class="img-fluid rounded">
+                </div>
               </div>
-              <p>Prepare for effective ministry service. Learn the practical aspects of ministry work and how to walk in New Creation realities and Eternal Ordinations.</p>
-              <ul class="program-features">
-                <li><i class="bi bi-check-circle me-2"></i>Ministry-focused curriculum</li>
-                <li><i class="bi bi-check-circle me-2"></i>Hands-on training</li>
-                <li><i class="bi bi-check-circle me-2"></i>Digital certificate upon completion</li>
-                <li><i class="bi bi-check-circle me-2"></i>Registration required before class begins</li>
-              </ul>
-              <div class="program-image mt-3">
-                <img src="assets/img/_MG_4902.jpg" alt="School of Ministry" class="img-fluid rounded">
-              </div>
-              <a href="contacts.html" class="btn btn-outline-light mt-3">Register Now</a>
             </div>
-          </div>
 
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
-            <div class="program-card">
-              <div class="program-header">
-                <i class="bi bi-person-heart"></i>
-                <h3>Sonship and Submission</h3>
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
+              <div class="ministry-card">
+                <h3>Outreach Ministry</h3>
+                <p>Reaching the global community by showing the Way, revealing the Truth, and sharing Life through Christ, establishing a global network of manifested Sons of God.</p>
+                <div class="ministry-image mt-3">
+                  <img src="assets/img/_MG_5281.jpg" alt="Outreach Ministry" class="img-fluid rounded">
+                </div>
               </div>
-              <p>Deepen your understanding of your identity as a Son of God and learn the principles of submission and authority in the Kingdom of God.</p>
-              <ul class="program-features">
-                <li><i class="bi bi-check-circle me-2"></i>Identity in Christ focus</li>
-                <li><i class="bi bi-check-circle me-2"></i>Kingdom principles</li>
-                <li><i class="bi bi-check-circle me-2"></i>Digital certificate upon completion</li>
-                <li><i class="bi bi-check-circle me-2"></i>Registration required before class begins</li>
-              </ul>
-              <div class="program-image mt-3">
-                <img src="assets/img/_MG_5021.jpg" alt="Sonship and Submission" class="img-fluid rounded">
+            </div>
+
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="350">
+              <div class="ministry-card">
+                <h3>Worship Ministry</h3>
+                <p>Leading the church in worship, recognizing that worship is central to the life of CrossLife as we live in Zion, the realm of Christ.</p>
+                <div class="ministry-image mt-3">
+                  <img src="assets/img/_MG_5282.jpg" alt="Worship Ministry" class="img-fluid rounded">
+                </div>
               </div>
-              <a href="contacts.html" class="btn btn-outline-light mt-3">Register Now</a>
+            </div>
+
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="400">
+              <div class="ministry-card">
+                <h3>Fellowship Ministry</h3>
+                <p>Creating an environment where believers experience the Life of God and grow in their identity in Christ, welcoming people from diverse backgrounds, ages, and walks of life.</p>
+                <div class="ministry-image mt-3">
+                  <img src="assets/img/_MG_4859.jpg" alt="Fellowship Ministry" class="img-fluid rounded">
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        <?php else: ?>
+          <!-- Dynamic ministries from database -->
+          <div class="row g-4">
+            <?php 
+            $delay = 150;
+            foreach ($ministries as $ministry): 
+              // Handle both full URLs and relative paths
+              if (!empty($ministry['image_url'])) {
+                $image = $ministry['image_url'];
+                // Convert full URL to relative path if needed
+                if (defined('SITE_URL') && strpos($image, SITE_URL) === 0) {
+                  $image = str_replace(SITE_URL . '/', '', $image);
+                } elseif (strpos($image, 'http') === 0) {
+                  // Keep full URL as is (external or absolute URL)
+                } else {
+                  // Already relative path
+                }
+              } else {
+                $image = 'assets/img/_MG_4880.jpg';
+              }
+              $image = htmlspecialchars($image);
+            ?>
+              <div class="col-lg-6" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
+                <div class="ministry-card">
+                  <h3><?php echo htmlspecialchars($ministry['name']); ?></h3>
+                  <p><?php echo nl2br(htmlspecialchars($ministry['description'])); ?></p>
+                  
+                  <?php if (!empty($ministry['leader_name']) || !empty($ministry['contact_email'])): ?>
+                    <div class="ministry-info mt-3">
+                      <?php if (!empty($ministry['leader_name'])): ?>
+                        <p class="mb-1"><strong>Leader:</strong> <?php echo htmlspecialchars($ministry['leader_name']); ?></p>
+                      <?php endif; ?>
+                      <?php if (!empty($ministry['contact_email'])): ?>
+                        <p class="mb-0"><strong>Contact:</strong> <a href="mailto:<?php echo htmlspecialchars($ministry['contact_email']); ?>"><?php echo htmlspecialchars($ministry['contact_email']); ?></a></p>
+                      <?php endif; ?>
+                    </div>
+                  <?php endif; ?>
+                  
+                  <div class="ministry-image mt-3">
+                    <img src="<?php echo $image; ?>" alt="<?php echo htmlspecialchars($ministry['name']); ?>" class="img-fluid rounded">
+                  </div>
+                </div>
+              </div>
+            <?php 
+              $delay += 50;
+            endforeach; 
+            ?>
+          </div>
+        <?php endif; ?>
 
         <div class="row mt-5">
-          <div class="col-lg-12 text-center" data-aos="fade-up" data-aos-delay="350">
-            <h3 class="mb-3">Program Features</h3>
-            <p class="lead">All programs include video lessons, tests, and digital certification. Registration is required before the commencement of each class.</p>
-            <div class="row g-4 mt-3">
-              <div class="col-md-4">
-                <div class="feature-box">
-                  <i class="bi bi-play-circle display-4 text-primary mb-3"></i>
-                  <h5>Video Lessons</h5>
-                  <p>Comprehensive video content covering each program's curriculum</p>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="feature-box">
-                  <i class="bi bi-clipboard-check display-4 text-primary mb-3"></i>
-                  <h5>Interactive Tests</h5>
-                  <p>Assess your understanding through interactive quizzes and assessments</p>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="feature-box">
-                  <i class="bi bi-award display-4 text-primary mb-3"></i>
-                  <h5>Digital Certificates</h5>
-                  <p>Receive a digital certificate upon successful completion of each program</p>
-                </div>
-              </div>
-            </div>
-            <a href="contacts.html" class="btn btn-primary btn-lg mt-4">Contact Us to Register</a>
+          <div class="col-lg-12 text-center" data-aos="fade-up" data-aos-delay="450">
+            <h3 class="mb-3">Get Involved</h3>
+            <p class="lead">We welcome you to be part of any of our ministries. Each ministry is designed to help you grow in your identity in Christ and fulfill the mandate of Christ on earth.</p>
+            <a href="contacts.html" class="btn btn-primary mt-3">Contact Us to Get Involved</a>
           </div>
         </div>
 
       </div>
 
-    </section><!-- /Discipleship Section -->
+    </section><!-- /Ministries Section -->
 
   </main>
 
@@ -249,8 +268,8 @@
 
         <div class="col-lg-4">
           <div class="footer-content">
-            <a href="index.html" class="logo d-flex align-items-center mb-4">
-              <span class="sitename">CrossLife Mission Network</span>
+            <a href="index.php" class="logo d-flex align-items-center mb-4">
+              <span class="sitename"><?php echo htmlspecialchars($settings['site_name'] ?? 'CrossLife Mission Network'); ?></span>
             </a>
             <p class="mb-4">A non-denominational and inter-denominational Christian ministry in Dar es Salaam, Tanzania. We exist to manifest Sons of God who understand their identity in Christ and what Christ can accomplish through them.</p>
 
@@ -275,8 +294,8 @@
           <div class="footer-links">
             <h4>Ministry</h4>
             <ul>
-              <li><a href="index.html#about"><i class="bi bi-chevron-right"></i> About Us</a></li>
-              <li><a href="index.html#features"><i class="bi bi-chevron-right"></i> Core Beliefs</a></li>
+              <li><a href="index.php#about"><i class="bi bi-chevron-right"></i> About Us</a></li>
+              <li><a href="index.php#statement-of-faith"><i class="bi bi-chevron-right"></i> Statement of Faith</a></li>
               <li><a href="contacts.html"><i class="bi bi-chevron-right"></i> Contact</a></li>
             </ul>
           </div>

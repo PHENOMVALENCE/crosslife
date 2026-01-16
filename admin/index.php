@@ -142,7 +142,7 @@ $recentEvents = $db->query("SELECT * FROM events WHERE event_date >= CURDATE() O
                         <?php endforeach; ?>
                     </div>
                     <div class="mt-3">
-                        <a href="contacts.php" class="btn btn-sm btn-outline-primary">View All</a>
+                        <a href="contacts.html" class="btn btn-sm btn-outline-primary">View All</a>
                     </div>
                 <?php endif; ?>
             </div>
@@ -179,7 +179,7 @@ $recentEvents = $db->query("SELECT * FROM events WHERE event_date >= CURDATE() O
                         <?php endforeach; ?>
                     </div>
                     <div class="mt-3">
-                        <a href="events.php" class="btn btn-sm btn-outline-primary">View All</a>
+                        <a href="events.html" class="btn btn-sm btn-outline-primary">View All</a>
                     </div>
                 <?php endif; ?>
             </div>

@@ -7,41 +7,92 @@ $action = $_GET['action'] ?? 'list';
 $id = $_GET['id'] ?? null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['delete'])) {
-        $stmt = $db->prepare("DELETE FROM leadership WHERE id = ?");
-        $stmt->execute([$_POST['id']]);
-        redirect('leadership.php', 'Leader deleted successfully.');
-    }
-    
-    $data = [
-        'name' => sanitize($_POST['name'] ?? ''),
-        'role' => sanitize($_POST['role'] ?? ''),
-        'bio' => sanitize($_POST['bio'] ?? ''),
-        'image_url' => sanitize($_POST['image_url'] ?? ''),
-        'email' => sanitize($_POST['email'] ?? ''),
-        'phone' => sanitize($_POST['phone'] ?? ''),
-        'status' => $_POST['status'] ?? 'active',
-        'display_order' => intval($_POST['display_order'] ?? 0)
-    ];
-    
-    if ($id) {
-        $stmt = $db->prepare("UPDATE leadership SET name = ?, role = ?, bio = ?, image_url = ?, email = ?, phone = ?, status = ?, display_order = ? WHERE id = ?");
-        $stmt->execute([$data['name'], $data['role'], $data['bio'], $data['image_url'], $data['email'], $data['phone'], $data['status'], $data['display_order'], $id]);
-        redirect('leadership.php', 'Leader updated successfully.');
-    } else {
-        $stmt = $db->prepare("INSERT INTO leadership (name, role, bio, image_url, email, phone, status, display_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$data['name'], $data['role'], $data['bio'], $data['image_url'], $data['email'], $data['phone'], $data['status'], $data['display_order']]);
-        redirect('leadership.php', 'Leader added successfully.');
+    try {
+        if (isset($_POST['delete'])) {
+            if (empty($_POST['id'])) {
+                redirect('leadership.php', 'Invalid leader ID.', 'danger');
+            }
+            
+            $stmt = $db->prepare("DELETE FROM leadership WHERE id = ?");
+            $stmt->execute([$_POST['id']]);
+            
+            if ($stmt->rowCount() > 0) {
+                redirect('leadership.php', 'Leader deleted successfully.');
+            } else {
+                redirect('leadership.php', 'Leader not found or already deleted.', 'warning');
+            }
+        }
+        
+        // Validate required fields
+        if (empty($_POST['name']) || empty($_POST['role'])) {
+            redirect('leadership.php?action=' . ($id ? 'edit&id=' . $id : 'add'), 'Name and Role are required fields.', 'danger');
+        }
+        
+        // Validate email if provided
+        if (!empty($_POST['email']) && !validateEmail($_POST['email'])) {
+            redirect('leadership.php?action=' . ($id ? 'edit&id=' . $id : 'add'), 'Invalid email address format.', 'danger');
+        }
+        
+        $data = [
+            'name' => sanitize($_POST['name'] ?? ''),
+            'role' => sanitize($_POST['role'] ?? ''),
+            'bio' => sanitize($_POST['bio'] ?? ''),
+            'image_url' => sanitize($_POST['image_url'] ?? ''),
+            'email' => sanitize($_POST['email'] ?? ''),
+            'phone' => sanitize($_POST['phone'] ?? ''),
+            'status' => in_array($_POST['status'] ?? 'active', ['active', 'inactive']) ? $_POST['status'] : 'active',
+            'display_order' => intval($_POST['display_order'] ?? 0)
+        ];
+        
+        $leaderId = $id ?: ($_POST['id'] ?? null);
+        
+        if ($leaderId) {
+            // Verify leader exists
+            $stmt = $db->prepare("SELECT id FROM leadership WHERE id = ?");
+            $stmt->execute([$leaderId]);
+            if (!$stmt->fetch()) {
+                redirect('leadership.php', 'Leader not found.', 'danger');
+            }
+            
+            $stmt = $db->prepare("UPDATE leadership SET name = ?, role = ?, bio = ?, image_url = ?, email = ?, phone = ?, status = ?, display_order = ? WHERE id = ?");
+            $stmt->execute([$data['name'], $data['role'], $data['bio'], $data['image_url'], $data['email'], $data['phone'], $data['status'], $data['display_order'], $leaderId]);
+            
+            if ($stmt->rowCount() > 0) {
+                redirect('leadership.php', 'Leader updated successfully.');
+            } else {
+                redirect('leadership.php', 'No changes were made.', 'info');
+            }
+        } else {
+            $stmt = $db->prepare("INSERT INTO leadership (name, role, bio, image_url, email, phone, status, display_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$data['name'], $data['role'], $data['bio'], $data['image_url'], $data['email'], $data['phone'], $data['status'], $data['display_order']]);
+            
+            if ($stmt->rowCount() > 0) {
+                redirect('leadership.php', 'Leader added successfully.');
+            } else {
+                redirect('leadership.php?action=add', 'Failed to add leader. Please try again.', 'danger');
+            }
+        }
+    } catch (PDOException $e) {
+        redirect('leadership.php', handleDBError($e, 'A database error occurred. Please try again.'), 'danger');
+    } catch (Exception $e) {
+        error_log("Error in leadership.php: " . $e->getMessage());
+        redirect('leadership.php', 'An error occurred: ' . htmlspecialchars($e->getMessage()), 'danger');
     }
 }
 
 if ($action === 'add' || $action === 'edit') {
     $leader = null;
     if ($id) {
-        $stmt = $db->prepare("SELECT * FROM leadership WHERE id = ?");
-        $stmt->execute([$id]);
-        $leader = $stmt->fetch();
-        if (!$leader) redirect('leadership.php', 'Leader not found.', 'danger');
+        try {
+            $stmt = $db->prepare("SELECT * FROM leadership WHERE id = ?");
+            $stmt->execute([$id]);
+            $leader = $stmt->fetch();
+            if (!$leader) {
+                redirect('leadership.php', 'Leader not found.', 'danger');
+            }
+        } catch (PDOException $e) {
+            redirect('leadership.php', handleDBError($e, 'Error loading leader.'), 'danger');
+        }
     }
     ?>
     <div class="card">
