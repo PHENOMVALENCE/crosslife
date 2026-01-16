@@ -1,0 +1,201 @@
+<?php
+$pageTitle = 'Events Management';
+require_once 'includes/header.php';
+
+$db = getDB();
+$action = $_GET['action'] ?? 'list';
+$id = $_GET['id'] ?? null;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['delete'])) {
+        $stmt = $db->prepare("DELETE FROM events WHERE id = ?");
+        $stmt->execute([$_POST['id']]);
+        redirect('events.php', 'Event deleted successfully.');
+    }
+    
+    $data = [
+        'title' => sanitize($_POST['title'] ?? ''),
+        'description' => sanitize($_POST['description'] ?? ''),
+        'event_date' => $_POST['event_date'] ?? null,
+        'event_time' => $_POST['event_time'] ?? null,
+        'end_date' => $_POST['end_date'] ?? null,
+        'end_time' => $_POST['end_time'] ?? null,
+        'location' => sanitize($_POST['location'] ?? ''),
+        'event_type' => sanitize($_POST['event_type'] ?? ''),
+        'image_url' => sanitize($_POST['image_url'] ?? ''),
+        'status' => $_POST['status'] ?? 'upcoming'
+    ];
+    
+    if ($id) {
+        $stmt = $db->prepare("UPDATE events SET title = ?, description = ?, event_date = ?, event_time = ?, end_date = ?, end_time = ?, location = ?, event_type = ?, image_url = ?, status = ? WHERE id = ?");
+        $stmt->execute([$data['title'], $data['description'], $data['event_date'], $data['event_time'], $data['end_date'], $data['end_time'], $data['location'], $data['event_type'], $data['image_url'], $data['status'], $id]);
+        redirect('events.php', 'Event updated successfully.');
+    } else {
+        $stmt = $db->prepare("INSERT INTO events (title, description, event_date, event_time, end_date, end_time, location, event_type, image_url, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$data['title'], $data['description'], $data['event_date'], $data['event_time'], $data['end_date'], $data['end_time'], $data['location'], $data['event_type'], $data['image_url'], $data['status']]);
+        redirect('events.php', 'Event added successfully.');
+    }
+}
+
+if ($action === 'add' || $action === 'edit') {
+    $event = null;
+    if ($id) {
+        $stmt = $db->prepare("SELECT * FROM events WHERE id = ?");
+        $stmt->execute([$id]);
+        $event = $stmt->fetch();
+        if (!$event) redirect('events.php', 'Event not found.', 'danger');
+    }
+    ?>
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><?php echo $id ? 'Edit' : 'Add'; ?> Event</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="mb-3">
+                            <label class="form-label">Title *</label>
+                            <input type="text" class="form-control" name="title" value="<?php echo htmlspecialchars($event['title'] ?? ''); ?>" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="4"><?php echo htmlspecialchars($event['description'] ?? ''); ?></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Event Date *</label>
+                                <input type="date" class="form-control" name="event_date" value="<?php echo $event['event_date'] ?? ''; ?>" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Event Time</label>
+                                <input type="time" class="form-control" name="event_time" value="<?php echo $event['event_time'] ?? ''; ?>">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">End Date</label>
+                                <input type="date" class="form-control" name="end_date" value="<?php echo $event['end_date'] ?? ''; ?>">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">End Time</label>
+                                <input type="time" class="form-control" name="end_time" value="<?php echo $event['end_time'] ?? ''; ?>">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Location</label>
+                                <input type="text" class="form-control" name="location" value="<?php echo htmlspecialchars($event['location'] ?? ''); ?>">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Event Type</label>
+                                <input type="text" class="form-control" name="event_type" value="<?php echo htmlspecialchars($event['event_type'] ?? ''); ?>">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Image URL</label>
+                            <input type="url" class="form-control" name="image_url" value="<?php echo htmlspecialchars($event['image_url'] ?? ''); ?>">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label">Status *</label>
+                            <select class="form-control" name="status" required>
+                                <option value="upcoming" <?php echo ($event['status'] ?? 'upcoming') === 'upcoming' ? 'selected' : ''; ?>>Upcoming</option>
+                                <option value="ongoing" <?php echo ($event['status'] ?? '') === 'ongoing' ? 'selected' : ''; ?>>Ongoing</option>
+                                <option value="completed" <?php echo ($event['status'] ?? '') === 'completed' ? 'selected' : ''; ?>>Completed</option>
+                                <option value="cancelled" <?php echo ($event['status'] ?? '') === 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save me-2"></i>Save Event</button>
+                    <a href="events.php" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <?php
+} else {
+    $page = max(1, intval($_GET['page'] ?? 1));
+    $offset = ($page - 1) * ITEMS_PER_PAGE;
+    
+    $stmt = $db->query("SELECT COUNT(*) as total FROM events");
+    $total = $stmt->fetch()['total'];
+    $totalPages = ceil($total / ITEMS_PER_PAGE);
+    
+    $stmt = $db->prepare("SELECT * FROM events ORDER BY event_date DESC LIMIT ? OFFSET ?");
+    $stmt->bindValue(1, ITEMS_PER_PAGE, PDO::PARAM_INT);
+    $stmt->bindValue(2, $offset, PDO::PARAM_INT);
+    $stmt->execute();
+    $events = $stmt->fetchAll();
+    ?>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Events</h2>
+        <a href="events.php?action=add" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Add New Event</a>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <?php if (empty($events)): ?>
+                <p class="text-muted">No events found. <a href="events.php?action=add">Add your first event</a>.</p>
+            <?php else: ?>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Date</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($events as $event): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($event['title']); ?></td>
+                                    <td><?php echo formatDate($event['event_date']); ?></td>
+                                    <td><?php echo htmlspecialchars($event['location']); ?></td>
+                                    <td><span class="badge bg-<?php echo $event['status'] === 'upcoming' ? 'success' : ($event['status'] === 'ongoing' ? 'warning' : 'secondary'); ?>"><?php echo ucfirst($event['status']); ?></span></td>
+                                    <td>
+                                        <a href="events.php?action=edit&id=<?php echo $event['id']; ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                        <form method="POST" style="display: inline;" onsubmit="return confirm('Delete this event?');">
+                                            <input type="hidden" name="id" value="<?php echo $event['id']; ?>">
+                                            <button type="submit" name="delete" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <?php if ($totalPages > 1): ?>
+                    <nav>
+                        <ul class="pagination">
+                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                <li class="page-item <?php echo $i === $page ? 'active' : ''; ?>">
+                                    <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                                </li>
+                            <?php endfor; ?>
+                        </ul>
+                    </nav>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php
+}
+
+require_once 'includes/footer.php';
+?>
+

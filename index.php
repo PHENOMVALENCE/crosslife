@@ -1,10 +1,21 @@
+<?php
+/**
+ * Home Page - CrossLife Mission Network
+ * Dynamic content from database
+ */
+require_once 'includes/db-functions.php';
+
+$settings = getSiteSettings();
+$leadership = getActiveLeadership();
+$upcomingEvents = getUpcomingEvents(4);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>CrossLife Mission Network - Manifesting Sons of God</title>
+  <title><?php echo htmlspecialchars($settings['site_name'] ?? 'CrossLife Mission Network'); ?> - Manifesting Sons of God</title>
   <meta name="description" content="CrossLife Mission Network (CMN) is a non-denominational Christian ministry in Dar es Salaam, Tanzania, committed to manifesting Sons of God who understand their identity in Christ.">
   <meta name="keywords" content="CrossLife, Mission Network, Christian Ministry, Tanzania, Sons of God, Pastor Lenhard Kyamba">
 
@@ -42,9 +53,9 @@
     <div class="container-fluid container-xl position-relative">
 
       <div class="top-row d-flex align-items-center justify-content-between">
-        <a href="index.html" class="logo d-flex align-items-center">
+        <a href="index.php" class="logo d-flex align-items-center">
           <img src="assets/img/logo.jpeg" alt="CrossLife Mission Network Logo">
-          <h1 class="sitename">CrossLife Mission Network</h1>
+          <h1 class="sitename"><?php echo htmlspecialchars($settings['site_name'] ?? 'CrossLife Mission Network'); ?></h1>
         </a>
 
         <div class="d-flex align-items-center">
@@ -67,15 +78,15 @@
       <div class="container d-flex justify-content-center position-relative">
         <nav id="navmenu" class="navmenu">
           <ul>
-            <li><a href="index.html#hero" class="active">Home</a></li>
-            <li><a href="index.html#about">About</a></li>
-            <li><a href="index.html#features">Core Beliefs</a></li>
-            <li><a href="index.html#leadership">Leadership</a></li>
-            <li><a href="ministries.html">Ministries</a></li>
-            <li><a href="sermons.html">Sermons</a></li>
-            <li><a href="discipleship.html">Discipleship</a></li>
-            <li><a href="events.html">Events</a></li>
-            <li><a href="contacts.html">Contact</a></li>
+            <li><a href="index.php#hero" class="active">Home</a></li>
+            <li><a href="index.php#about">About</a></li>
+            <li><a href="index.php#features">Core Beliefs</a></li>
+            <li><a href="index.php#leadership">Leadership</a></li>
+            <li><a href="ministries.php">Ministries</a></li>
+            <li><a href="sermons.php">Sermons</a></li>
+            <li><a href="discipleship.php">Discipleship</a></li>
+            <li><a href="events.php">Events</a></li>
+            <li><a href="contacts.php">Contact</a></li>
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
@@ -134,7 +145,7 @@
               <p data-aos="fade-up" data-aos-delay="200">We live in Zion, the realm of Christ. Eternal Life is our present reality. A community of Life, Love, Sonship, and Prayer, welcoming people from diverse backgrounds, ages, and walks of life.</p>
               <div class="hero-buttons" data-aos="fade-up" data-aos-delay="300">
                 <a href="#about" class="btn btn-primary">Learn More</a>
-                <a href="#contact" class="btn btn-outline">Connect With Us</a>
+                <a href="contacts.php" class="btn btn-outline-light">Contact Us</a>
               </div>
             </div>
           </div>
@@ -170,7 +181,7 @@
               <p>To reach the global community by showing the Way, revealing the Truth, and sharing Life through Christ, equipping believers to live from an eternal perspective and fulfill the mandate of Christ on earth.</p>
               
               <div class="cta-wrapper mt-4">
-                <a href="#contact" class="btn-link">
+                <a href="contacts.php" class="btn-link">
                   Connect with us
                   <i class="bi bi-arrow-right"></i>
                 </a>
@@ -589,48 +600,57 @@
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
         <div class="row g-4 align-items-stretch">
-          <div class="col-md-6 col-lg-4">
-            <article class="leader-card h-100" data-aos="zoom-in" data-aos-delay="150">
-              <figure class="leader-media">
-                <img src="assets/img/_MG_5266.jpg" class="img-fluid" alt="Pastor Lenhard Kyamba">
-              </figure>
-              <div class="leader-content">
-                <h3 class="leader-name">Pastor Lenhard Kyamba</h3>
-                <p class="leader-role">Senior Pastor</p>
-                <p class="leader-bio">Leading CrossLife Mission Network in manifesting Sons of God who understand their identity in Christ and what Christ can accomplish through them.</p>
-                <div class="leader-contact mt-3">
-                  <p class="small mb-1"><i class="bi bi-envelope me-2"></i>lenhard.kyamba@crosslife.org</p>
-                  <p class="small mb-0"><i class="bi bi-telegram me-2"></i>Pastor Lenhard Kyamba</p>
+          <?php if (empty($leadership)): ?>
+            <!-- Default leadership if database is empty -->
+            <div class="col-md-6 col-lg-4">
+              <article class="leader-card h-100" data-aos="zoom-in" data-aos-delay="150">
+                <figure class="leader-media">
+                  <img src="assets/img/_MG_5266.jpg" class="img-fluid" alt="Pastor Lenhard Kyamba">
+                </figure>
+                <div class="leader-content">
+                  <h3 class="leader-name">Pastor Lenhard Kyamba</h3>
+                  <p class="leader-role">Senior Pastor</p>
+                  <p class="leader-bio">Leading CrossLife Mission Network in manifesting Sons of God who understand their identity in Christ and what Christ can accomplish through them.</p>
+                  <div class="leader-contact mt-3">
+                    <p class="small mb-1"><i class="bi bi-envelope me-2"></i>lenhard.kyamba@crosslife.org</p>
+                    <p class="small mb-0"><i class="bi bi-telegram me-2"></i>Pastor Lenhard Kyamba</p>
+                  </div>
                 </div>
+              </article>
+            </div>
+          <?php else: ?>
+            <?php 
+            $delay = 150;
+            foreach ($leadership as $leader): 
+              $image = !empty($leader['photo']) ? 'assets/img/uploads/' . htmlspecialchars($leader['photo']) : 'assets/img/_MG_5266.jpg';
+            ?>
+              <div class="col-md-6 col-lg-4">
+                <article class="leader-card h-100" data-aos="zoom-in" data-aos-delay="<?php echo $delay; ?>">
+                  <figure class="leader-media">
+                    <img src="<?php echo $image; ?>" class="img-fluid" alt="<?php echo htmlspecialchars($leader['name']); ?>">
+                  </figure>
+                  <div class="leader-content">
+                    <h3 class="leader-name"><?php echo htmlspecialchars($leader['name']); ?></h3>
+                    <p class="leader-role"><?php echo htmlspecialchars($leader['role'] ?? 'Leader'); ?></p>
+                    <p class="leader-bio"><?php echo htmlspecialchars($leader['bio'] ?? ''); ?></p>
+                    <?php if (!empty($leader['email']) || !empty($leader['phone'])): ?>
+                      <div class="leader-contact mt-3">
+                        <?php if (!empty($leader['email'])): ?>
+                          <p class="small mb-1"><i class="bi bi-envelope me-2"></i><?php echo htmlspecialchars($leader['email']); ?></p>
+                        <?php endif; ?>
+                        <?php if (!empty($leader['phone'])): ?>
+                          <p class="small mb-0"><i class="bi bi-telephone me-2"></i><?php echo htmlspecialchars($leader['phone']); ?></p>
+                        <?php endif; ?>
+                      </div>
+                    <?php endif; ?>
+                  </div>
+                </article>
               </div>
-            </article>
-          </div>
-
-          <div class="col-md-6 col-lg-4">
-            <article class="leader-card h-100" data-aos="zoom-in" data-aos-delay="200">
-              <figure class="leader-media">
-                <img src="assets/img/_MG_5219.jpg" class="img-fluid" alt="Executive Pastoral Board">
-              </figure>
-              <div class="leader-content">
-                <h3 class="leader-name">Executive Pastoral Board</h3>
-                <p class="leader-role">Leadership Team</p>
-                <p class="leader-bio">Working together with Senior Pastor Lenhard Kyamba to guide the ministry in establishing a global network of manifested Sons of God.</p>
-              </div>
-            </article>
-          </div>
-
-          <div class="col-md-6 col-lg-4">
-            <article class="leader-card h-100" data-aos="zoom-in" data-aos-delay="250">
-              <figure class="leader-media">
-                <img src="assets/img/_MG_5031.jpg" class="img-fluid" alt="Ministry Leaders">
-              </figure>
-              <div class="leader-content">
-                <h3 class="leader-name">Ministry Leaders</h3>
-                <p class="leader-role">Various Ministries</p>
-                <p class="leader-bio">Dedicated leaders serving across different ministries, committed to equipping believers to live from an eternal perspective and fulfill the mandate of Christ on earth.</p>
-              </div>
-            </article>
-          </div>
+            <?php 
+              $delay += 50;
+            endforeach; 
+            ?>
+          <?php endif; ?>
         </div>
 
       </div>
@@ -713,7 +733,7 @@
           <div class="col-lg-8 col-md-6 content d-flex flex-column justify-content-center order-last order-md-first">
             <h3>Join Us in <em>Manifesting</em> Sons of God</h3>
             <p>We welcome you to be part of a global network of awakened Sons of God living in New Creation realities. Experience the Life of God and grow in your identity in Christ. Grace and Peace be multiplied to you in Jesus' Name. Receive Life in abundance.</p>
-            <a class="cta-btn align-self-start" href="#contact">Connect With Us</a>
+            <a class="cta-btn align-self-start" href="contacts.php">Connect With Us</a>
           </div>
 
           <div class="col-lg-4 col-md-6 order-first order-md-last d-flex align-items-center">
@@ -879,8 +899,8 @@
 
         <div class="col-lg-4">
           <div class="footer-content">
-            <a href="index.html" class="logo d-flex align-items-center mb-4">
-              <span class="sitename">CrossLife Mission Network</span>
+            <a href="index.php" class="logo d-flex align-items-center mb-4">
+              <span class="sitename"><?php echo htmlspecialchars($settings['site_name'] ?? 'CrossLife Mission Network'); ?></span>
             </a>
             <p class="mb-4">A non-denominational and inter-denominational Christian ministry in Dar es Salaam, Tanzania. We exist to manifest Sons of God who understand their identity in Christ and what Christ can accomplish through them.</p>
 
@@ -907,7 +927,7 @@
             <ul>
               <li><a href="#about"><i class="bi bi-chevron-right"></i> About Us</a></li>
               <li><a href="#features"><i class="bi bi-chevron-right"></i> Core Beliefs</a></li>
-              <li><a href="#contact"><i class="bi bi-chevron-right"></i> Contact</a></li>
+              <li><a href="contacts.php"><i class="bi bi-chevron-right"></i> Contact</a></li>
             </ul>
           </div>
         </div>
@@ -1015,18 +1035,18 @@
 
       // Searchable content sections
       const searchableSections = [
-        { id: 'hero', title: 'Home', keywords: 'home welcome introduction vision mission', page: 'index.html' },
-        { id: 'about', title: 'About Us', keywords: 'about mandate vision mission history', page: 'index.html' },
-        { id: 'statement-of-faith', title: 'Statement of Faith', keywords: 'faith beliefs doctrine scripture godhead jesus holy spirit', page: 'index.html' },
-        { id: 'features', title: 'Core Beliefs', keywords: 'beliefs core godhead jesus christ holy spirit identity', page: 'index.html' },
-        { id: 'leadership', title: 'Leadership', keywords: 'leadership pastor lenhard kyamba executive board', page: 'index.html' },
-        { id: 'ministries', title: 'Ministries', keywords: 'ministries teaching discipleship prayer outreach worship fellowship', page: 'ministries.html' },
-        { id: 'sermons', title: 'Sermons', keywords: 'sermons teaching video audio youtube crosslife tv', page: 'sermons.html' },
-        { id: 'discipleship', title: 'Discipleship', keywords: 'discipleship school of christ academy foundation leadership ministry sonship', page: 'discipleship.html' },
-        { id: 'events', title: 'Events', keywords: 'events calendar services bible study prayer meetings', page: 'events.html' },
-        { id: 'what-we-do', title: 'What We Do', keywords: 'activities programs worship teaching ministry outreach', page: 'index.html' },
-        { id: 'giving', title: 'Giving', keywords: 'giving offering support ministry donation', page: 'index.html' },
-        { id: 'contact', title: 'Contact', keywords: 'contact inquiry prayer request feedback', page: 'contacts.html' }
+        { id: 'hero', title: 'Home', keywords: 'home welcome introduction vision mission', page: 'index.php' },
+        { id: 'about', title: 'About Us', keywords: 'about mandate vision mission history', page: 'index.php' },
+        { id: 'statement-of-faith', title: 'Statement of Faith', keywords: 'faith beliefs doctrine scripture godhead jesus holy spirit', page: 'index.php' },
+        { id: 'features', title: 'Core Beliefs', keywords: 'beliefs core godhead jesus christ holy spirit identity', page: 'index.php' },
+        { id: 'leadership', title: 'Leadership', keywords: 'leadership pastor lenhard kyamba executive board', page: 'index.php' },
+        { id: 'ministries', title: 'Ministries', keywords: 'ministries teaching discipleship prayer outreach worship fellowship', page: 'ministries.php' },
+        { id: 'sermons', title: 'Sermons', keywords: 'sermons teaching video audio youtube crosslife tv', page: 'sermons.php' },
+        { id: 'discipleship', title: 'Discipleship', keywords: 'discipleship school of christ academy foundation leadership ministry sonship', page: 'discipleship.php' },
+        { id: 'events', title: 'Events', keywords: 'events calendar services bible study prayer meetings', page: 'events.php' },
+        { id: 'what-we-do', title: 'What We Do', keywords: 'activities programs worship teaching ministry outreach', page: 'index.php' },
+        { id: 'giving', title: 'Giving', keywords: 'giving offering support ministry donation', page: 'index.php' },
+        { id: 'contact', title: 'Contact', keywords: 'contact inquiry prayer request feedback', page: 'contacts.php' }
       ];
 
       if (searchForm) {
@@ -1072,7 +1092,7 @@
         results.forEach(result => {
           const li = document.createElement('li');
           li.className = 'mb-2';
-          const href = result.page === window.location.pathname.split('/').pop() || result.page === 'index.html' && window.location.pathname === '/' 
+          const href = result.page === window.location.pathname.split('/').pop() || (result.page === 'index.php' && (window.location.pathname === '/' || window.location.pathname.endsWith('index.php')))
             ? `#${result.id}` 
             : `${result.page}${result.id ? '#' + result.id : ''}`;
           li.innerHTML = `

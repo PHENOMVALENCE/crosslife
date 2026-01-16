@@ -1,0 +1,21 @@
+# CrossLife Mission Network - Security and Configuration
+
+# Prevent directory listing
+Options -Indexes
+
+# Protect sensitive files
+<FilesMatch "\.(sql|log|md)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Protect config files
+<FilesMatch "^(config|database)\.php$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Enable error pages (optional)
+# ErrorDocument 404 /404.html
+# ErrorDocument 500 /500.html
+
