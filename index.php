@@ -20,8 +20,8 @@ $upcomingEvents = getUpcomingEvents(4);
   <meta name="keywords" content="CrossLife, Mission Network, Christian Ministry, Tanzania, Sons of God, Pastor Lenhard Kyamba">
 
   <!-- Favicons -->
-  <link href="assets/img/logo.jpeg" rel="icon">
-  <link href="assets/img/logo.jpeg" rel="apple-touch-icon">
+  <link href="assets/img/logo.png" rel="icon">
+  <link href="assets/img/logo.png" rel="apple-touch-icon">
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -54,7 +54,7 @@ $upcomingEvents = getUpcomingEvents(4);
 
       <div class="top-row d-flex align-items-center justify-content-between">
         <a href="index.php" class="logo d-flex align-items-center">
-          <img src="assets/img/logo.jpeg" alt="CrossLife Mission Network Logo">
+          <img src="assets/img/logo.png" alt="CrossLife Mission Network Logo">
           <h1 class="sitename"><?php echo htmlspecialchars($settings['site_name'] ?? 'CrossLife Mission Network'); ?></h1>
         </a>
 

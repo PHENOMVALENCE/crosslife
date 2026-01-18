@@ -20,8 +20,8 @@ $ministries = getActiveMinistries();
   <meta name="keywords" content="CrossLife, Ministries, Teaching, Discipleship, Prayer, Outreach, Worship, Fellowship">
 
   <!-- Favicons -->
-  <link href="assets/img/logo.jpeg" rel="icon">
-  <link href="assets/img/logo.jpeg" rel="apple-touch-icon">
+  <link href="assets/img/logo.png" rel="icon">
+  <link href="assets/img/logo.png" rel="apple-touch-icon">
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -46,7 +46,7 @@ $ministries = getActiveMinistries();
 
       <div class="top-row d-flex align-items-center justify-content-between">
         <a href="index.php" class="logo d-flex align-items-center">
-          <img src="assets/img/logo.jpeg" alt="CrossLife Mission Network Logo">
+          <img src="assets/img/logo.png" alt="CrossLife Mission Network Logo">
           <h1 class="sitename"><?php echo htmlspecialchars($settings['site_name'] ?? 'CrossLife Mission Network'); ?></h1>
         </a>
 

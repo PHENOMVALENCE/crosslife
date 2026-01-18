@@ -13,7 +13,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <title><?php echo isset($pageTitle) ? $pageTitle . ' - ' : ''; ?>Admin Panel - <?php echo SITE_NAME; ?></title>
     
     <!-- Favicons -->
-    <link href="../assets/img/logo.jpeg" rel="icon">
+    <link href="../assets/img/logo.png" rel="icon">
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -259,7 +259,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <!-- Sidebar -->
         <aside class="admin-sidebar">
             <div class="sidebar-header">
-                <img src="../assets/img/logo.jpeg" alt="CrossLife">
+                <img src="../assets/img/logo.png" alt="CrossLife">
                 <h3>Admin Panel</h3>
             </div>
             

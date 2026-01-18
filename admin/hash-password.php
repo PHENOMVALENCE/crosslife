@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($input)) {
     <title>Password Hash Generator - <?php echo SITE_NAME; ?></title>
     
     <!-- Favicons -->
-    <link href="../assets/img/logo.jpeg" rel="icon">
+    <link href="../assets/img/logo.png" rel="icon">
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
