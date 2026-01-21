@@ -9,6 +9,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Start output buffering to prevent header issues
+ob_start();
+
 // Site Configuration
 define('SITE_NAME', 'CrossLife Mission Network');
 define('SITE_URL', 'http://localhost/crosslife_2');

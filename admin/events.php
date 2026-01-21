@@ -13,6 +13,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('events.php', 'Event deleted successfully.');
     }
     
+    // Handle image upload
+    $image_url = sanitize($_POST['image_url'] ?? '');
+    if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
+        $upload_dir = '../assets/img/uploads/events/';
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0755, true);
+        }
+        
+        $file_ext = strtolower(pathinfo($_FILES['image_file']['name'], PATHINFO_EXTENSION));
+        $allowed_exts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        
+        if (in_array($file_ext, $allowed_exts)) {
+            $new_filename = uniqid('event_') . '.' . $file_ext;
+            $upload_path = $upload_dir . $new_filename;
+            
+            if (move_uploaded_file($_FILES['image_file']['tmp_name'], $upload_path)) {
+                $image_url = '/assets/img/uploads/events/' . $new_filename;
+            }
+        }
+    }
+    
     $data = [
         'title' => sanitize($_POST['title'] ?? ''),
         'description' => sanitize($_POST['description'] ?? ''),
@@ -22,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'end_time' => $_POST['end_time'] ?? null,
         'location' => sanitize($_POST['location'] ?? ''),
         'event_type' => sanitize($_POST['event_type'] ?? ''),
-        'image_url' => sanitize($_POST['image_url'] ?? ''),
+        'image_url' => $image_url,
         'status' => $_POST['status'] ?? 'upcoming'
     ];
     
@@ -51,7 +72,7 @@ if ($action === 'add' || $action === 'edit') {
             <h5 class="mb-0"><?php echo $id ? 'Edit' : 'Add'; ?> Event</h5>
         </div>
         <div class="card-body">
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-md-8">
                         <div class="mb-3">
@@ -98,8 +119,20 @@ if ($action === 'add' || $action === 'edit') {
                         </div>
                         
                         <div class="mb-3">
-                            <label class="form-label">Image URL</label>
-                            <input type="url" class="form-control" name="image_url" value="<?php echo htmlspecialchars($event['image_url'] ?? ''); ?>">
+                            <label class="form-label">Event Image</label>
+                            <input type="file" class="form-control" name="image_file" accept="image/*">
+                            <small class="text-muted">Upload an image file (JPG, PNG, GIF, WebP) or use URL below</small>
+                            <?php if (!empty($event['image_url'])): ?>
+                                <div class="mt-2">
+                                    <img src="<?php echo htmlspecialchars($event['image_url']); ?>" alt="Current image" style="max-width: 200px; max-height: 150px;">
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Or Image URL</label>
+                            <input type="url" class="form-control" name="image_url" value="<?php echo htmlspecialchars($event['image_url'] ?? ''); ?>" placeholder="https://example.com/image.jpg">
+                            <small class="text-muted">Leave empty if uploading a file above</small>
                         </div>
                     </div>
                     

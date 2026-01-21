@@ -82,11 +82,11 @@ $upcomingEvents = getUpcomingEvents(4);
             <li><a href="index.php#about">About</a></li>
             <li><a href="index.php#features">Core Beliefs</a></li>
             <li><a href="index.php#leadership">Leadership</a></li>
-            <li><a href="ministries.php">Ministries</a></li>
-            <li><a href="sermons.php">Sermons</a></li>
-            <li><a href="discipleship.php">Discipleship</a></li>
+            <li><a href="ministries.html">Ministries</a></li>
+            <li><a href="sermons.html">Sermons</a></li>
+            <li><a href="discipleship.html">Discipleship</a></li>
             <li><a href="events.php">Events</a></li>
-            <li><a href="contacts.php">Contact</a></li>
+            <li><a href="contacts.html">Contact</a></li>
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>

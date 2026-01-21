@@ -1,5 +1,7 @@
 <?php
 $pageTitle = 'Dashboard';
+require_once 'config/config.php';
+requireLogin();
 require_once 'includes/header.php';
 
 $db = getDB();

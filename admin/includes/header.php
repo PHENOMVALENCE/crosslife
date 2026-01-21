@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
-requireLogin();
+// Note: requireLogin() should be called BEFORE including this header file
 
 $currentAdmin = getCurrentAdmin();
 $currentPage = basename($_SERVER['PHP_SELF']);
