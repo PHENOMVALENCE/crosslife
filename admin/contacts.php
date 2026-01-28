@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         if (isset($_POST['update_status'])) {
             if (empty($_POST['id'])) {
-                redirect('contacts.html', 'Invalid inquiry ID.', 'danger');
+                redirect('contacts.php', 'Invalid inquiry ID.', 'danger');
             }
             
             $validStatuses = ['new', 'read', 'replied', 'archived'];
@@ -20,31 +20,111 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$status, sanitize($_POST['admin_notes'] ?? ''), $_POST['id']]);
             
             if ($stmt->rowCount() > 0) {
-                redirect('contacts.html', 'Inquiry updated successfully.');
+                redirect('contacts.php', 'Inquiry updated successfully.');
             } else {
-                redirect('contacts.html', 'No changes were made or inquiry not found.', 'info');
+                redirect('contacts.php', 'No changes were made or inquiry not found.', 'info');
+            }
+        }
+        
+        // Admin reply via email
+        if (isset($_POST['send_reply'])) {
+            if (empty($_POST['id']) || empty($_POST['reply_message'])) {
+                redirect('contacts.php', 'Reply message is required.', 'danger');
+            }
+            
+            $stmt = $db->prepare("SELECT * FROM contact_inquiries WHERE id = ?");
+            $stmt->execute([$_POST['id']]);
+            $inquiry = $stmt->fetch();
+            if (!$inquiry) {
+                redirect('contacts.php', 'Inquiry not found.', 'danger');
+            }
+            
+            $replyMessage = trim($_POST['reply_message']);
+            
+            // Send reply email using PHPMailer
+            if (file_exists(__DIR__ . '/config/email.php')) {
+                require_once __DIR__ . '/config/email.php';
+                $to = $inquiry['email'];
+                $subject = 'Re: ' . ($inquiry['subject'] ?: 'Your inquiry at CrossLife Mission Network');
+                
+                $body = "
+                <html>
+                <head>
+                    <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #c85716; color: white; padding: 20px; text-align: center; }
+                        .content { background: #f9f9f9; padding: 20px; border: 1px solid #ddd; }
+                        .original { margin-top: 20px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 0.9rem; color: #555; }
+                        .label { font-weight: bold; }
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='header'>
+                            <h2>Response from CrossLife Mission Network</h2>
+                        </div>
+                        <div class='content'>
+                            <p>Grace and peace in Jesus' Name.</p>
+                            <p>" . nl2br(htmlspecialchars($replyMessage)) . "</p>
+                            <div class='original'>
+                                <p class='label'>Your original message:</p>
+                                <p><strong>Subject:</strong> " . htmlspecialchars($inquiry['subject']) . "</p>
+                                <p>" . nl2br(htmlspecialchars($inquiry['message'])) . "</p>
+                            </div>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                ";
+                
+                $altBody = "Response from CrossLife Mission Network\n\n";
+                $altBody .= $replyMessage . "\n\n";
+                $altBody .= "----- Original message -----\n";
+                $altBody .= "Subject: " . $inquiry['subject'] . "\n";
+                $altBody .= $inquiry['message'] . "\n";
+                
+                try {
+                    if (sendEmail($to, $subject, $body, $altBody)) {
+                        // Mark as replied and store admin notes
+                        $stmt = $db->prepare("UPDATE contact_inquiries SET status = 'replied', admin_notes = CONCAT(IFNULL(admin_notes, ''), :notes) WHERE id = :id");
+                        $notesToAppend = "\n\n[" . date('Y-m-d H:i') . "] Reply sent:\n" . $replyMessage;
+                        $stmt->bindValue(':notes', $notesToAppend, PDO::PARAM_STR);
+                        $stmt->bindValue(':id', $inquiry['id'], PDO::PARAM_INT);
+                        $stmt->execute();
+                        
+                        redirect('contacts.php?action=view&id=' . $inquiry['id'], 'Reply sent successfully.', 'success');
+                    } else {
+                        redirect('contacts.php?action=view&id=' . $inquiry['id'], 'Failed to send reply email. Please check email settings.', 'danger');
+                    }
+                } catch (Throwable $e) {
+                    error_log('Error sending inquiry reply: ' . $e->getMessage());
+                    redirect('contacts.php?action=view&id=' . $inquiry['id'], 'An error occurred while sending the reply.', 'danger');
+                }
+            } else {
+                redirect('contacts.php', 'Email configuration not found. Cannot send reply.', 'danger');
             }
         }
         
         if (isset($_POST['delete'])) {
             if (empty($_POST['id'])) {
-                redirect('contacts.html', 'Invalid inquiry ID.', 'danger');
+                redirect('contacts.php', 'Invalid inquiry ID.', 'danger');
             }
             
             $stmt = $db->prepare("DELETE FROM contact_inquiries WHERE id = ?");
             $stmt->execute([$_POST['id']]);
             
             if ($stmt->rowCount() > 0) {
-                redirect('contacts.html', 'Inquiry deleted successfully.');
+                redirect('contacts.php', 'Inquiry deleted successfully.');
             } else {
-                redirect('contacts.html', 'Inquiry not found or already deleted.', 'warning');
+                redirect('contacts.php', 'Inquiry not found or already deleted.', 'warning');
             }
         }
     } catch (PDOException $e) {
-        redirect('contacts.html', handleDBError($e, 'A database error occurred. Please try again.'), 'danger');
+        redirect('contacts.php', handleDBError($e, 'A database error occurred. Please try again.'), 'danger');
     } catch (Exception $e) {
-        error_log("Error in contacts.html: " . $e->getMessage());
-        redirect('contacts.html', 'An error occurred: ' . htmlspecialchars($e->getMessage()), 'danger');
+        error_log("Error in contacts.php: " . $e->getMessage());
+        redirect('contacts.php', 'An error occurred: ' . htmlspecialchars($e->getMessage()), 'danger');
     }
 }
 
@@ -75,7 +155,7 @@ if ($action === 'view' && $id) {
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Contact Inquiry Details</h5>
-            <a href="contacts.html" class="btn btn-sm btn-secondary">Back to List</a>
+            <a href="contacts.php" class="btn btn-sm btn-secondary">Back to List</a>
         </div>
         <div class="card-body">
             <div class="row mb-4">
@@ -102,7 +182,7 @@ if ($action === 'view' && $id) {
                 </div>
             </div>
             
-            <form method="POST">
+            <form method="POST" class="mb-4">
                 <input type="hidden" name="id" value="<?php echo $inquiry['id']; ?>">
                 <div class="row">
                     <div class="col-md-6 mb-3">
@@ -127,6 +207,24 @@ if ($action === 'view' && $id) {
                 </div>
                 
                 <button type="submit" name="update_status" class="btn btn-primary"><i class="bi bi-save me-2"></i>Update Status</button>
+            </form>
+            
+            <hr>
+            
+            <h6 class="mb-3">Send Email Response</h6>
+            <form method="POST">
+                <input type="hidden" name="id" value="<?php echo $inquiry['id']; ?>">
+                <div class="mb-3">
+                    <label class="form-label">Reply To</label>
+                    <input type="email" class="form-control" value="<?php echo htmlspecialchars($inquiry['email']); ?>" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Message *</label>
+                    <textarea class="form-control" name="reply_message" rows="4" required placeholder="Write your response to this inquiry..."></textarea>
+                </div>
+                <button type="submit" name="send_reply" class="btn btn-success">
+                    <i class="bi bi-send me-2"></i>Send Reply
+                </button>
             </form>
         </div>
     </div>
@@ -194,7 +292,7 @@ if ($action === 'view' && $id) {
                 <p class="text-muted">No inquiries found.</p>
             <?php else: ?>
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover datatable">
                         <thead>
                             <tr>
                                 <th>Name</th>

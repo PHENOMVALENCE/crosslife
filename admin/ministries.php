@@ -303,7 +303,7 @@ if ($action === 'add' || $action === 'edit') {
                 <p class="text-muted">No ministries found. <a href="ministries.php?action=add">Add your first ministry</a>.</p>
             <?php else: ?>
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover datatable">
                         <thead>
                             <tr>
                                 <th style="width: 80px;">Image</th>

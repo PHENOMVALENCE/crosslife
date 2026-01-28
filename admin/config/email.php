@@ -4,11 +4,15 @@
  * PHPMailer Setup for CrossLife Mission Network
  */
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 // Email Settings - Update these with your SMTP credentials
-define('SMTP_HOST', 'smtp.gmail.com'); // Change to your SMTP server
+define('SMTP_HOST', 'smtp.gmail.com');
 define('SMTP_PORT', 587);
-define('SMTP_USERNAME', 'your-email@gmail.com'); // Change to your email
-define('SMTP_PASSWORD', 'your-app-password'); // Change to your email password or app password
+define('SMTP_USERNAME', 'mwiganivalence@gmail.com');
+define('SMTP_PASSWORD', 'cwrg wxki urrn lgkn'); // App password provided by user
 define('SMTP_ENCRYPTION', 'tls'); // 'tls' or 'ssl'
 define('SMTP_FROM_EMAIL', 'karibu@crosslife.org');
 define('SMTP_FROM_NAME', 'CrossLife Mission Network');
@@ -16,9 +20,10 @@ define('SMTP_REPLY_TO_EMAIL', 'karibu@crosslife.org');
 define('SMTP_REPLY_TO_NAME', 'CrossLife Mission Network');
 
 // Recipient Email (where form submissions are sent)
-define('CONTACT_EMAIL', 'karibu@crosslife.org');
-define('PRAYER_REQUEST_EMAIL', 'karibu@crosslife.org');
-define('FEEDBACK_EMAIL', 'karibu@crosslife.org');
+// All submissions go to this mailbox as requested
+define('CONTACT_EMAIL', 'mwiganivalence@gmail.com');
+define('PRAYER_REQUEST_EMAIL', 'mwiganivalence@gmail.com');
+define('FEEDBACK_EMAIL', 'mwiganivalence@gmail.com');
 
 /**
  * Send Email using PHPMailer
@@ -42,10 +47,6 @@ function sendEmail($to, $subject, $body, $altBody = '', $attachments = []) {
     require_once __DIR__ . '/../../vendor/phpmailer/phpmailer/src/PHPMailer.php';
     require_once __DIR__ . '/../../vendor/phpmailer/phpmailer/src/SMTP.php';
     require_once __DIR__ . '/../../vendor/phpmailer/phpmailer/src/Exception.php';
-    
-    use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\SMTP;
-    use PHPMailer\PHPMailer\Exception;
     
     $mail = new PHPMailer(true);
     

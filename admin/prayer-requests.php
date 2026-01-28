@@ -189,7 +189,7 @@ if ($action === 'view' && $id) {
                 <p class="text-muted">No prayer requests found.</p>
             <?php else: ?>
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover datatable">
                         <thead>
                             <tr>
                                 <th>Name</th>

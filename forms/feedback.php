@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             require_once __DIR__ . '/../admin/config/email.php';
             try {
                 sendFeedbackNotification($name ?: 'Anonymous', $email, $feedback_type, $message);
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 // Log but don't fail the form submission
                 error_log('Email notification failed: ' . $e->getMessage());
             }

@@ -46,8 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (file_exists(__DIR__ . '/../admin/config/email.php')) {
             require_once __DIR__ . '/../admin/config/email.php';
             try {
+                // Use visitor email as reply-to inside helper
                 sendContactNotification($name, $email, $phone, $subject, $message);
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 // Log but don't fail the form submission
                 error_log('Email notification failed: ' . $e->getMessage());
             }

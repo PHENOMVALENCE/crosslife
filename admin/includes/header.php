@@ -24,6 +24,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     
+    <!-- DataTables CSS (via CDN for admin tables) -->
+    <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css" rel="stylesheet">
+    
     <!-- Main CSS File -->
     <link href="../assets/css/main.css" rel="stylesheet">
     
@@ -184,6 +188,20 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             padding: 2rem;
         }
         
+        /* DataTables tweaks for admin */
+        .dataTables_wrapper .dataTables_paginate .pagination {
+            margin-top: 1rem;
+        }
+        
+        .dataTables_wrapper .dataTables_length select {
+            padding: 0.25rem 1.5rem 0.25rem 0.75rem;
+        }
+        
+        .dt-buttons .btn {
+            margin-right: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+        
         .card {
             background: var(--surface-color);
             border-radius: 12px;
@@ -273,7 +291,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <a href="sermons.php" class="menu-item <?php echo $currentPage === 'sermons.php' ? 'active' : ''; ?>">
                     <i class="bi bi-play-circle"></i>Sermons
                 </a>
-                <a href="events.html" class="menu-item <?php echo $currentPage === 'events.html' ? 'active' : ''; ?>">
+                <a href="events.php" class="menu-item <?php echo $currentPage === 'events.php' ? 'active' : ''; ?>">
                     <i class="bi bi-calendar-event"></i>Events
                 </a>
                 <a href="ministries.php" class="menu-item <?php echo $currentPage === 'ministries.php' ? 'active' : ''; ?>">
@@ -287,7 +305,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </a>
                 
                 <div class="menu-section">Communications</div>
-                <a href="contacts.html" class="menu-item <?php echo $currentPage === 'contacts.html' ? 'active' : ''; ?>">
+                <a href="contacts.php" class="menu-item <?php echo $currentPage === 'contacts.php' ? 'active' : ''; ?>">
                     <i class="bi bi-envelope"></i>Contact Inquiries
                 </a>
                 <a href="prayer-requests.php" class="menu-item <?php echo $currentPage === 'prayer-requests.php' ? 'active' : ''; ?>">
@@ -295,6 +313,9 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </a>
                 <a href="feedback.php" class="menu-item <?php echo $currentPage === 'feedback.php' ? 'active' : ''; ?>">
                     <i class="bi bi-chat-left-text"></i>Feedback
+                </a>
+                <a href="newsletter.php" class="menu-item <?php echo $currentPage === 'newsletter.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-envelope-paper-heart"></i>Newsletter
                 </a>
                 
                 <div class="menu-section">System</div>

@@ -200,7 +200,7 @@ if ($action === 'view' && $id) {
                 <p class="text-muted">No feedback found.</p>
             <?php else: ?>
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover datatable" data-dt-options='{"order":[[4,"desc"]] }'>
                         <thead>
                             <tr>
                                 <th>Name</th>

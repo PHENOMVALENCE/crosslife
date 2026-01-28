@@ -61,6 +61,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $response['status'] = 'success';
             $response['message'] = 'Thank you for subscribing to our newsletter!';
         }
+        
+        // Send notification email to church and admin if PHPMailer is available
+        if (file_exists(__DIR__ . '/../admin/config/email.php')) {
+            require_once __DIR__ . '/../admin/config/email.php';
+            try {
+                $displayName = $name ?: 'Newsletter Subscriber';
+                $subject = 'New Newsletter Subscription';
+                
+                $body = "
+                <html>
+                <head>
+                    <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #0d6efd; color: white; padding: 20px; text-align: center; }
+                        .content { background: #f9f9f9; padding: 20px; border: 1px solid #ddd; }
+                        .field { margin-bottom: 15px; }
+                        .label { font-weight: bold; color: #0d6efd; }
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='header'>
+                            <h2>New Newsletter Subscription</h2>
+                        </div>
+                        <div class='content'>
+                            <div class='field'>
+                                <span class='label'>Name:</span> " . htmlspecialchars($displayName) . "
+                            </div>
+                            <div class='field'>
+                                <span class='label'>Email:</span> <a href='mailto:" . htmlspecialchars($email) . "'>" . htmlspecialchars($email) . "</a>
+                            </div>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                ";
+                
+                $altBody = "New Newsletter Subscription\n\n";
+                $altBody .= "Name: $displayName\n";
+                $altBody .= "Email: $email\n";
+                
+                // Send to primary admin email (mwiganivalence@gmail.com)
+                sendEmail(CONTACT_EMAIL, $subject, $body, $altBody);
+            } catch (Throwable $e) {
+                error_log('Newsletter notification email failed: ' . $e->getMessage());
+            }
+        }
     } catch (PDOException $e) {
         if ($e->getCode() == 23000) { // Duplicate entry
             $response['message'] = 'This email is already subscribed.';
