@@ -143,7 +143,7 @@ function leadership_display_image_url($image_url, $placeholder) {
                     <?php if (count($departmentsList) > 0): ?>
                       <div class="leader-card__departments" aria-label="Departments">
                         <?php foreach ($departmentsList as $dept): ?>
-                          <span class="tag"><?php echo htmlspecialchars($dept); ?></span>
+                          <span class="tag"><?php echo htmlspecialchars(html_entity_decode($dept, ENT_QUOTES, 'UTF-8')); ?></span>
                         <?php endforeach; ?>
                       </div>
                     <?php endif; ?>
@@ -153,12 +153,14 @@ function leadership_display_image_url($image_url, $placeholder) {
                     <?php if ($hasContact): ?>
                       <div class="leader-card__contact">
                         <div class="contact-label">Contact</div>
-                        <?php if (!empty($leader['email'])): ?>
-                          <a href="mailto:<?php echo htmlspecialchars($leader['email']); ?>" aria-label="Email <?php echo htmlspecialchars($leader['name']); ?>"><i class="bi bi-envelope"></i> <?php echo htmlspecialchars($leader['email']); ?></a>
-                        <?php endif; ?>
-                        <?php if (!empty($leader['phone'])): ?>
-                          <a href="tel:<?php echo htmlspecialchars(preg_replace('/\s+/', '', $leader['phone'])); ?>" aria-label="Call <?php echo htmlspecialchars($leader['name']); ?>"><i class="bi bi-telephone"></i> <?php echo htmlspecialchars($leader['phone']); ?></a>
-                        <?php endif; ?>
+                        <div class="leader-card__contact-links">
+                          <?php if (!empty($leader['email'])): ?>
+                            <a href="mailto:<?php echo htmlspecialchars($leader['email']); ?>" class="contact-btn" aria-label="Email <?php echo htmlspecialchars($leader['name']); ?>"><i class="bi bi-envelope"></i> Email</a>
+                          <?php endif; ?>
+                          <?php if (!empty($leader['phone'])): ?>
+                            <a href="tel:<?php echo htmlspecialchars(preg_replace('/\s+/', '', $leader['phone'])); ?>" class="contact-btn" aria-label="Call <?php echo htmlspecialchars($leader['name']); ?>"><i class="bi bi-telephone"></i> Call</a>
+                          <?php endif; ?>
+                        </div>
                       </div>
                     <?php endif; ?>
                   </div>
