@@ -684,16 +684,16 @@
 
             <div class="newsletter-form">
               <h5>Stay Updated</h5>
-              <form action="forms/newsletter.php" method="post" class="php-email-form">
+              <form action="forms/newsletter.php" method="post" class="newsletter-form-submit">
                 <div class="input-group">
                   <input type="email" name="email" class="form-control" placeholder="Enter your email" required="">
                   <button type="submit" class="btn-subscribe">
                     <i class="bi bi-send"></i>
                   </button>
                 </div>
-                <div class="loading">Loading</div>
-                <div class="error-message"></div>
-                <div class="sent-message">Thank you for subscribing!</div>
+                <div class="loading" style="display: none;">Loading</div>
+                <div class="error-message" style="display: none;"></div>
+                <div class="sent-message" style="display: none;">You have been subscribed to the CrossLife newsletter. Thank you for staying connected!</div>
               </form>
             </div>
           </div>
@@ -922,6 +922,95 @@
         showSlide(0);
         startSlideshow();
       }
+    });
+  </script>
+
+  <!-- Newsletter AJAX Handler -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Ensure php-email-form JS does not attach to the newsletter form
+      const newsletterForm = document.querySelector('.newsletter-form-submit');
+      if (!newsletterForm) return;
+      newsletterForm.classList.remove('php-email-form');
+
+      newsletterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const form = newsletterForm;
+        const formData = new FormData(form);
+        const submitButton = form.querySelector('button[type="submit"]');
+        const loadingDiv = form.querySelector('.loading');
+        const errorDiv = form.querySelector('.error-message');
+        const sentDiv = form.querySelector('.sent-message');
+
+        // Show loading state
+        submitButton.disabled = true;
+        const originalButtonText = submitButton.innerHTML;
+        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        if (loadingDiv) loadingDiv.style.display = 'block';
+        if (errorDiv) {
+          errorDiv.style.display = 'none';
+          errorDiv.textContent = '';
+        }
+        if (sentDiv) sentDiv.style.display = 'none';
+
+        fetch('forms/newsletter.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const contentType = response.headers.get('content-type');
+          if (!contentType || !contentType.includes('application/json')) {
+            return response.text().then(text => {
+              try {
+                return JSON.parse(text);
+              } catch (e) {
+                throw new Error('Invalid response format');
+              }
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (loadingDiv) loadingDiv.style.display = 'none';
+
+          if (data && data.status === 'success') {
+            if (errorDiv) {
+              errorDiv.style.display = 'none';
+              errorDiv.textContent = '';
+            }
+            if (sentDiv) {
+              sentDiv.textContent = data.message || 'You have been subscribed to the CrossLife newsletter. Thank you for staying connected!';
+              sentDiv.style.display = 'block';
+            }
+            form.reset();
+          } else {
+            if (errorDiv) {
+              errorDiv.textContent = data && data.message
+                ? data.message
+                : 'An error occurred. Please try again.';
+              errorDiv.style.display = 'block';
+            }
+          }
+
+          submitButton.disabled = false;
+          submitButton.innerHTML = originalButtonText;
+        })
+        .catch(error => {
+          if (loadingDiv) loadingDiv.style.display = 'none';
+          if (errorDiv) {
+            // Show a clean, user‑friendly message instead of raw JSON or error text
+            errorDiv.textContent = 'We could not process your subscription right now. Please check your connection and try again.';
+            errorDiv.style.display = 'block';
+          }
+          submitButton.disabled = false;
+          submitButton.innerHTML = originalButtonText;
+        });
+      });
     });
   </script>
 

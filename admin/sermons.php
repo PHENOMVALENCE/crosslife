@@ -176,19 +176,14 @@ if ($action === 'add' || $action === 'edit') {
     </div>
     <?php
 } else {
-    // List view
-    $page = max(1, intval($_GET['page'] ?? 1));
-    $offset = ($page - 1) * ITEMS_PER_PAGE;
-    
-    $stmt = $db->query("SELECT COUNT(*) as total FROM sermons");
-    $total = $stmt->fetch()['total'];
-    $totalPages = ceil($total / ITEMS_PER_PAGE);
-    
-    $stmt = $db->prepare("SELECT * FROM sermons ORDER BY sermon_date DESC, created_at DESC LIMIT ? OFFSET ?");
-    $stmt->bindValue(1, ITEMS_PER_PAGE, PDO::PARAM_INT);
-    $stmt->bindValue(2, $offset, PDO::PARAM_INT);
-    $stmt->execute();
-    $sermons = $stmt->fetchAll();
+    // List view - Load all records for DataTables (it handles pagination client-side)
+    try {
+        $stmt = $db->query("SELECT * FROM sermons ORDER BY sermon_date DESC, created_at DESC");
+        $sermons = $stmt->fetchAll();
+    } catch (PDOException $e) {
+        error_log("Database error loading sermons: " . $e->getMessage());
+        $sermons = [];
+    }
     ?>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Sermons</h2>
@@ -203,7 +198,7 @@ if ($action === 'add' || $action === 'edit') {
                 <p class="text-muted">No sermons found. <a href="sermons.php?action=add">Add your first sermon</a>.</p>
             <?php else: ?>
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover datatable" data-dt-options='{"order":[[3,"desc"]]}'>
                         <thead>
                             <tr>
                                 <th>Title</th>
@@ -238,18 +233,6 @@ if ($action === 'add' || $action === 'edit') {
                         </tbody>
                     </table>
                 </div>
-                
-                <?php if ($totalPages > 1): ?>
-                    <nav>
-                        <ul class="pagination">
-                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                <li class="page-item <?php echo $i === $page ? 'active' : ''; ?>">
-                                    <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
-                                </li>
-                            <?php endfor; ?>
-                        </ul>
-                    </nav>
-                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>

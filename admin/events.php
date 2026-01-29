@@ -175,35 +175,8 @@ if ($action === 'add' || $action === 'edit') {
     <?php
 } else {
     try {
-        $statusFilter = $_GET['status'] ?? 'all';
-        $validStatuses = ['upcoming', 'ongoing', 'completed', 'cancelled'];
-        if ($statusFilter !== 'all' && !in_array($statusFilter, $validStatuses)) {
-            $statusFilter = 'all';
-        }
-        
-        $page = max(1, intval($_GET['page'] ?? 1));
-        $offset = ($page - 1) * ITEMS_PER_PAGE;
-        
-        // Use prepared statement to prevent SQL injection
-        if ($statusFilter !== 'all') {
-            $countStmt = $db->prepare("SELECT COUNT(*) as total FROM events WHERE status = ?");
-            $countStmt->execute([$statusFilter]);
-            $total = $countStmt->fetch()['total'];
-            
-            $stmt = $db->prepare("SELECT * FROM events WHERE status = ? ORDER BY event_date DESC LIMIT ? OFFSET ?");
-            $stmt->bindValue(1, $statusFilter, PDO::PARAM_STR);
-            $stmt->bindValue(2, ITEMS_PER_PAGE, PDO::PARAM_INT);
-            $stmt->bindValue(3, $offset, PDO::PARAM_INT);
-        } else {
-            $countStmt = $db->query("SELECT COUNT(*) as total FROM events");
-            $total = $countStmt->fetch()['total'];
-            
-            $stmt = $db->prepare("SELECT * FROM events ORDER BY event_date DESC LIMIT ? OFFSET ?");
-            $stmt->bindValue(1, ITEMS_PER_PAGE, PDO::PARAM_INT);
-            $stmt->bindValue(2, $offset, PDO::PARAM_INT);
-        }
-        
-        $stmt->execute();
+        // Load all events for DataTables (it handles pagination, filtering, and sorting client-side)
+        $stmt = $db->query("SELECT * FROM events ORDER BY event_date DESC");
         $events = $stmt->fetchAll();
     } catch (PDOException $e) {
         error_log("Database error loading events: " . $e->getMessage());
@@ -234,7 +207,7 @@ if ($action === 'add' || $action === 'edit') {
                 <p class="text-muted">No events found. <a href="events.html?action=add">Add your first event</a>.</p>
             <?php else: ?>
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover datatable" data-dt-options='{"order":[[1,"desc"]]}'>
                         <thead>
                             <tr>
                                 <th>Title</th>
@@ -263,18 +236,6 @@ if ($action === 'add' || $action === 'edit') {
                         </tbody>
                     </table>
                 </div>
-                
-                <?php if ($totalPages > 1): ?>
-                    <nav>
-                        <ul class="pagination">
-                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                <li class="page-item <?php echo $i === $page ? 'active' : ''; ?>">
-                                    <a class="page-link" href="?page=<?php echo $i; ?>&status=<?php echo $statusFilter; ?>"><?php echo $i; ?></a>
-                                </li>
-                            <?php endfor; ?>
-                        </ul>
-                    </nav>
-                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>

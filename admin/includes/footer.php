@@ -18,23 +18,115 @@
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
     
     <script>
+        // Wait for all scripts to load, then initialize DataTables
+        function waitForDataTables(callback, maxAttempts) {
+            maxAttempts = maxAttempts || 50;
+            let attempts = 0;
+            
+            function check() {
+                attempts++;
+                if (typeof jQuery !== 'undefined' && typeof jQuery.fn.dataTable !== 'undefined') {
+                    callback();
+                } else if (attempts < maxAttempts) {
+                    setTimeout(check, 100);
+                } else {
+                    console.error('DataTables failed to load after', maxAttempts * 100, 'ms');
+                }
+            }
+            check();
+        }
+        
+        // Initialize DataTables function
+        function initDataTables() {
+            jQuery('.datatable').each(function() {
+                const table = jQuery(this);
+                
+                // Skip if already initialized
+                if (table.hasClass('dataTable')) {
+                    return;
+                }
+                
+                const defaultOptions = {
+                    order: [],
+                    pageLength: 10,
+                    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
+                    responsive: true,
+                    // l = length, f = search filter, B = buttons, t = table, i = info, p = pagination
+                    dom:
+                        "<'row mb-2'<'col-sm-12 col-md-4'l><'col-sm-12 col-md-4'f><'col-sm-12 col-md-4 text-md-end'B>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row mt-2'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                    buttons: [
+                        {
+                            extend: 'csv',
+                            className: 'btn btn-sm btn-outline-secondary',
+                            text: '<i class="bi bi-filetype-csv me-1"></i>CSV'
+                        },
+                        {
+                            extend: 'excel',
+                            className: 'btn btn-sm btn-outline-secondary',
+                            text: '<i class="bi bi-file-earmark-excel me-1"></i>Excel'
+                        },
+                        {
+                            extend: 'print',
+                            className: 'btn btn-sm btn-outline-secondary',
+                            text: '<i class="bi bi-printer me-1"></i>Print'
+                        }
+                    ],
+                    language: {
+                        search: "Search:",
+                        lengthMenu: "Show _MENU_ entries",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        infoEmpty: "Showing 0 to 0 of 0 entries",
+                        infoFiltered: "(filtered from _MAX_ total entries)",
+                        paginate: {
+                            first: "First",
+                            last: "Last",
+                            next: "Next",
+                            previous: "Previous"
+                        }
+                    }
+                };
+                
+                // Parse custom options
+                let customOptions = {};
+                const dtOptionsAttr = table.attr('data-dt-options');
+                if (dtOptionsAttr) {
+                    try {
+                        customOptions = JSON.parse(dtOptionsAttr);
+                    } catch (e) {
+                        console.warn('Invalid data-dt-options JSON:', dtOptionsAttr);
+                    }
+                }
+                
+                // Merge and initialize
+                const finalOptions = jQuery.extend(true, {}, defaultOptions, customOptions);
+                try {
+                    table.DataTable(finalOptions);
+                } catch (e) {
+                    console.error('DataTables error:', e);
+                }
+            });
+        }
+        
+        // Auto-dismiss alerts
         document.addEventListener('DOMContentLoaded', function() {
-            // Auto-dismiss alerts after 5 seconds
-            const alerts = document.querySelectorAll('.alert:not(.alert-permanent)');
-            alerts.forEach(function(alert) {
+            document.querySelectorAll('.alert:not(.alert-permanent)').forEach(function(alert) {
                 setTimeout(function() {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
+                    if (typeof bootstrap !== 'undefined') {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    }
                 }, 5000);
             });
-            
-            // Simple form validation for required fields
-            const forms = document.querySelectorAll('form[method="POST"]');
-            forms.forEach(function(form) {
+        });
+        
+        // Form validation
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('form[method="POST"]').forEach(function(form) {
                 form.addEventListener('submit', function(e) {
                     const requiredFields = form.querySelectorAll('[required]');
                     let isValid = true;
-                    
                     requiredFields.forEach(function(field) {
                         if (!field.value.trim()) {
                             isValid = false;
@@ -43,49 +135,22 @@
                             field.classList.remove('is-invalid');
                         }
                     });
-                    
                     if (!isValid) {
                         e.preventDefault();
                         alert('Please fill in all required fields.');
                     }
                 });
             });
-            
-            // Initialize DataTables on any table with .datatable class
-            if (typeof $ !== 'undefined' && $.fn.dataTable) {
-                $('.datatable').each(function () {
-                    const table = $(this);
-                    
-                    const defaultOptions = {
-                        order: [],
-                        pageLength: 10,
-                        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
-                        responsive: true,
-                        dom: "<'row mb-2'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 text-md-end'B>>" +
-                             "<'row'<'col-sm-12'tr>>" +
-                             "<'row mt-2'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-                        buttons: [
-                            {
-                                extend: 'csv',
-                                className: 'btn btn-sm btn-outline-secondary',
-                                text: '<i class=\"bi bi-filetype-csv me-1\"></i>CSV'
-                            },
-                            {
-                                extend: 'excel',
-                                className: 'btn btn-sm btn-outline-secondary',
-                                text: '<i class=\"bi bi-file-earmark-excel me-1\"></i>Excel'
-                            },
-                            {
-                                extend: 'print',
-                                className: 'btn btn-sm btn-outline-secondary',
-                                text: '<i class=\"bi bi-printer me-1\"></i>Print'
-                            }
-                        ]
-                    };
-                    
-                    const customOptions = table.data('dt-options') || {};
-                    table.DataTable(Object.assign({}, defaultOptions, customOptions));
+        });
+        
+        // Initialize DataTables after all scripts load
+        waitForDataTables(function() {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    initDataTables();
                 });
+            } else {
+                initDataTables();
             }
         });
     </script>

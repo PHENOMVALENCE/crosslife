@@ -7,7 +7,7 @@
 2. Fill in Contact Form tab
 3. Submit form
 4. ✅ Should show success modal
-5. ✅ Check admin panel → Contacts to see submission
+5. ✅ Check Cross Admin → Contacts to see submission
 
 ### Prayer Request Form
 1. Go to `contacts.html`
@@ -15,7 +15,7 @@
 3. Fill in prayer request (name/email optional)
 4. Submit form
 5. ✅ Should show success modal with heart icon
-6. ✅ Check admin panel → Prayer Requests to see submission
+6. ✅ Check Cross Admin → Prayer Requests to see submission
 
 ### Feedback Form
 1. Go to `contacts.html`
@@ -24,7 +24,7 @@
 4. Select feedback type
 5. Submit form
 6. ✅ Should show success modal with star icon
-7. ✅ Check admin panel → Feedback to see submission
+7. ✅ Check Cross Admin → Feedback to see submission
 
 ### Newsletter Form
 1. Go to `contacts.html`

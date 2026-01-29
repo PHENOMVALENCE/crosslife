@@ -95,6 +95,7 @@ CREATE TABLE IF NOT EXISTS leadership (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     role VARCHAR(255) NOT NULL,
+    departments VARCHAR(500),
     bio TEXT,
     image_url VARCHAR(500),
     email VARCHAR(100),

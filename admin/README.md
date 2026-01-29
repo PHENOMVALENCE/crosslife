@@ -39,9 +39,9 @@ After importing the database, you can login with:
 Ensure the following directories are writable (if you plan to add file uploads):
 - `assets/img/uploads/` (create this directory if it doesn't exist)
 
-### 5. Access the Admin Panel
+### 5. Access the Cross Admin
 
-Navigate to: `http://localhost/crosslife_2/admin/login.php`
+Navigate to: `http://localhost/crosslife/admin/login.php`
 
 ## Features
 
@@ -146,7 +146,7 @@ For issues or questions, check:
 ## Notes
 
 - All passwords are hashed using PHP's `password_hash()` function
-- The admin panel uses the same theme as the main website
+- The Cross Admin uses the same theme as the main website
 - All forms save data to MySQL database
 - The system is ready for production use with proper security measures
 

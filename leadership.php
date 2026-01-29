@@ -1,14 +1,23 @@
 <?php
 /**
- * Ministries Page - CrossLife Mission Network
- * Displays active ministries from the database (managed in Admin → Ministries).
- * Data: ministries table; only status = 'active' is shown, ordered by display_order, name.
+ * Leadership Page - CrossLife Mission Network
+ * Displays active leaders from the database (managed in Admin → Leadership).
+ * Same base style and theme as ministries.php and other frontend pages.
  */
-require_once __DIR__ . '/admin/config/config.php'; // Load config first so SITE_NAME etc. defined once
+require_once __DIR__ . '/admin/config/config.php';
 require_once __DIR__ . '/includes/db-functions.php';
 
 $settings = getSiteSettings();
-$ministries = getActiveMinistries();
+$leaders = getActiveLeadership();
+
+$leadership_placeholder_image = 'assets/img/_MG_4880.jpg';
+function leadership_display_image_url($image_url, $placeholder) {
+    if (empty(trim((string) $image_url))) {
+        return $placeholder;
+    }
+    $url = function_exists('image_url_for_display') ? image_url_for_display($image_url) : $image_url;
+    return $url !== '' ? $url : $placeholder;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,9 +25,9 @@ $ministries = getActiveMinistries();
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Ministries - <?php echo htmlspecialchars($settings['site_name'] ?? 'CrossLife Mission Network'); ?></title>
-  <meta name="description" content="Explore the various ministries of CrossLife Mission Network working together to manifest Sons of God.">
-  <meta name="keywords" content="CrossLife, Ministries, Teaching, Discipleship, Prayer, Outreach, Worship, Fellowship">
+  <title>Leadership - <?php echo htmlspecialchars($settings['site_name'] ?? 'CrossLife Mission Network'); ?></title>
+  <meta name="description" content="Meet the leadership team of CrossLife Mission Network guiding the ministry and serving the body of Christ.">
+  <meta name="keywords" content="CrossLife, Leadership, Pastor, Church Leaders, Ministry, Tanzania">
 
   <!-- Favicons -->
   <link href="assets/img/logo.png" rel="icon">
@@ -74,8 +83,8 @@ $ministries = getActiveMinistries();
             <li><a href="index.php">Home</a></li>
             <li><a href="index.php#about">About</a></li>
             <li><a href="index.php#statement-of-faith">Statement of Faith</a></li>
-            <li><a href="leadership.php">Leadership</a></li>
-            <li><a href="ministries.php" class="active">Ministries</a></li>
+            <li><a href="leadership.php" class="active">Leadership</a></li>
+            <li><a href="ministries.php">Ministries</a></li>
             <li><a href="sermons.php">Sermons</a></li>
             <li><a href="discipleship.php">Discipleship</a></li>
             <li><a href="events.html">Events</a></li>
@@ -95,86 +104,84 @@ $ministries = getActiveMinistries();
       <div class="container">
         <div class="row">
           <div class="col-lg-12 text-center">
-            <h1 data-aos="fade-up">Our Ministries</h1>
-            <p data-aos="fade-up" data-aos-delay="100">Various ministries working together to manifest Sons of God and establish a global network</p>
+            <h1 data-aos="fade-up">Our Leadership</h1>
+            <p data-aos="fade-up" data-aos-delay="100">The team guiding CrossLife Mission Network and serving the body of Christ</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Ministries Section -->
-    <section id="ministries" class="ministries section">
+    <!-- Leadership Section -->
+    <section id="leadership" class="leadership section">
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
-        <?php if (empty($ministries)): ?>
-          <!-- Empty state: only database content is shown; add ministries in Admin → Ministries -->
+        <?php if (empty($leaders)): ?>
           <div class="row justify-content-center" data-aos="fade-up">
             <div class="col-lg-8 text-center py-5">
-              <p class="lead text-muted">No ministries are currently listed. Content here is managed from the Cross Admin (Admin → Ministries). Add and publish ministries there to display them on this page.</p>
+              <p class="lead text-muted">No leadership profiles are currently listed. Content is managed from the Cross Admin (Admin → Leadership). Add and publish leaders there to display them on this page.</p>
             </div>
           </div>
         <?php else: ?>
-          <!-- Dynamic ministries from database -->
           <div class="row g-4">
-            <?php 
+            <?php
             $delay = 150;
-            foreach ($ministries as $ministry): 
-              // Handle both full URLs and relative paths
-              if (!empty($ministry['image_url'])) {
-                $image = $ministry['image_url'];
-                // Convert full URL to relative path if needed
-                if (defined('SITE_URL') && strpos($image, SITE_URL) === 0) {
-                  $image = str_replace(SITE_URL . '/', '', $image);
-                } elseif (strpos($image, 'http') === 0) {
-                  // Keep full URL as is (external or absolute URL)
-                } else {
-                  // Already relative path
-                }
-              } else {
-                $image = 'assets/img/_MG_4880.jpg'; // Fallback when admin does not set an image (layout only)
-              }
-              $image = htmlspecialchars($image);
+            foreach ($leaders as $leader):
+              $imgSrc = leadership_display_image_url($leader['image_url'] ?? '', $leadership_placeholder_image);
+              $departmentsRaw = isset($leader['departments']) ? trim((string) $leader['departments']) : '';
+              $departmentsList = $departmentsRaw !== '' ? array_map('trim', array_filter(explode(',', $departmentsRaw))) : [];
+              $hasContact = !empty($leader['email']) || !empty($leader['phone']);
             ?>
-              <div class="col-lg-6" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
-                <div class="ministry-card">
-                  <h3><?php echo htmlspecialchars($ministry['name']); ?></h3>
-                  <p><?php echo nl2br(htmlspecialchars($ministry['description'])); ?></p>
-                  
-                  <?php if (!empty($ministry['leader_name']) || !empty($ministry['contact_email'])): ?>
-                    <div class="ministry-info mt-3">
-                      <?php if (!empty($ministry['leader_name'])): ?>
-                        <p class="mb-1"><strong>Leader:</strong> <?php echo htmlspecialchars($ministry['leader_name']); ?></p>
-                      <?php endif; ?>
-                      <?php if (!empty($ministry['contact_email'])): ?>
-                        <p class="mb-0"><strong>Contact:</strong> <a href="mailto:<?php echo htmlspecialchars($ministry['contact_email']); ?>"><?php echo htmlspecialchars($ministry['contact_email']); ?></a></p>
-                      <?php endif; ?>
-                    </div>
-                  <?php endif; ?>
-                  
-                  <div class="ministry-image mt-3">
-                    <img src="<?php echo $image; ?>" alt="<?php echo htmlspecialchars($ministry['name']); ?>" class="img-fluid rounded">
+              <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
+                <article class="leader-card">
+                  <div class="leader-card__image">
+                    <img src="<?php echo htmlspecialchars($imgSrc); ?>" alt="<?php echo htmlspecialchars($leader['name']); ?>" loading="lazy">
                   </div>
-                </div>
+                  <div class="leader-card__body">
+                    <h3 class="leader-card__name"><?php echo htmlspecialchars($leader['name']); ?></h3>
+                    <p class="leader-card__role"><?php echo htmlspecialchars($leader['role']); ?></p>
+                    <?php if (count($departmentsList) > 0): ?>
+                      <div class="leader-card__departments" aria-label="Departments">
+                        <?php foreach ($departmentsList as $dept): ?>
+                          <span class="tag"><?php echo htmlspecialchars($dept); ?></span>
+                        <?php endforeach; ?>
+                      </div>
+                    <?php endif; ?>
+                    <?php if (!empty($leader['bio'])): ?>
+                      <div class="leader-card__bio"><?php echo nl2br(htmlspecialchars($leader['bio'])); ?></div>
+                    <?php endif; ?>
+                    <?php if ($hasContact): ?>
+                      <div class="leader-card__contact">
+                        <div class="contact-label">Contact</div>
+                        <?php if (!empty($leader['email'])): ?>
+                          <a href="mailto:<?php echo htmlspecialchars($leader['email']); ?>" aria-label="Email <?php echo htmlspecialchars($leader['name']); ?>"><i class="bi bi-envelope"></i> <?php echo htmlspecialchars($leader['email']); ?></a>
+                        <?php endif; ?>
+                        <?php if (!empty($leader['phone'])): ?>
+                          <a href="tel:<?php echo htmlspecialchars(preg_replace('/\s+/', '', $leader['phone'])); ?>" aria-label="Call <?php echo htmlspecialchars($leader['name']); ?>"><i class="bi bi-telephone"></i> <?php echo htmlspecialchars($leader['phone']); ?></a>
+                        <?php endif; ?>
+                      </div>
+                    <?php endif; ?>
+                  </div>
+                </article>
               </div>
-            <?php 
+            <?php
               $delay += 50;
-            endforeach; 
+            endforeach;
             ?>
           </div>
         <?php endif; ?>
 
         <div class="row mt-5">
           <div class="col-lg-12 text-center" data-aos="fade-up" data-aos-delay="450">
-            <h3 class="mb-3">Get Involved</h3>
-            <p class="lead">We welcome you to be part of any of our ministries. Each ministry is designed to help you grow in your identity in Christ and fulfill the mandate of Christ on earth.</p>
-            <a href="contacts.html" class="btn btn-primary mt-3">Contact Us to Get Involved</a>
+            <h3 class="mb-3">Get in Touch</h3>
+            <p class="lead">We would love to hear from you. Reach out to our leadership team or visit our contact page.</p>
+            <a href="contacts.html" class="btn btn-primary mt-3">Contact Us</a>
           </div>
         </div>
 
       </div>
 
-    </section><!-- /Ministries Section -->
+    </section><!-- /Leadership Section -->
 
   </main>
 
@@ -342,4 +349,3 @@ $ministries = getActiveMinistries();
 </body>
 
 </html>
-

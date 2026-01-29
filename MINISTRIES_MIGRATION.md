@@ -18,26 +18,26 @@ The following 6 ministries are available in `ministries.php`:
 
 ### Step 1: Run the Migration Script
 
-1. Log into the admin panel: `http://localhost/crosslife_2/admin/login.php`
-2. Navigate to: `http://localhost/crosslife_2/admin/migrate-ministries.php`
+1. Log into the Cross Admin: `http://localhost/crosslife/admin/login.php`
+2. Navigate to: `http://localhost/crosslife/admin/migrate-ministries.php`
 3. The script will:
    - Check for existing ministries
    - Insert only ministries that don't already exist
    - Show a summary of inserted/skipped ministries
 
-### Step 2: Verify in Admin Panel
+### Step 2: Verify in Cross Admin
 
-1. Go to: `http://localhost/crosslife_2/admin/ministries.php`
+1. Go to: `http://localhost/crosslife/admin/ministries.php`
 2. You should see all 6 ministries listed
 3. You can edit, delete, or add new ministries from here
 
 ### Step 3: Verify on Frontend
 
-1. Visit: `http://localhost/crosslife_2/ministries.php`
+1. Visit: `http://localhost/crosslife/ministries.php`
 2. All active ministries from the database will be displayed
 3. If no ministries exist in the database, default static ministries will be shown
 
-## Admin Panel Features
+## Cross Admin Features
 
 ### Adding a Ministry
 - Click "Add New Ministry"

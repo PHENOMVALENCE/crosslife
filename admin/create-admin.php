@@ -4,7 +4,7 @@
  * Run this script once to create additional admin users
  * 
  * Usage: Access via browser or command line
- * Example: http://localhost/crosslife_2/admin/create-admin.php
+ * Example: http://localhost/crosslife/admin/create-admin.php
  * 
  * SECURITY: Delete this file after creating admin users!
  */

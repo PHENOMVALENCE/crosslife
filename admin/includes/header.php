@@ -10,7 +10,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($pageTitle) ? $pageTitle . ' - ' : ''; ?>Admin Panel - <?php echo SITE_NAME; ?></title>
+    <title><?php echo isset($pageTitle) ? $pageTitle . ' - ' : ''; ?>Cross Admin - <?php echo SITE_NAME; ?></title>
     
     <!-- Favicons -->
     <link href="../assets/img/logo.png" rel="icon">
@@ -40,6 +40,59 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         body {
             background: #f5f5f5;
             font-family: var(--default-font);
+        }
+
+        /* DataTables styling for admin */
+        .dataTables_wrapper .dataTables_length label,
+        .dataTables_wrapper .dataTables_filter label {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            margin-left: 0.5rem;
+            max-width: 220px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid #ced4da;
+            font-size: 0.9rem;
+            background-color: #ffffff;
+        }
+
+        .dataTables_wrapper .dt-buttons {
+            margin-bottom: 0.25rem;
+        }
+
+        .dataTables_wrapper .dt-buttons .btn {
+            margin: 0 0.25rem 0.25rem 0;
+            font-size: 0.85rem;
+            padding: 0.25rem 0.6rem;
+        }
+
+        /* Make export buttons use the site accent color */
+        .dataTables_wrapper .dt-buttons .btn.btn-outline-secondary {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .dataTables_wrapper .dt-buttons .btn.btn-outline-secondary:hover,
+        .dataTables_wrapper .dt-buttons .btn.btn-outline-secondary:focus {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        /* On small screens stack controls nicely */
+        @media (max-width: 767.98px) {
+            .dataTables_wrapper .dataTables_length,
+            .dataTables_wrapper .dataTables_filter,
+            .dataTables_wrapper .dt-buttons {
+                text-align: left;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        .dataTables_wrapper .dataTables_paginate .pagination {
+            margin-top: 0.5rem;
         }
         
         .admin-wrapper {
@@ -278,7 +331,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <aside class="admin-sidebar">
             <div class="sidebar-header">
                 <img src="../assets/img/logo.png" alt="CrossLife">
-                <h3>Admin Panel</h3>
+                <h3>Cross Admin</h3>
             </div>
             
             <nav class="sidebar-menu">

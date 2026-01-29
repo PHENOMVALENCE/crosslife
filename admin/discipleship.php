@@ -174,7 +174,7 @@ if ($action === 'add' || $action === 'edit') {
                 <p class="text-muted">No programs found. <a href="discipleship.php?action=add">Add your first program</a>.</p>
             <?php else: ?>
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover datatable" data-dt-options='{"order":[[2,"asc"]]}'>
                         <thead>
                             <tr>
                                 <th>Program Name</th>

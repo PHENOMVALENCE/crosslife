@@ -129,58 +129,21 @@ if ($action === 'view' && $id) {
     <?php
 } else {
     try {
-        $statusFilter = $_GET['status'] ?? 'all';
-        $validStatuses = ['new', 'prayed', 'archived'];
-        if ($statusFilter !== 'all' && !in_array($statusFilter, $validStatuses)) {
-            $statusFilter = 'all';
-        }
-        
-        $page = max(1, intval($_GET['page'] ?? 1));
-        $offset = ($page - 1) * ITEMS_PER_PAGE;
-        
-        // Use prepared statement to prevent SQL injection
-        if ($statusFilter !== 'all') {
-            $countStmt = $db->prepare("SELECT COUNT(*) as total FROM prayer_requests WHERE status = ?");
-            $countStmt->execute([$statusFilter]);
-            $total = $countStmt->fetch()['total'];
-            
-            $stmt = $db->prepare("SELECT * FROM prayer_requests WHERE status = ? ORDER BY created_at DESC LIMIT ? OFFSET ?");
-            $stmt->bindValue(1, $statusFilter, PDO::PARAM_STR);
-            $stmt->bindValue(2, ITEMS_PER_PAGE, PDO::PARAM_INT);
-            $stmt->bindValue(3, $offset, PDO::PARAM_INT);
-        } else {
-            $countStmt = $db->query("SELECT COUNT(*) as total FROM prayer_requests");
-            $total = $countStmt->fetch()['total'];
-            
-            $stmt = $db->prepare("SELECT * FROM prayer_requests ORDER BY created_at DESC LIMIT ? OFFSET ?");
-            $stmt->bindValue(1, ITEMS_PER_PAGE, PDO::PARAM_INT);
-            $stmt->bindValue(2, $offset, PDO::PARAM_INT);
-        }
-        
-        $stmt->execute();
+        // Load all records for DataTables (it handles pagination, filtering, and sorting client-side)
+        $stmt = $db->query("SELECT * FROM prayer_requests ORDER BY created_at DESC");
         $requests = $stmt->fetchAll();
     } catch (PDOException $e) {
         error_log("Database error loading prayer requests: " . $e->getMessage());
         $requests = [];
-        $total = 0;
-        $totalPages = 0;
         $flash = getFlashMessage();
         if (!$flash) {
             $_SESSION['flash_message'] = 'Error loading prayer requests. Please refresh the page.';
             $_SESSION['flash_type'] = 'danger';
         }
     }
-    
-    $totalPages = ceil($total / ITEMS_PER_PAGE);
     ?>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Prayer Requests</h2>
-        <div>
-            <a href="?status=all" class="btn btn-sm btn-outline-<?php echo $statusFilter === 'all' ? 'primary' : 'secondary'; ?>">All</a>
-            <a href="?status=new" class="btn btn-sm btn-outline-<?php echo $statusFilter === 'new' ? 'primary' : 'secondary'; ?>">New</a>
-            <a href="?status=prayed" class="btn btn-sm btn-outline-<?php echo $statusFilter === 'prayed' ? 'primary' : 'secondary'; ?>">Prayed</a>
-            <a href="?status=archived" class="btn btn-sm btn-outline-<?php echo $statusFilter === 'archived' ? 'primary' : 'secondary'; ?>">Archived</a>
-        </div>
     </div>
     
     <div class="card">
@@ -220,18 +183,6 @@ if ($action === 'view' && $id) {
                         </tbody>
                     </table>
                 </div>
-                
-                <?php if ($totalPages > 1): ?>
-                    <nav>
-                        <ul class="pagination">
-                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                <li class="page-item <?php echo $i === $page ? 'active' : ''; ?>">
-                                    <a class="page-link" href="?page=<?php echo $i; ?>&status=<?php echo $statusFilter; ?>"><?php echo $i; ?></a>
-                                </li>
-                            <?php endfor; ?>
-                        </ul>
-                    </nav>
-                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>

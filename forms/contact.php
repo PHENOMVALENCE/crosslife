@@ -8,6 +8,7 @@
 ob_start();
 
 require_once __DIR__ . '/../admin/config/config.php';
+require_once __DIR__ . '/../includes/EmailService.php';
 
 // Clear any output buffer
 ob_clean();
@@ -42,16 +43,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $db->prepare("INSERT INTO contact_inquiries (name, email, phone, subject, message, status) VALUES (?, ?, ?, ?, ?, 'new')");
         $stmt->execute([$name, $email, $phone, $subject, $message]);
         
-        // Send email notification (optional - will fail silently if PHPMailer not configured)
-        if (file_exists(__DIR__ . '/../admin/config/email.php')) {
-            require_once __DIR__ . '/../admin/config/email.php';
-            try {
-                // Use visitor email as reply-to inside helper
-                sendContactNotification($name, $email, $phone, $subject, $message);
-            } catch (Throwable $e) {
-                // Log but don't fail the form submission
-                error_log('Email notification failed: ' . $e->getMessage());
+        // Send email notification + auto-reply via EmailService (will fail silently on error)
+        try {
+            if (class_exists('EmailService')) {
+                $emailService = new EmailService();
+                $emailService->sendContactNotification([
+                    'name' => $name,
+                    'email' => $email,
+                    'phone' => $phone,
+                    'subject' => $subject,
+                    'message' => $message,
+                ]);
             }
+        } catch (Throwable $e) {
+            error_log('Contact email error: ' . $e->getMessage());
         }
         
         $response['status'] = 'success';
