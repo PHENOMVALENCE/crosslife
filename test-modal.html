@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Modal</title>
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h1>Modal Test</h1>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#testModal">
+      Test Button
+    </button>
+    
+    <div class="modal fade" id="testModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Test Modal</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p>If you see this, Bootstrap modal is working!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+    console.log('Bootstrap loaded:', typeof bootstrap !== 'undefined');
+  </script>
+</body>
+</html>

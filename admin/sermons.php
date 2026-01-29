@@ -192,9 +192,14 @@ if ($action === 'add' || $action === 'edit') {
     ?>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Sermons</h2>
-        <a href="sermons.php?action=add" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-2"></i>Add New Sermon
-        </a>
+        <div>
+            <a href="import-youtube-videos.php" class="btn btn-success me-2">
+                <i class="bi bi-youtube me-2"></i>Import YouTube Videos
+            </a>
+            <a href="sermons.php?action=add" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>Add New Sermon
+            </a>
+        </div>
     </div>
     
     <div class="card">
