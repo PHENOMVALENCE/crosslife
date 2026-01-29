@@ -1,0 +1,134 @@
+/* Student portal – School of Christ Academy */
+:root {
+  --student-accent: #c85716;
+  --student-accent-hover: #a04512;
+  --student-header-bg: #1a1715;
+  --student-card-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --student-card-hover: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+.student-portal {
+  min-height: 100vh;
+  background: #f5f5f5;
+  font-family: var(--default-font, system-ui, sans-serif);
+  display: flex;
+  flex-direction: column;
+}
+
+.student-header {
+  background: var(--student-header-bg);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.student-header .navbar-brand {
+  font-weight: 600;
+  color: #fff !important;
+}
+.student-header .navbar-brand:hover { color: #fff !important; opacity: 0.9; }
+.student-header .nav-link {
+  color: rgba(255,255,255,0.9) !important;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+}
+.student-header .nav-link:hover { color: #fff !important; background: rgba(255,255,255,0.1); }
+.student-logo { border-radius: 8px; }
+
+.student-main {
+  flex: 1;
+  padding-bottom: 2rem;
+}
+
+/* Cards */
+.student-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: var(--student-card-shadow);
+  border: none;
+  transition: box-shadow 0.2s;
+}
+.student-card:hover { box-shadow: var(--student-card-hover); }
+.student-card .card-header {
+  background: transparent;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  font-weight: 600;
+  padding: 1rem 1.25rem;
+}
+
+/* Program / module cards */
+.program-card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: var(--student-card-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.program-card-link:hover {
+  color: inherit;
+  transform: translateY(-2px);
+  box-shadow: var(--student-card-hover);
+}
+.program-card-link .card-body { padding: 1.25rem; }
+.module-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 1rem 1.25rem;
+  background: #fff;
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  border: 1px solid rgba(0,0,0,0.06);
+  transition: border-color 0.2s, background 0.2s;
+}
+.module-row:hover { border-color: rgba(200,87,22,0.3); background: #fffbf8; }
+.module-row.locked { opacity: 0.85; }
+.module-row .module-num { font-weight: 600; color: var(--student-accent); }
+.module-row .badge-passed { background: #198754; }
+.module-row .badge-locked { background: #6c757d; }
+
+/* Buttons */
+.btn-accent {
+  background: var(--student-accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+}
+.btn-accent:hover { background: var(--student-accent-hover); color: #fff; }
+
+/* Content in module view */
+.module-content-block {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--student-card-shadow);
+}
+.module-content-block .content-html { line-height: 1.6; }
+.module-content-block .content-html p { margin-bottom: 0.75rem; }
+.module-content-block .content-html ul, .module-content-block .content-html ol { margin-bottom: 0.75rem; padding-left: 1.5rem; }
+.module-content-block audio, .module-content-block video { max-width: 100%; border-radius: 8px; }
+
+/* Breadcrumb */
+.student-breadcrumb { font-size: 0.9rem; }
+.student-breadcrumb .breadcrumb-item + .breadcrumb-item::before { opacity: 0.6; }
+
+/* Back to site */
+.student-back-site { font-size: 0.9rem; color: #6c757d; }
+.student-back-site:hover { color: var(--student-accent); }
+
+/* Account page */
+.account-section { background: #fff; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--student-card-shadow); }
+
+@media (max-width: 991.98px) {
+  .student-header .navbar-collapse { margin-top: 0.5rem; }
+  .student-header .nav-link { padding: 0.5rem; }
+}
+@media (max-width: 575.98px) {
+  .student-main .container { padding-left: 0.75rem; padding-right: 0.75rem; }
+  .module-row { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+}

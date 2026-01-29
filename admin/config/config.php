@@ -30,6 +30,10 @@ if (!defined('UPLOAD_PATH_RELATIVE')) {
 if (!defined('UPLOAD_URL')) {
     define('UPLOAD_URL', (defined('SITE_URL') ? SITE_URL : '') . '/' . UPLOAD_PATH_RELATIVE);
 }
+// Student portal (School of Christ Academy)
+if (!defined('STUDENT_LOGIN_URL')) {
+    define('STUDENT_LOGIN_URL', (defined('SITE_URL') ? SITE_URL : '') . '/student/login.php');
+}
 
 // Security
 define('SESSION_TIMEOUT', 3600); // 1 hour in seconds
@@ -75,6 +79,44 @@ function requireLogin() {
         header('Location: ' . ADMIN_URL . '/login.php');
         exit;
     }
+}
+
+/**
+ * Check if student (learner) is logged in
+ */
+function isStudentLoggedIn() {
+    if (!isset($_SESSION['student_id'])) {
+        return false;
+    }
+    if (isset($_SESSION['student_last_activity']) && (time() - $_SESSION['student_last_activity'] > SESSION_TIMEOUT)) {
+        unset($_SESSION['student_id'], $_SESSION['student_last_activity']);
+        return false;
+    }
+    $_SESSION['student_last_activity'] = time();
+    return true;
+}
+
+/**
+ * Require student login - redirect to student login if not logged in
+ */
+function requireStudentLogin() {
+    if (!isStudentLoggedIn()) {
+        header('Location: ' . STUDENT_LOGIN_URL);
+        exit;
+    }
+}
+
+/**
+ * Get current student (for student portal)
+ */
+function getCurrentStudent() {
+    if (!isStudentLoggedIn()) {
+        return null;
+    }
+    $db = getDB();
+    $stmt = $db->prepare("SELECT id, email, full_name, phone, status FROM discipleship_students WHERE id = ? AND status = 'active'");
+    $stmt->execute([$_SESSION['student_id']]);
+    return $stmt->fetch();
 }
 
 /**
