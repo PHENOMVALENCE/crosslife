@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$rid]);
             $res = $stmt->fetch();
             $modId = $res ? (int) $res['module_id'] : null;
-            if ($res && !empty($res['file_path']) && in_array($res['resource_type'], ['audio', 'video'])) {
+            if ($res && !empty($res['file_path']) && in_array($res['resource_type'], ['audio', 'video', 'pdf'])) {
                 $base = dirname(dirname(__DIR__));
                 $diskPath = $base . '/' . ltrim($res['file_path'], '/');
                 if (file_exists($diskPath)) {
@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['form_resource'])) {
             $modId = (int) ($_POST['module_id'] ?? 0);
             $resId = isset($_POST['resource_id']) ? (int) $_POST['resource_id'] : 0;
-            $resource_type = in_array($_POST['resource_type'] ?? '', ['text', 'audio', 'video']) ? $_POST['resource_type'] : 'text';
+            $resource_type = in_array($_POST['resource_type'] ?? '', ['text', 'audio', 'video', 'pdf']) ? $_POST['resource_type'] : 'text';
             $title = sanitize($_POST['title'] ?? '');
             $display_order = (int) ($_POST['display_order'] ?? 0);
             $content = '';
@@ -123,14 +123,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($resource_type === 'text') {
                 $content = $_POST['content'] ?? ''; // allow HTML for formatted notes
             } else {
-                // audio/video: handle file upload
+                // audio/video/pdf: handle file upload
                 if (!is_dir($discipleship_upload_dir)) {
                     mkdir($discipleship_upload_dir, 0755, true);
                 }
                 $allowed_audio = ['mp3', 'wav', 'ogg', 'm4a'];
                 $allowed_video = ['mp4', 'webm', 'ogg'];
-                $allowed = $resource_type === 'audio' ? $allowed_audio : $allowed_video;
-                $max_size = 100 * 1024 * 1024; // 100MB for video, 20MB for audio - use 100 for both to be safe
+                $allowed_pdf = ['pdf'];
+                $allowed = $resource_type === 'audio' ? $allowed_audio : ($resource_type === 'video' ? $allowed_video : $allowed_pdf);
+                $max_size = $resource_type === 'pdf' ? (50 * 1024 * 1024) : (100 * 1024 * 1024); // 50MB for PDF, 100MB for media
 
                 if (isset($_FILES['media_file']) && $_FILES['media_file']['error'] === UPLOAD_ERR_OK) {
                     $ext = strtolower(pathinfo($_FILES['media_file']['name'], PATHINFO_EXTENSION));
@@ -168,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
                 if (!$resId && empty($file_path) && $resource_type !== 'text') {
-                    redirect('discipleship.php?action=resource_add&module_id=' . $modId, 'Please upload an audio or video file.', 'danger');
+                    redirect('discipleship.php?action=resource_add&module_id=' . $modId, 'Please upload a file (audio, video, or PDF).', 'danger');
                 }
             }
 
@@ -564,7 +565,7 @@ if ($action === 'add' || $action === 'edit') {
         </div>
         <div class="card-body">
             <?php if (empty($resources)): ?>
-                <p class="text-muted mb-0">No resources yet. Use <strong>Quick add text note</strong> above or <strong>Add Resource</strong> for text, audio, or video.</p>
+                <p class="text-muted mb-0">No resources yet. Use <strong>Quick add text note</strong> above or <strong>Add Resource</strong> for text, audio, video, or PDF.</p>
             <?php else: ?>
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
@@ -652,6 +653,7 @@ if ($action === 'add' || $action === 'edit') {
                                 <option value="text" <?php echo $resType === 'text' ? 'selected' : ''; ?>>Text – formatted notes (HTML allowed)</option>
                                 <option value="audio" <?php echo $resType === 'audio' ? 'selected' : ''; ?>>Audio – voice note (MP3, WAV, OGG, M4A)</option>
                                 <option value="video" <?php echo $resType === 'video' ? 'selected' : ''; ?>>Video – instructional clip (MP4, WebM, OGG)</option>
+                                <option value="pdf" <?php echo $resType === 'pdf' ? 'selected' : ''; ?>>PDF – document (PDF)</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -665,9 +667,9 @@ if ($action === 'add' || $action === 'edit') {
                             <div class="form-text">HTML is allowed for headings, lists, and emphasis.</div>
                         </div>
                         <div class="mb-3" id="file_block" style="display:none;">
-                            <label class="form-label">Media file <?php echo empty($resource['id']) ? '*' : ''; ?></label>
-                            <input type="file" class="form-control" name="media_file" id="media_file" accept=".mp3,.wav,.ogg,.m4a,.mp4,.webm">
-                            <div class="form-text">Max 100MB. Audio: MP3, WAV, OGG, M4A. Video: MP4, WebM, OGG.</div>
+                            <label class="form-label">Upload file <?php echo empty($resource['id']) ? '*' : ''; ?></label>
+                            <input type="file" class="form-control" name="media_file" id="media_file" accept=".mp3,.wav,.ogg,.m4a,.mp4,.webm,.pdf">
+                            <div class="form-text" id="file_block_hint">Max 100MB. Audio: MP3, WAV, OGG, M4A. Video: MP4, WebM, OGG. PDF: 50MB.</div>
                             <?php if (!empty($resource['file_path'])): ?>
                                 <div class="alert alert-light border mt-2 mb-0 py-2 small">
                                     <strong>Current file:</strong> <?php echo htmlspecialchars(basename($resource['file_path'])); ?>
@@ -708,10 +710,16 @@ if ($action === 'add' || $action === 'edit') {
         var contentBlock = document.getElementById('content_block');
         var fileBlock = document.getElementById('file_block');
         var mediaFile = document.getElementById('media_file');
+        var fileHint = document.getElementById('file_block_hint');
         function toggle() {
-            var isText = typeSelect.value === 'text';
+            var type = typeSelect.value;
+            var isText = type === 'text';
             contentBlock.style.display = isText ? 'block' : 'none';
             fileBlock.style.display = isText ? 'none' : 'block';
+            if (mediaFile) {
+                mediaFile.accept = type === 'audio' ? '.mp3,.wav,.ogg,.m4a' : (type === 'video' ? '.mp4,.webm,.ogg' : '.pdf');
+            }
+            if (fileHint) fileHint.textContent = type === 'pdf' ? 'PDF only. Max 50MB.' : (type === 'audio' ? 'Audio: MP3, WAV, OGG, M4A. Max 100MB.' : 'Video: MP4, WebM, OGG. Max 100MB.');
         }
         typeSelect.addEventListener('change', toggle);
         toggle();

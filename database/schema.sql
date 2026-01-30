@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS discipleship_modules (
 CREATE TABLE IF NOT EXISTS discipleship_module_resources (
     id INT AUTO_INCREMENT PRIMARY KEY,
     module_id INT NOT NULL,
-    resource_type ENUM('text', 'audio', 'video') NOT NULL,
+    resource_type ENUM('text', 'audio', 'video', 'pdf') NOT NULL,
     title VARCHAR(255) DEFAULT NULL,
     content TEXT NULL,
     file_path VARCHAR(500) NULL,

@@ -233,7 +233,7 @@ $flash = getFlashMessage();
             </form>
             
             <div class="back-link">
-                <a href="../index.html">
+                <a href="../index.php">
                     <i class="bi bi-arrow-left me-2"></i>Back to Website
                 </a>
             </div>

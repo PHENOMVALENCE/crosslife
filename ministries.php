@@ -46,7 +46,7 @@ $ministries = getActiveMinistries();
     <div class="container-fluid container-xl position-relative">
 
       <div class="top-row d-flex align-items-center justify-content-between">
-        <a href="index.php" class="logo d-flex align-items-center">
+        <a href="index.html" class="logo d-flex align-items-center">
           <img src="assets/img/logo.png" alt="CrossLife Mission Network Logo">
           <h1 class="sitename"><?php echo htmlspecialchars($settings['site_name'] ?? 'CrossLife Mission Network'); ?></h1>
         </a>
@@ -71,9 +71,9 @@ $ministries = getActiveMinistries();
       <div class="container d-flex justify-content-center position-relative">
         <nav id="navmenu" class="navmenu">
           <ul>
-            <li><a href="index.php">Home</a></li>
-            <li><a href="index.php#about">About</a></li>
-            <li><a href="index.php#statement-of-faith">Statement of Faith</a></li>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#statement-of-faith">Statement of Faith</a></li>
             <li><a href="leadership.php">Leadership</a></li>
             <li><a href="ministries.php" class="active">Ministries</a></li>
             <li><a href="sermons.php">Sermons</a></li>
@@ -213,7 +213,7 @@ $ministries = getActiveMinistries();
 
         <div class="col-lg-4">
           <div class="footer-content">
-            <a href="index.php" class="logo d-flex align-items-center mb-4">
+            <a href="index.html" class="logo d-flex align-items-center mb-4">
               <span class="sitename"><?php echo htmlspecialchars($settings['site_name'] ?? 'CrossLife Mission Network'); ?></span>
             </a>
             <p class="mb-4">A non-denominational and inter-denominational Christian ministry in Dar es Salaam, Tanzania. We exist to manifest Sons of God who understand their identity in Christ and what Christ can accomplish through them.</p>
@@ -239,8 +239,8 @@ $ministries = getActiveMinistries();
           <div class="footer-links">
             <h4>Ministry</h4>
             <ul>
-              <li><a href="index.php#about"><i class="bi bi-chevron-right"></i> About Us</a></li>
-              <li><a href="index.php#statement-of-faith"><i class="bi bi-chevron-right"></i> Statement of Faith</a></li>
+              <li><a href="index.html#about"><i class="bi bi-chevron-right"></i> About Us</a></li>
+              <li><a href="index.html#statement-of-faith"><i class="bi bi-chevron-right"></i> Statement of Faith</a></li>
               <li><a href="contacts.html"><i class="bi bi-chevron-right"></i> Contact</a></li>
             </ul>
           </div>

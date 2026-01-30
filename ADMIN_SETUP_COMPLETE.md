@@ -13,7 +13,7 @@ crosslife/
 │   ├── includes/
 │   │   ├── header.php             # Admin header & sidebar
 │   │   └── footer.php             # Admin footer
-│   ├── index.php                  # Dashboard
+│   ├── index.html                  # Dashboard
 │   ├── login.php                  # Login page
 │   ├── logout.php                 # Logout handler
 │   ├── sermons.php                # Sermons CRUD

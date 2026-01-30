@@ -177,6 +177,8 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             flex: 1;
             margin-left: var(--sidebar-width);
             min-height: 100vh;
+            min-width: 0;
+            overflow-x: hidden;
         }
         
         .admin-header {
@@ -309,26 +311,154 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             padding: 0.5rem;
         }
         
-        @media (max-width: 768px) {
+        /* Mobile: sidebar off-canvas + overlay */
+        @media (max-width: 991.98px) {
             .admin-sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
+                width: 280px;
+                max-width: 85vw;
             }
-            
             .admin-sidebar.show {
                 transform: translateX(0);
             }
-            
+            .admin-sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .admin-sidebar-overlay.show {
+                display: block;
+                opacity: 1;
+            }
             .admin-main {
                 margin-left: 0;
+            }
+            .admin-header {
+                padding: 0 1rem;
+            }
+            .admin-header h1 {
+                font-size: 1.15rem;
+                min-width: 0;
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .admin-user-info {
+                display: none;
+            }
+            .admin-content {
+                padding: 1rem;
+            }
+            .admin-content .card-body,
+            .admin-content .card-header {
+                padding: 1rem;
+            }
+            .admin-content .table-responsive {
+                margin-left: -1rem;
+                margin-right: -1rem;
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .admin-content .btn {
+                font-size: 0.875rem;
+            }
+            .admin-content .d-flex.gap-2,
+            .admin-content .d-flex.gap-3 {
+                flex-wrap: wrap;
+            }
+            .admin-content table .btn {
+                margin-bottom: 0.25rem;
+            }
+            .admin-content .card-header .btn,
+            .admin-content .card-header .d-flex {
+                flex-wrap: wrap;
+            }
+        }
+        @media (max-width: 767.98px) {
+            .admin-content .d-flex.justify-content-between {
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+            .admin-content .table td {
+                font-size: 0.875rem;
+            }
+            .admin-content .table .btn-group,
+            .admin-content .table td > .d-inline {
+                display: flex !important;
+                flex-wrap: wrap;
+                gap: 0.25rem;
+            }
+        }
+        @media (max-width: 575.98px) {
+            .admin-header h1 {
+                font-size: 1rem;
+            }
+            .btn-logout span.d-none.d-sm-inline {
+                display: none !important;
+            }
+        }
+        .admin-sidebar-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            background: var(--surface-color);
+            color: var(--heading-color);
+            margin-right: 0.75rem;
+        }
+        .admin-sidebar-toggle:hover {
+            background: rgba(0,0,0,0.05);
+            color: var(--accent-color);
+        }
+        @media (max-width: 991.98px) {
+            .admin-sidebar-toggle {
+                display: flex;
+            }
+            .admin-sidebar {
+                position: relative;
+            }
+            .admin-sidebar-close {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(255,255,255,0.1);
+                border: none;
+                border-radius: 8px;
+                color: #fff;
+                font-size: 1.25rem;
+                cursor: pointer;
+                z-index: 1;
+            }
+            .admin-sidebar-close:hover {
+                background: rgba(255,255,255,0.2);
+                color: #fff;
             }
         }
     </style>
 </head>
 <body>
     <div class="admin-wrapper">
+        <div class="admin-sidebar-overlay" id="adminSidebarOverlay" aria-hidden="true"></div>
         <!-- Sidebar -->
-        <aside class="admin-sidebar">
+        <aside class="admin-sidebar" id="adminSidebar" aria-label="Main navigation">
+            <button type="button" class="admin-sidebar-close d-lg-none" id="adminSidebarClose" aria-label="Close menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
             <div class="sidebar-header">
                 <img src="../assets/img/logo.png" alt="CrossLife">
                 <h3>Cross Admin</h3>
@@ -372,8 +502,11 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </a>
                 
                 <div class="menu-section">System</div>
+                <a href="users.php" class="menu-item <?php echo $currentPage === 'users.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-people-fill"></i>Users & Students
+                </a>
                 <a href="settings.php" class="menu-item <?php echo $currentPage === 'settings.php' ? 'active' : ''; ?>">
-                    <i class="bi bi-gear"></i>Settings
+                    <i class="bi bi-book"></i>User Manual & Account
                 </a>
                 <a href="logout.php" class="menu-item">
                     <i class="bi bi-box-arrow-right"></i>Logout
@@ -384,14 +517,19 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <!-- Main Content -->
         <main class="admin-main">
             <header class="admin-header">
-                <h1><?php echo isset($pageTitle) ? $pageTitle : 'Dashboard'; ?></h1>
+                <div class="d-flex align-items-center flex-grow-1 min-w-0">
+                    <button type="button" class="admin-sidebar-toggle" id="adminSidebarToggle" aria-label="Open menu">
+                        <i class="bi bi-list" style="font-size: 1.5rem;"></i>
+                    </button>
+                    <h1 class="mb-0"><?php echo isset($pageTitle) ? $pageTitle : 'Dashboard'; ?></h1>
+                </div>
                 <div class="admin-user">
-                    <div class="admin-user-info">
+                    <div class="admin-user-info d-none d-md-block">
                         <div class="admin-user-name"><?php echo htmlspecialchars($currentAdmin['full_name']); ?></div>
                         <div class="admin-user-role"><?php echo ucfirst(str_replace('_', ' ', $currentAdmin['role'])); ?></div>
                     </div>
                     <a href="logout.php" class="btn-logout">
-                        <i class="bi bi-box-arrow-right me-1"></i>Logout
+                        <i class="bi bi-box-arrow-right me-1"></i><span class="d-none d-sm-inline">Logout</span>
                     </a>
                 </div>
             </header>

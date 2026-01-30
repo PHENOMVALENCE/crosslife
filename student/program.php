@@ -85,8 +85,13 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </div>
 <?php else: ?>
-    <h1 class="h3 mb-2"><?php echo htmlspecialchars($program['program_name']); ?></h1>
-    <p class="text-muted mb-4"><?php echo htmlspecialchars(mb_substr(strip_tags($program['description']), 0, 200)); ?>…</p>
+    <div class="program-header mb-4">
+        <h1 class="h3 mb-2"><?php echo htmlspecialchars($program['program_name']); ?></h1>
+        <p class="text-muted mb-0"><?php echo htmlspecialchars(mb_substr(strip_tags($program['description']), 0, 200)); ?>…</p>
+        <?php $totalModules = count($modules); if ($totalModules > 0): ?>
+            <p class="small text-muted mt-2 mb-0"><?php echo $totalModules; ?> module<?php echo $totalModules !== 1 ? 's' : ''; ?> in this program</p>
+        <?php endif; ?>
+    </div>
 
     <h2 class="h5 mb-3">Modules</h2>
     <?php if (empty($modules)): ?>
@@ -96,7 +101,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
         </div>
     <?php else: ?>
-        <?php foreach ($modules as $i => $mod): ?>
+        <?php $totalMods = count($modules); foreach ($modules as $i => $mod): ?>
             <?php
             $unlocked = $enrollmentId && discipleship_is_module_unlocked($enrollmentId, $mod['id'], $moduleIds);
             $passed = in_array($mod['id'], $passedIds, true);
@@ -104,7 +109,7 @@ require_once __DIR__ . '/includes/header.php';
             ?>
             <div class="<?php echo $rowClass; ?>">
                 <div class="d-flex flex-wrap align-items-center gap-2">
-                    <span class="module-num"><?php echo $i + 1; ?>.</span>
+                    <span class="module-num"><?php echo $i + 1; ?> of <?php echo $totalMods; ?></span>
                     <span class="fw-semibold"><?php echo htmlspecialchars($mod['title']); ?></span>
                     <?php if ($passed): ?>
                         <span class="badge badge-passed">Passed</span>

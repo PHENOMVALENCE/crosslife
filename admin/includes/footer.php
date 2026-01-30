@@ -109,6 +109,41 @@
             });
         }
         
+        // Admin mobile sidebar toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            var sidebar = document.getElementById('adminSidebar');
+            var overlay = document.getElementById('adminSidebarOverlay');
+            var toggle = document.getElementById('adminSidebarToggle');
+            function openSidebar() {
+                if (sidebar) sidebar.classList.add('show');
+                if (overlay) {
+                    overlay.classList.add('show');
+                    overlay.setAttribute('aria-hidden', 'false');
+                }
+                document.body.style.overflow = 'hidden';
+            }
+            function closeSidebar() {
+                if (sidebar) sidebar.classList.remove('show');
+                if (overlay) {
+                    overlay.classList.remove('show');
+                    overlay.setAttribute('aria-hidden', 'true');
+                }
+                document.body.style.overflow = '';
+            }
+            if (toggle) toggle.addEventListener('click', function() {
+                if (sidebar && sidebar.classList.contains('show')) closeSidebar();
+                else openSidebar();
+            });
+            if (overlay) overlay.addEventListener('click', closeSidebar);
+            var closeBtn = document.getElementById('adminSidebarClose');
+            if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+            if (sidebar) {
+                sidebar.querySelectorAll('.menu-item').forEach(function(link) {
+                    link.addEventListener('click', closeSidebar);
+                });
+            }
+        });
+
         // Auto-dismiss alerts
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.alert:not(.alert-permanent)').forEach(function(alert) {

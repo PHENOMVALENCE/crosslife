@@ -92,7 +92,7 @@ $siteName = SITE_NAME;
             </form>
             <p class="text-center text-muted small mt-3 mb-0">Don't have an account? <a href="register.php">Register</a></p>
             <div class="back-link">
-                <a href="../index.php"><i class="bi bi-arrow-left me-1"></i>Back to site</a>
+                <a href="../index.html"><i class="bi bi-arrow-left me-1"></i>Back to site</a>
             </div>
         </div>
     </div>

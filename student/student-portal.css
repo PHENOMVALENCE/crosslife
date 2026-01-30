@@ -113,6 +113,15 @@
 .module-content-block .content-html ul, .module-content-block .content-html ol { margin-bottom: 0.75rem; padding-left: 1.5rem; }
 .module-content-block audio, .module-content-block video { max-width: 100%; border-radius: 8px; }
 
+/* PDF viewer */
+.pdf-resource { border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; overflow: hidden; background: #f8f9fa; }
+.pdf-actions { padding: 0.5rem 0; }
+.pdf-embed { width: 100%; min-height: 70vh; height: 600px; border: none; display: block; }
+@media (max-width: 767.98px) {
+  .pdf-embed { min-height: 50vh; height: 400px; }
+}
+.text-accent { color: var(--student-accent); }
+
 /* Breadcrumb */
 .student-breadcrumb { font-size: 0.9rem; }
 .student-breadcrumb .breadcrumb-item + .breadcrumb-item::before { opacity: 0.6; }

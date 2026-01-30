@@ -94,29 +94,57 @@ require_once __DIR__ . '/includes/header.php';
     </ol>
 </nav>
 
-<h1 class="h3 mb-4"><?php echo htmlspecialchars($module['title']); ?></h1>
+<div class="module-header mb-4">
+    <h1 class="h3 mb-2"><?php echo htmlspecialchars($module['title']); ?></h1>
+    <a href="program.php?enrollment_id=<?php echo $enrollmentId; ?>" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to program</a>
+</div>
 <?php if (!empty($module['description'])): ?>
     <div class="module-content-block mb-4">
+        <h2 class="h6 text-muted mb-2">About this module</h2>
         <div class="content-html"><?php echo nl2br(htmlspecialchars($module['description'])); ?></div>
     </div>
 <?php endif; ?>
 
 <?php if (!empty($resources)): ?>
-    <h2 class="h5 mb-3">Learning materials</h2>
-    <?php foreach ($resources as $res): ?>
+    <section class="learning-materials mb-4">
+        <h2 class="h5 mb-3 d-flex align-items-center">
+            <i class="bi bi-journal-bookmark-fill me-2 text-accent"></i>
+            Learning materials
+        </h2>
+        <?php foreach ($resources as $idx => $res):
+            $resUrl = !empty($res['file_path']) ? discipleship_resource_url($res['file_path']) : '';
+            $resType = $res['resource_type'];
+        ?>
         <div class="module-content-block mb-4">
             <?php if (!empty($res['title'])): ?>
-                <h3 class="h6 mb-3"><?php echo htmlspecialchars($res['title']); ?></h3>
+                <h3 class="h6 mb-3 d-flex align-items-center">
+                    <?php if ($resType === 'text'): ?><i class="bi bi-card-text me-2 text-muted"></i>
+                    <?php elseif ($resType === 'audio'): ?><i class="bi bi-mic me-2 text-muted"></i>
+                    <?php elseif ($resType === 'video'): ?><i class="bi bi-play-circle me-2 text-muted"></i>
+                    <?php elseif ($resType === 'pdf'): ?><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>
+                    <?php endif; ?>
+                    <?php echo htmlspecialchars($res['title']); ?>
+                </h3>
             <?php endif; ?>
-            <?php if ($res['resource_type'] === 'text' && !empty($res['content'])): ?>
+            <?php if ($resType === 'text' && !empty($res['content'])): ?>
                 <div class="content-html"><?php echo strip_tags($res['content'], $allowedHtml); ?></div>
-            <?php elseif ($res['resource_type'] === 'audio' && !empty($res['file_path'])): ?>
-                <audio controls class="w-100" src="<?php echo htmlspecialchars(discipleship_resource_url($res['file_path'])); ?>">Your browser does not support audio.</audio>
-            <?php elseif ($res['resource_type'] === 'video' && !empty($res['file_path'])): ?>
-                <video controls class="w-100 rounded" style="max-height: 400px;" src="<?php echo htmlspecialchars(discipleship_resource_url($res['file_path'])); ?>">Your browser does not support video.</video>
+            <?php elseif ($resType === 'audio' && $resUrl): ?>
+                <audio controls class="w-100 rounded" src="<?php echo htmlspecialchars($resUrl); ?>">Your browser does not support audio.</audio>
+            <?php elseif ($resType === 'video' && $resUrl): ?>
+                <video controls class="w-100 rounded" style="max-height: 400px;" src="<?php echo htmlspecialchars($resUrl); ?>">Your browser does not support video.</video>
+            <?php elseif ($resType === 'pdf' && $resUrl): ?>
+                <div class="pdf-resource">
+                    <div class="pdf-actions mb-2">
+                        <a href="<?php echo htmlspecialchars($resUrl); ?>" target="_blank" rel="noopener" class="btn btn-outline-danger btn-sm">
+                            <i class="bi bi-box-arrow-up-right me-1"></i>Open PDF in new tab
+                        </a>
+                    </div>
+                    <iframe src="<?php echo htmlspecialchars($resUrl); ?>#toolbar=1" class="pdf-embed" title="<?php echo htmlspecialchars($res['title'] ?? 'PDF'); ?>"></iframe>
+                </div>
             <?php endif; ?>
         </div>
-    <?php endforeach; ?>
+        <?php endforeach; ?>
+    </section>
 <?php endif; ?>
 
 <?php if (!empty($questions)): ?>
