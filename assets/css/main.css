@@ -7360,6 +7360,159 @@ html, body {
   }
 }
 
+/*--------------------------------------------------------------
+# Giving Section (Support the Ministry) – simple, uncluttered
+--------------------------------------------------------------*/
+.giving.section {
+  padding: 100px 0;
+  background: var(--background-color);
+}
+
+.giving-content {
+  max-width: 480px;
+}
+
+.giving-subtitle {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-color);
+  margin-bottom: 0.75rem;
+}
+
+.giving-title {
+  font-family: var(--heading-font);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--heading-color);
+  margin-bottom: 1.5rem;
+  line-height: 1.25;
+}
+
+.giving-lead {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--default-color), transparent 15%);
+  margin-bottom: 2rem;
+}
+
+/* Single “Ways to Give” block */
+.giving-simple {
+  padding: 1.5rem 1.75rem;
+  background: var(--surface-color);
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--accent-color), transparent 92%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.giving-simple-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--heading-color);
+  margin: 0 0 1rem 0;
+}
+
+.giving-simple-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.giving-simple-icon {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.giving-simple-row div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.giving-simple-number {
+  font-size: 1rem;
+  color: var(--heading-color);
+}
+
+.giving-simple-name {
+  font-size: 0.9rem;
+  color: color-mix(in srgb, var(--default-color), transparent 25%);
+}
+
+.giving-cta {
+  display: inline-block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.giving-cta:hover {
+  color: color-mix(in srgb, var(--accent-color), black 15%);
+}
+
+.giving-image-wrapper {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+}
+
+.giving-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+@media (max-width: 991px) {
+  .giving.section {
+    padding: 80px 0;
+  }
+
+  .giving-content {
+    max-width: 100%;
+  }
+
+  .giving-title {
+    font-size: 1.85rem;
+  }
+
+  .giving-image-wrapper {
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .giving.section {
+    padding: 60px 0;
+  }
+
+  .giving-title {
+    font-size: 1.6rem;
+  }
+
+  .giving-lead {
+    margin-bottom: 1.5rem;
+  }
+
+  .giving-simple {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .giving-simple-row {
+    flex-wrap: wrap;
+  }
+}
+
 /* ================= RESPONSIVE TWEAKS ================= */
 
 @media (max-width: 767px) {
