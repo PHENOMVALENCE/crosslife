@@ -1919,6 +1919,180 @@ section,
   font-size: 1rem;
 }
 
+/* Compact Identity / Foundation / Culture cards */
+.feature-cards-compact {
+  margin-bottom: 0;
+}
+
+.feature-card-compact {
+  padding: 1.25rem 1.5rem;
+  height: 100%;
+}
+
+.feature-card-compact-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.feature-card-compact .feature-icon-compact {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.feature-card-compact .feature-icon-compact i {
+  font-size: 1.25rem;
+}
+
+.feature-card-compact-head h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0;
+  line-height: 1.3;
+  flex: 1;
+  min-width: 0;
+}
+
+.feature-card-compact-intro {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 0.875rem;
+  color: color-mix(in srgb, var(--default-color), transparent 20%);
+}
+
+.feature-card-compact .feature-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.feature-card-compact .feature-tags span {
+  display: inline-block;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8rem;
+  background: color-mix(in srgb, var(--accent-color), transparent 90%);
+  color: var(--heading-color);
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--accent-color), transparent 75%);
+  line-height: 1.3;
+}
+
+.feature-card-compact.highlighted .feature-tags span {
+  background: color-mix(in srgb, var(--accent-color), transparent 85%);
+  border-color: color-mix(in srgb, var(--accent-color), transparent 65%);
+}
+
+.feature-card-compact:hover {
+  transform: translateY(-4px);
+}
+
+/* Expandable card: teaser + "more" on same page */
+.feature-card-compact[data-expandable] {
+  cursor: pointer;
+}
+
+.feature-card-compact-head {
+  position: relative;
+}
+
+.feature-card-toggle {
+  margin-left: auto;
+  font-size: 1.1rem;
+  color: var(--accent-color);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.feature-card-read-more {
+  font-size: 0.85rem;
+  color: var(--accent-color);
+  font-weight: 500;
+  display: inline-block;
+  margin-top: 0.25rem;
+}
+
+.feature-card-more {
+  display: none;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid color-mix(in srgb, var(--accent-color), transparent 85%);
+}
+
+.feature-card-compact.expanded .feature-card-more {
+  display: block;
+  animation: featureExpand 0.3s ease;
+}
+
+.feature-card-compact.expanded .feature-card-read-more {
+  display: none;
+}
+
+.feature-card-compact.expanded .feature-card-toggle {
+  transform: rotate(180deg);
+}
+
+.feature-card-compact.expanded[data-expandable] {
+  cursor: default;
+}
+
+.feature-more-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+}
+
+.feature-more-list li {
+  padding: 0.35rem 0;
+  padding-left: 1.25rem;
+  position: relative;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--heading-color);
+}
+
+.feature-more-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-color);
+}
+
+.feature-card-more p {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin-bottom: 0.75rem;
+  color: color-mix(in srgb, var(--default-color), transparent 20%);
+}
+
+.feature-card-close {
+  margin-top: 0.25rem;
+}
+
+.feature-card-close:hover {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--contrast-color);
+}
+
+@keyframes featureExpand {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .features-cards .feature-image {
   border-radius: 12px;
   overflow: hidden;
@@ -6290,6 +6464,125 @@ html {
 .contact-item span {
   color: var(--default-color);
   font-size: 0.95rem;
+}
+
+/* Compact Senior Pastor layout (less space, horizontal on desktop) */
+.leader-card-compact {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.leader-card-compact .leader-card-inner {
+  flex-direction: column;
+}
+
+.leader-card-compact .leader-media {
+  padding-top: 75%;
+  border-radius: 16px 16px 0 0;
+}
+
+.leader-card-compact .leader-content {
+  padding: 1.5rem 1.75rem;
+}
+
+.leader-card-compact .leader-header {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom-width: 1px;
+}
+
+.leader-card-compact .leader-name {
+  font-size: 1.5rem;
+}
+
+.leader-card-compact .leader-initials {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.leader-card-compact .leader-bio-section {
+  margin-bottom: 1rem;
+}
+
+.leader-card-compact .leader-bio {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  margin-bottom: 0;
+}
+
+.leader-contact-inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  margin-top: 0;
+}
+
+.leader-contact-inline .contact-item {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.875rem;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.leader-contact-inline a.contact-item {
+  text-decoration: none;
+}
+
+.leader-contact-inline a.contact-item:hover {
+  color: var(--accent-color);
+}
+
+.leader-contact-inline .contact-item:hover {
+  transform: none;
+}
+
+@media (min-width: 768px) {
+  .leader-card-compact .leader-card-inner {
+    flex-direction: row;
+  }
+
+  .leader-card-compact .leader-media {
+    flex: 0 0 260px;
+    width: 260px;
+    padding-top: 0;
+    height: 320px;
+    border-radius: 16px 0 0 16px;
+  }
+
+  .leader-card-compact .leader-image-wrapper {
+    border-radius: 16px 0 0 16px;
+  }
+
+  .leader-card-compact .leader-image,
+  .leader-card-compact .leader-image-overlay {
+    border-radius: 16px 0 0 16px;
+  }
+
+  .leader-card-compact .leader-content {
+    flex: 1;
+    min-width: 0;
+    padding: 1.5rem 2rem;
+  }
+
+  .leader-card-compact .leader-header {
+    text-align: left;
+  }
+
+  .leader-card-compact .leader-name {
+    font-size: 1.4rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .leader-card-compact .leader-media {
+    flex: 0 0 280px;
+    width: 280px;
+    height: 340px;
+  }
 }
 
 /* Responsive Design */
