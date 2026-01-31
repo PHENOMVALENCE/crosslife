@@ -143,7 +143,7 @@ h6 {
 # Global Header
 --------------------------------------------------------------*/
 .header {
-  --background-color: rgba(255, 255, 255, 0);
+  --background-color: rgba(26, 23, 21, 0.95); /* Solid dark background on mobile by default */
   --default-color: #ffffff;
   --heading-color: #ffffff;
   color: var(--default-color);
@@ -219,16 +219,18 @@ h6 {
   --nav-color: rgba(255, 255, 255, 0.9);
 }
 
-/* Header at top of page: solid background so logo and nav are always visible (same as ministries) */
-body:not(.scrolled) .header {
-  --background-color: rgba(255, 255, 255, 0.98);
-  --heading-color: #1a1715;
-  --default-color: #1a1715;
-  --nav-color: #1a1715;
-}
+/* Header at top of page on desktop: transparent/light background for hero pages */
+@media (min-width: 992px) {
+  body:not(.scrolled) .header {
+    --background-color: rgba(255, 255, 255, 0.05);
+    --heading-color: #ffffff;
+    --default-color: #ffffff;
+    --nav-color: rgba(255, 255, 255, 0.8);
+  }
 
-body:not(.scrolled) .header .nav-wrap {
-  background-color: transparent;
+  body:not(.scrolled) .header .nav-wrap {
+    background-color: color-mix(in srgb, var(--default-color), transparent 92%);
+  }
 }
 
 /*--------------------------------------------------------------
@@ -6999,12 +7001,21 @@ html {
   /* Navigation – keep header distinct from hero on mobile */
   .header {
     padding: 15px 0 0 0;
-    background-color: #1a1715 !important;
+    background-color: rgba(26, 23, 21, 0.98) !important;
+    --background-color: rgba(26, 23, 21, 0.98) !important;
+    --heading-color: #ffffff !important;
+    --default-color: #ffffff !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   }
   
   .header .top-row .logo .sitename {
     font-size: 20px;
+    color: #ffffff !important;
+  }
+  
+  .header .social-links a,
+  .header .btn-search {
+    color: #ffffff !important;
   }
   
   /* Push main content below fixed header on mobile */
