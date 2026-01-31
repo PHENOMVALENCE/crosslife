@@ -1,7 +1,7 @@
 <?php
 /**
  * Configuration File
- * CrossLife Mission Network Admin Panel
+ * CrossLife Mission Network Cross Admin
  */
 
 // Start session if not already started
@@ -9,15 +9,31 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Site Configuration
-define('SITE_NAME', 'CrossLife Mission Network');
-define('SITE_URL', 'http://localhost/crosslife_2');
-define('ADMIN_URL', SITE_URL . '/admin');
-define('UPLOAD_DIR', '../assets/img/uploads/');
-define('UPLOAD_URL', SITE_URL . '/assets/img/uploads/');
-// Audio sermons: stored under project root /uploads/audio/
-define('AUDIO_UPLOAD_DIR', dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'audio' . DIRECTORY_SEPARATOR);
-define('AUDIO_UPLOAD_WEB', '/uploads/audio/');
+// Site Configuration (guard so database.php can load first without duplicate constant warnings)
+if (!defined('SITE_NAME')) {
+    define('SITE_NAME', 'CrossLife Mission Network');
+}
+if (!defined('SITE_URL')) {
+    define('SITE_URL', 'http://localhost/crosslife');
+}
+if (!defined('ADMIN_URL')) {
+    define('ADMIN_URL', SITE_URL . '/admin');
+}
+// Uploads: physical folder = project_root/assets/img/uploads (e.g. C:\xampp\htdocs\crosslife\assets\img\uploads)
+if (!defined('UPLOAD_DIR')) {
+    define('UPLOAD_DIR', __DIR__ . '/../../assets/img/uploads/');
+}
+// Path stored in database (relative to web root); no leading slash
+if (!defined('UPLOAD_PATH_RELATIVE')) {
+    define('UPLOAD_PATH_RELATIVE', 'assets/img/uploads/');
+}
+if (!defined('UPLOAD_URL')) {
+    define('UPLOAD_URL', (defined('SITE_URL') ? SITE_URL : '') . '/' . UPLOAD_PATH_RELATIVE);
+}
+// Student portal (School of Christ Academy)
+if (!defined('STUDENT_LOGIN_URL')) {
+    define('STUDENT_LOGIN_URL', (defined('SITE_URL') ? SITE_URL : '') . '/student/login.php');
+}
 
 // Security
 define('SESSION_TIMEOUT', 3600); // 1 hour in seconds
@@ -63,6 +79,44 @@ function requireLogin() {
         header('Location: ' . ADMIN_URL . '/login.php');
         exit;
     }
+}
+
+/**
+ * Check if student (learner) is logged in
+ */
+function isStudentLoggedIn() {
+    if (!isset($_SESSION['student_id'])) {
+        return false;
+    }
+    if (isset($_SESSION['student_last_activity']) && (time() - $_SESSION['student_last_activity'] > SESSION_TIMEOUT)) {
+        unset($_SESSION['student_id'], $_SESSION['student_last_activity']);
+        return false;
+    }
+    $_SESSION['student_last_activity'] = time();
+    return true;
+}
+
+/**
+ * Require student login - redirect to student login if not logged in
+ */
+function requireStudentLogin() {
+    if (!isStudentLoggedIn()) {
+        header('Location: ' . STUDENT_LOGIN_URL);
+        exit;
+    }
+}
+
+/**
+ * Get current student (for student portal)
+ */
+function getCurrentStudent() {
+    if (!isStudentLoggedIn()) {
+        return null;
+    }
+    $db = getDB();
+    $stmt = $db->prepare("SELECT id, email, full_name, phone, status FROM discipleship_students WHERE id = ? AND status = 'active'");
+    $stmt->execute([$_SESSION['student_id']]);
+    return $stmt->fetch();
 }
 
 /**
@@ -166,6 +220,33 @@ function validateEmail($email) {
         return false;
     }
     return true;
+}
+
+/**
+ * Get filesystem path for an image_url stored in DB (relative or full URL).
+ * Returns path under UPLOAD_DIR if the URL points to uploads folder; otherwise null.
+ */
+function upload_path_to_disk($image_url) {
+    if (empty($image_url) || strpos($image_url, 'uploads/') === false && strpos($image_url, 'uploads\\') === false) {
+        return null;
+    }
+    $filename = basename(parse_url($image_url, PHP_URL_PATH) ?: $image_url);
+    $path = (defined('UPLOAD_DIR') ? rtrim(UPLOAD_DIR, '/\\') . DIRECTORY_SEPARATOR : '') . $filename;
+    return $path;
+}
+
+/**
+ * Return URL suitable for img src from DB image_url (handles relative path or full URL).
+ */
+function image_url_for_display($image_url) {
+    if (empty($image_url)) {
+        return '';
+    }
+    if (strpos($image_url, 'http') === 0) {
+        return $image_url;
+    }
+    $base = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';
+    return $base . '/' . ltrim($image_url, '/');
 }
 
 /**

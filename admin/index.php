@@ -44,32 +44,13 @@ $recentEvents = $db->query("SELECT * FROM events WHERE event_date >= CURDATE() O
                 <div class="d-flex align-items-center">
                     <div class="flex-shrink-0">
                         <div style="width: 60px; height: 60px; background: rgba(200, 87, 22, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                            <i class="bi bi-play-circle" style="font-size: 2rem; color: var(--accent-color);"></i>
+                            <i class="bi bi-building" style="font-size: 2rem; color: var(--accent-color);"></i>
                         </div>
                     </div>
                     <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0" style="color: var(--default-color); opacity: 0.7;">Sermons</h6>
-                        <h3 class="mb-0" style="color: var(--heading-color);"><?php echo $stats['sermons']['total']; ?></h3>
-                        <small style="color: var(--accent-color);"><?php echo $stats['sermons']['published']; ?> published</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div style="width: 60px; height: 60px; background: rgba(200, 87, 22, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                            <i class="bi bi-calendar-event" style="font-size: 2rem; color: var(--accent-color);"></i>
-                        </div>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0" style="color: var(--default-color); opacity: 0.7;">Events</h6>
-                        <h3 class="mb-0" style="color: var(--heading-color);"><?php echo $stats['events']['total']; ?></h3>
-                        <small style="color: var(--accent-color);"><?php echo $stats['events']['upcoming']; ?> upcoming</small>
+                        <h6 class="mb-0" style="color: var(--default-color); opacity: 0.7;">Total Ministries</h6>
+                        <h3 class="mb-0" style="color: var(--heading-color);"><?php echo $stats['ministries']['total']; ?></h3>
+                        <small style="color: var(--accent-color);">Active ministries</small>
                     </div>
                 </div>
             </div>
@@ -86,7 +67,7 @@ $recentEvents = $db->query("SELECT * FROM events WHERE event_date >= CURDATE() O
                         </div>
                     </div>
                     <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0" style="color: var(--default-color); opacity: 0.7;">Inquiries</h6>
+                        <h6 class="mb-0" style="color: var(--default-color); opacity: 0.7;">Total Messages</h6>
                         <h3 class="mb-0" style="color: var(--heading-color);"><?php echo $stats['contacts']['total']; ?></h3>
                         <small style="color: var(--accent-color);"><?php echo $stats['contacts']['new']; ?> new</small>
                     </div>
@@ -105,9 +86,28 @@ $recentEvents = $db->query("SELECT * FROM events WHERE event_date >= CURDATE() O
                         </div>
                     </div>
                     <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0" style="color: var(--default-color); opacity: 0.7;">Prayer Requests</h6>
+                        <h6 class="mb-0" style="color: var(--default-color); opacity: 0.7;">Total Prayer Requests</h6>
                         <h3 class="mb-0" style="color: var(--heading-color);"><?php echo $stats['prayers']['total']; ?></h3>
                         <small style="color: var(--accent-color);"><?php echo $stats['prayers']['new']; ?> new</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div style="width: 60px; height: 60px; background: rgba(200, 87, 22, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-chat-left-text" style="font-size: 2rem; color: var(--accent-color);"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-0" style="color: var(--default-color); opacity: 0.7;">Total Feedback</h6>
+                        <h3 class="mb-0" style="color: var(--heading-color);"><?php echo $stats['feedback']['total']; ?></h3>
+                        <small style="color: var(--accent-color);"><?php echo $stats['feedback']['new']; ?> new</small>
                     </div>
                 </div>
             </div>

@@ -10,7 +10,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($pageTitle) ? $pageTitle . ' - ' : ''; ?>Admin Panel - <?php echo SITE_NAME; ?></title>
+    <title><?php echo isset($pageTitle) ? $pageTitle . ' - ' : ''; ?>Cross Admin - <?php echo SITE_NAME; ?></title>
     
     <!-- Favicons -->
     <link href="../assets/img/logo.png" rel="icon">
@@ -24,6 +24,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     
+    <!-- DataTables CSS (via CDN for admin tables) -->
+    <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css" rel="stylesheet">
+    
     <!-- Main CSS File -->
     <link href="../assets/css/main.css" rel="stylesheet">
     
@@ -36,6 +40,59 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         body {
             background: #f5f5f5;
             font-family: var(--default-font);
+        }
+
+        /* DataTables styling for admin */
+        .dataTables_wrapper .dataTables_length label,
+        .dataTables_wrapper .dataTables_filter label {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            margin-left: 0.5rem;
+            max-width: 220px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid #ced4da;
+            font-size: 0.9rem;
+            background-color: #ffffff;
+        }
+
+        .dataTables_wrapper .dt-buttons {
+            margin-bottom: 0.25rem;
+        }
+
+        .dataTables_wrapper .dt-buttons .btn {
+            margin: 0 0.25rem 0.25rem 0;
+            font-size: 0.85rem;
+            padding: 0.25rem 0.6rem;
+        }
+
+        /* Make export buttons use the site accent color */
+        .dataTables_wrapper .dt-buttons .btn.btn-outline-secondary {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .dataTables_wrapper .dt-buttons .btn.btn-outline-secondary:hover,
+        .dataTables_wrapper .dt-buttons .btn.btn-outline-secondary:focus {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        /* On small screens stack controls nicely */
+        @media (max-width: 767.98px) {
+            .dataTables_wrapper .dataTables_length,
+            .dataTables_wrapper .dataTables_filter,
+            .dataTables_wrapper .dt-buttons {
+                text-align: left;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        .dataTables_wrapper .dataTables_paginate .pagination {
+            margin-top: 0.5rem;
         }
         
         .admin-wrapper {
@@ -120,6 +177,8 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             flex: 1;
             margin-left: var(--sidebar-width);
             min-height: 100vh;
+            min-width: 0;
+            overflow-x: hidden;
         }
         
         .admin-header {
@@ -184,6 +243,20 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             padding: 2rem;
         }
         
+        /* DataTables tweaks for admin */
+        .dataTables_wrapper .dataTables_paginate .pagination {
+            margin-top: 1rem;
+        }
+        
+        .dataTables_wrapper .dataTables_length select {
+            padding: 0.25rem 1.5rem 0.25rem 0.75rem;
+        }
+        
+        .dt-buttons .btn {
+            margin-right: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+        
         .card {
             background: var(--surface-color);
             border-radius: 12px;
@@ -238,29 +311,157 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             padding: 0.5rem;
         }
         
-        @media (max-width: 768px) {
+        /* Mobile: sidebar off-canvas + overlay */
+        @media (max-width: 991.98px) {
             .admin-sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
+                width: 280px;
+                max-width: 85vw;
             }
-            
             .admin-sidebar.show {
                 transform: translateX(0);
             }
-            
+            .admin-sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .admin-sidebar-overlay.show {
+                display: block;
+                opacity: 1;
+            }
             .admin-main {
                 margin-left: 0;
+            }
+            .admin-header {
+                padding: 0 1rem;
+            }
+            .admin-header h1 {
+                font-size: 1.15rem;
+                min-width: 0;
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .admin-user-info {
+                display: none;
+            }
+            .admin-content {
+                padding: 1rem;
+            }
+            .admin-content .card-body,
+            .admin-content .card-header {
+                padding: 1rem;
+            }
+            .admin-content .table-responsive {
+                margin-left: -1rem;
+                margin-right: -1rem;
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .admin-content .btn {
+                font-size: 0.875rem;
+            }
+            .admin-content .d-flex.gap-2,
+            .admin-content .d-flex.gap-3 {
+                flex-wrap: wrap;
+            }
+            .admin-content table .btn {
+                margin-bottom: 0.25rem;
+            }
+            .admin-content .card-header .btn,
+            .admin-content .card-header .d-flex {
+                flex-wrap: wrap;
+            }
+        }
+        @media (max-width: 767.98px) {
+            .admin-content .d-flex.justify-content-between {
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+            .admin-content .table td {
+                font-size: 0.875rem;
+            }
+            .admin-content .table .btn-group,
+            .admin-content .table td > .d-inline {
+                display: flex !important;
+                flex-wrap: wrap;
+                gap: 0.25rem;
+            }
+        }
+        @media (max-width: 575.98px) {
+            .admin-header h1 {
+                font-size: 1rem;
+            }
+            .btn-logout span.d-none.d-sm-inline {
+                display: none !important;
+            }
+        }
+        .admin-sidebar-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            background: var(--surface-color);
+            color: var(--heading-color);
+            margin-right: 0.75rem;
+        }
+        .admin-sidebar-toggle:hover {
+            background: rgba(0,0,0,0.05);
+            color: var(--accent-color);
+        }
+        @media (max-width: 991.98px) {
+            .admin-sidebar-toggle {
+                display: flex;
+            }
+            .admin-sidebar {
+                position: relative;
+            }
+            .admin-sidebar-close {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(255,255,255,0.1);
+                border: none;
+                border-radius: 8px;
+                color: #fff;
+                font-size: 1.25rem;
+                cursor: pointer;
+                z-index: 1;
+            }
+            .admin-sidebar-close:hover {
+                background: rgba(255,255,255,0.2);
+                color: #fff;
             }
         }
     </style>
 </head>
 <body>
     <div class="admin-wrapper">
+        <div class="admin-sidebar-overlay" id="adminSidebarOverlay" aria-hidden="true"></div>
         <!-- Sidebar -->
-        <aside class="admin-sidebar">
+        <aside class="admin-sidebar" id="adminSidebar" aria-label="Main navigation">
+            <button type="button" class="admin-sidebar-close d-lg-none" id="adminSidebarClose" aria-label="Close menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
             <div class="sidebar-header">
                 <img src="../assets/img/logo.png" alt="CrossLife">
-                <h3>Admin Panel</h3>
+                <h3>Cross Admin</h3>
             </div>
             
             <nav class="sidebar-menu">
@@ -271,7 +472,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 
                 <div class="menu-section">Content</div>
                 <a href="sermons.php" class="menu-item <?php echo $currentPage === 'sermons.php' ? 'active' : ''; ?>">
-                    <i class="bi bi-headphones"></i>Audio Sermons
+                    <i class="bi bi-play-circle"></i>Sermons
                 </a>
                 <a href="events.php" class="menu-item <?php echo $currentPage === 'events.php' ? 'active' : ''; ?>">
                     <i class="bi bi-calendar-event"></i>Events
@@ -296,10 +497,16 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <a href="feedback.php" class="menu-item <?php echo $currentPage === 'feedback.php' ? 'active' : ''; ?>">
                     <i class="bi bi-chat-left-text"></i>Feedback
                 </a>
+                <a href="newsletter.php" class="menu-item <?php echo $currentPage === 'newsletter.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-envelope-paper-heart"></i>Newsletter
+                </a>
                 
                 <div class="menu-section">System</div>
+                <a href="users.php" class="menu-item <?php echo $currentPage === 'users.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-people-fill"></i>Users & Students
+                </a>
                 <a href="settings.php" class="menu-item <?php echo $currentPage === 'settings.php' ? 'active' : ''; ?>">
-                    <i class="bi bi-gear"></i>Settings
+                    <i class="bi bi-book"></i>User Manual & Account
                 </a>
                 <a href="logout.php" class="menu-item">
                     <i class="bi bi-box-arrow-right"></i>Logout
@@ -310,14 +517,19 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <!-- Main Content -->
         <main class="admin-main">
             <header class="admin-header">
-                <h1><?php echo isset($pageTitle) ? $pageTitle : 'Dashboard'; ?></h1>
+                <div class="d-flex align-items-center flex-grow-1 min-w-0">
+                    <button type="button" class="admin-sidebar-toggle" id="adminSidebarToggle" aria-label="Open menu">
+                        <i class="bi bi-list" style="font-size: 1.5rem;"></i>
+                    </button>
+                    <h1 class="mb-0"><?php echo isset($pageTitle) ? $pageTitle : 'Dashboard'; ?></h1>
+                </div>
                 <div class="admin-user">
-                    <div class="admin-user-info">
+                    <div class="admin-user-info d-none d-md-block">
                         <div class="admin-user-name"><?php echo htmlspecialchars($currentAdmin['full_name']); ?></div>
                         <div class="admin-user-role"><?php echo ucfirst(str_replace('_', ' ', $currentAdmin['role'])); ?></div>
                     </div>
                     <a href="logout.php" class="btn-logout">
-                        <i class="bi bi-box-arrow-right me-1"></i>Logout
+                        <i class="bi bi-box-arrow-right me-1"></i><span class="d-none d-sm-inline">Logout</span>
                     </a>
                 </div>
             </header>

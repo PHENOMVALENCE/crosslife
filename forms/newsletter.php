@@ -8,6 +8,7 @@
 ob_start();
 
 require_once __DIR__ . '/../admin/config/config.php';
+require_once __DIR__ . '/../includes/EmailService.php';
 
 // Clear any output buffer
 ob_clean();
@@ -48,18 +49,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $db->prepare("UPDATE newsletter_subscriptions SET status = 'active', name = ?, unsubscribed_at = NULL, updated_at = NOW() WHERE email = ?");
                 $stmt->execute([$name ?: null, $email]);
                 $response['status'] = 'success';
-                $response['message'] = 'Thank you for resubscribing to our newsletter!';
+                $response['message'] = 'You are back on our newsletter list. Welcome again to CrossLife updates!';
             } else {
                 // Already subscribed
                 $response['status'] = 'success';
-                $response['message'] = 'You are already subscribed to our newsletter.';
+                $response['message'] = 'You are already subscribed to the CrossLife newsletter.';
             }
         } else {
             // New subscription
             $stmt = $db->prepare("INSERT INTO newsletter_subscriptions (email, name, status) VALUES (?, ?, 'active')");
             $stmt->execute([$email, $name ?: null]);
             $response['status'] = 'success';
-            $response['message'] = 'Thank you for subscribing to our newsletter!';
+            $response['message'] = 'You have been subscribed to the CrossLife newsletter. Thank you for staying connected!';
+        }
+        
+        // Send welcome email + admin notification via EmailService
+        try {
+            if (class_exists('EmailService')) {
+                $emailService = new EmailService();
+                $emailService->sendNewsletterWelcome($email, $name ?: null);
+            }
+        } catch (Throwable $e) {
+            error_log('Newsletter notification email failed: ' . $e->getMessage());
         }
     } catch (PDOException $e) {
         if ($e->getCode() == 23000) { // Duplicate entry

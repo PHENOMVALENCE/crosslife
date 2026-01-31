@@ -1,10 +1,11 @@
 <?php
 /**
  * Ministries Page - CrossLife Mission Network
- * Dynamic content from database
+ * Displays active ministries from the database (managed in Admin → Ministries).
+ * Data: ministries table; only status = 'active' is shown, ordered by display_order, name.
  */
-require_once 'includes/db-functions.php';
-require_once 'admin/config/config.php'; // For SITE_URL constant
+require_once __DIR__ . '/admin/config/config.php'; // Load config first so SITE_NAME etc. defined once
+require_once __DIR__ . '/includes/db-functions.php';
 
 $settings = getSiteSettings();
 $ministries = getActiveMinistries();
@@ -45,7 +46,7 @@ $ministries = getActiveMinistries();
     <div class="container-fluid container-xl position-relative">
 
       <div class="top-row d-flex align-items-center justify-content-between">
-        <a href="index.php" class="logo d-flex align-items-center">
+        <a href="index.html" class="logo d-flex align-items-center">
           <img src="assets/img/logo.png" alt="CrossLife Mission Network Logo">
           <h1 class="sitename"><?php echo htmlspecialchars($settings['site_name'] ?? 'CrossLife Mission Network'); ?></h1>
         </a>
@@ -73,12 +74,11 @@ $ministries = getActiveMinistries();
             <li><a href="index.html">Home</a></li>
             <li><a href="index.html#about">About</a></li>
             <li><a href="index.html#statement-of-faith">Statement of Faith</a></li>
-            <li><a href="index.html#leadership">Leadership</a></li>
+            <li><a href="leadership.php">Leadership</a></li>
             <li><a href="ministries.php" class="active">Ministries</a></li>
-            <li><a href="sermons.html">Sermons</a></li>
-            <li><a href="discipleship.html">Discipleship</a></li>
+            <li><a href="sermons.php">Sermons</a></li>
+            <li><a href="discipleship.php">Discipleship</a></li>
             <li><a href="events.html">Events</a></li>
-            <li><a href="galley.html">Gallery</a></li>
             <li><a href="contacts.html">Contact</a></li>
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
@@ -108,66 +108,10 @@ $ministries = getActiveMinistries();
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
         <?php if (empty($ministries)): ?>
-          <!-- Default ministries if database is empty -->
-          <div class="row g-4">
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="150">
-              <div class="ministry-card">
-                <h3>Teaching Ministry</h3>
-                <p>Dedicated to preaching the Gospel of the Cross, the Message of Sonship, the Gospel of the Kingdom of God, and the Gospel of Immortality through systematic teaching and exposition of God's Word.</p>
-                <div class="ministry-image mt-3">
-                  <img src="assets/img/_MG_4880.jpg" alt="Teaching Ministry" class="img-fluid rounded">
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-              <div class="ministry-card">
-                <h3>Discipleship Ministry</h3>
-                <p>Through the School of Christ Academy, we provide structured discipleship programs including Foundation Classes, Leadership Training, and Ministry Development to equip believers for the work of ministry.</p>
-                <div class="ministry-image mt-3">
-                  <img src="assets/img/_MG_4902.jpg" alt="Discipleship Ministry" class="img-fluid rounded">
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="250">
-              <div class="ministry-card">
-                <h3>Prayer Ministry</h3>
-                <p>A community of Life, Love, Sonship, and Prayer, committed to intercession for the church, the nation, and the global body of Christ.</p>
-                <div class="ministry-image mt-3">
-                  <img src="assets/img/_MG_5021.jpg" alt="Prayer Ministry" class="img-fluid rounded">
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
-              <div class="ministry-card">
-                <h3>Outreach Ministry</h3>
-                <p>Reaching the global community by showing the Way, revealing the Truth, and sharing Life through Christ, establishing a global network of manifested Sons of God.</p>
-                <div class="ministry-image mt-3">
-                  <img src="assets/img/_MG_5281.jpg" alt="Outreach Ministry" class="img-fluid rounded">
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="350">
-              <div class="ministry-card">
-                <h3>Worship Ministry</h3>
-                <p>Leading the church in worship, recognizing that worship is central to the life of CrossLife as we live in Zion, the realm of Christ.</p>
-                <div class="ministry-image mt-3">
-                  <img src="assets/img/_MG_5282.jpg" alt="Worship Ministry" class="img-fluid rounded">
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="400">
-              <div class="ministry-card">
-                <h3>Fellowship Ministry</h3>
-                <p>Creating an environment where believers experience the Life of God and grow in their identity in Christ, welcoming people from diverse backgrounds, ages, and walks of life.</p>
-                <div class="ministry-image mt-3">
-                  <img src="assets/img/_MG_4859.jpg" alt="Fellowship Ministry" class="img-fluid rounded">
-                </div>
-              </div>
+          <!-- Empty state: only database content is shown; add ministries in Admin → Ministries -->
+          <div class="row justify-content-center" data-aos="fade-up">
+            <div class="col-lg-8 text-center py-5">
+              <p class="lead text-muted">No ministries are currently listed. Content here is managed from the Cross Admin (Admin → Ministries). Add and publish ministries there to display them on this page.</p>
             </div>
           </div>
         <?php else: ?>
@@ -188,7 +132,7 @@ $ministries = getActiveMinistries();
                   // Already relative path
                 }
               } else {
-                $image = 'assets/img/_MG_4880.jpg';
+                $image = 'assets/img/_MG_4880.jpg'; // Fallback when admin does not set an image (layout only)
               }
               $image = htmlspecialchars($image);
             ?>
@@ -276,16 +220,16 @@ $ministries = getActiveMinistries();
 
             <div class="newsletter-form">
               <h5>Stay Updated</h5>
-              <form action="forms/newsletter.php" method="post" class="php-email-form">
+              <form action="forms/newsletter.php" method="post" class="newsletter-form-submit">
                 <div class="input-group">
                   <input type="email" name="email" class="form-control" placeholder="Enter your email" required="">
                   <button type="submit" class="btn-subscribe">
                     <i class="bi bi-send"></i>
                   </button>
                 </div>
-                <div class="loading">Loading</div>
-                <div class="error-message"></div>
-                <div class="sent-message">Thank you for subscribing!</div>
+                <div class="loading" style="display: none;">Loading</div>
+                <div class="error-message" style="display: none;"></div>
+                <div class="sent-message" style="display: none;">You have been subscribed to the CrossLife newsletter. Thank you for staying connected!</div>
               </form>
             </div>
           </div>
