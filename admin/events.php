@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt->rowCount() > 0) {
                 redirect('events.html', 'Event added successfully.');
             } else {
-                redirect('events.html?action=add', 'Failed to add event. Please try again.', 'danger');
+                redirect('events.php?action=add', 'Failed to add event. Please try again.', 'danger');
             }
         }
     } catch (PDOException $e) {
@@ -167,7 +167,7 @@ if ($action === 'add' || $action === 'edit') {
                 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-primary"><i class="bi bi-save me-2"></i>Save Event</button>
-                    <a href="events.html" class="btn btn-secondary">Cancel</a>
+                    <a href="events.php" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
@@ -175,8 +175,35 @@ if ($action === 'add' || $action === 'edit') {
     <?php
 } else {
     try {
-        // Load all events for DataTables (it handles pagination, filtering, and sorting client-side)
-        $stmt = $db->query("SELECT * FROM events ORDER BY event_date DESC");
+        $statusFilter = $_GET['status'] ?? 'all';
+        $validStatuses = ['upcoming', 'ongoing', 'completed', 'cancelled'];
+        if ($statusFilter !== 'all' && !in_array($statusFilter, $validStatuses)) {
+            $statusFilter = 'all';
+        }
+        
+        $page = max(1, intval($_GET['page'] ?? 1));
+        $offset = ($page - 1) * ITEMS_PER_PAGE;
+        
+        // Use prepared statement to prevent SQL injection
+        if ($statusFilter !== 'all') {
+            $countStmt = $db->prepare("SELECT COUNT(*) as total FROM events WHERE status = ?");
+            $countStmt->execute([$statusFilter]);
+            $total = $countStmt->fetch()['total'];
+            
+            $stmt = $db->prepare("SELECT * FROM events WHERE status = ? ORDER BY event_date DESC LIMIT ? OFFSET ?");
+            $stmt->bindValue(1, $statusFilter, PDO::PARAM_STR);
+            $stmt->bindValue(2, ITEMS_PER_PAGE, PDO::PARAM_INT);
+            $stmt->bindValue(3, $offset, PDO::PARAM_INT);
+        } else {
+            $countStmt = $db->query("SELECT COUNT(*) as total FROM events");
+            $total = $countStmt->fetch()['total'];
+            
+            $stmt = $db->prepare("SELECT * FROM events ORDER BY event_date DESC LIMIT ? OFFSET ?");
+            $stmt->bindValue(1, ITEMS_PER_PAGE, PDO::PARAM_INT);
+            $stmt->bindValue(2, $offset, PDO::PARAM_INT);
+        }
+        
+        $stmt->execute();
         $events = $stmt->fetchAll();
     } catch (PDOException $e) {
         error_log("Database error loading events: " . $e->getMessage());
@@ -197,17 +224,17 @@ if ($action === 'add' || $action === 'edit') {
             <a href="?status=upcoming" class="btn btn-sm btn-outline-<?php echo ($_GET['status'] ?? '') === 'upcoming' ? 'primary' : 'secondary'; ?>">Upcoming</a>
             <a href="?status=ongoing" class="btn btn-sm btn-outline-<?php echo ($_GET['status'] ?? '') === 'ongoing' ? 'primary' : 'secondary'; ?>">Ongoing</a>
             <a href="?status=completed" class="btn btn-sm btn-outline-<?php echo ($_GET['status'] ?? '') === 'completed' ? 'primary' : 'secondary'; ?>">Completed</a>
-            <a href="events.html?action=add" class="btn btn-primary ms-2"><i class="bi bi-plus-circle me-2"></i>Add New Event</a>
+            <a href="events.php?action=add" class="btn btn-primary ms-2"><i class="bi bi-plus-circle me-2"></i>Add New Event</a>
         </div>
     </div>
     
     <div class="card">
         <div class="card-body">
             <?php if (empty($events)): ?>
-                <p class="text-muted">No events found. <a href="events.html?action=add">Add your first event</a>.</p>
+                <p class="text-muted">No events found. <a href="events.php?action=add">Add your first event</a>.</p>
             <?php else: ?>
                 <div class="table-responsive">
-                    <table class="table table-hover datatable" data-dt-options='{"order":[[1,"desc"]]}'>
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>Title</th>
@@ -225,7 +252,7 @@ if ($action === 'add' || $action === 'edit') {
                                     <td><?php echo htmlspecialchars($event['location']); ?></td>
                                     <td><span class="badge bg-<?php echo $event['status'] === 'upcoming' ? 'success' : ($event['status'] === 'ongoing' ? 'warning' : 'secondary'); ?>"><?php echo ucfirst($event['status']); ?></span></td>
                                     <td>
-                                        <a href="events.html?action=edit&id=<?php echo $event['id']; ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                        <a href="events.php?action=edit&id=<?php echo $event['id']; ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
                                         <form method="POST" style="display: inline;" onsubmit="return confirm('Delete this event?');">
                                             <input type="hidden" name="id" value="<?php echo $event['id']; ?>">
                                             <button type="submit" name="delete" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
@@ -236,6 +263,18 @@ if ($action === 'add' || $action === 'edit') {
                         </tbody>
                     </table>
                 </div>
+                
+                <?php if ($totalPages > 1): ?>
+                    <nav>
+                        <ul class="pagination">
+                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                <li class="page-item <?php echo $i === $page ? 'active' : ''; ?>">
+                                    <a class="page-link" href="?page=<?php echo $i; ?>&status=<?php echo $statusFilter; ?>"><?php echo $i; ?></a>
+                                </li>
+                            <?php endfor; ?>
+                        </ul>
+                    </nav>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>

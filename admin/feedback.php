@@ -133,12 +133,52 @@ if ($action === 'view' && $id) {
     <?php
 } else {
     try {
-        // Load all records for DataTables (it handles pagination, filtering, and sorting client-side)
-        $stmt = $db->query("SELECT * FROM feedback ORDER BY created_at DESC");
+        $statusFilter = $_GET['status'] ?? 'all';
+        $typeFilter = $_GET['type'] ?? 'all';
+        $validStatuses = ['new', 'reviewed', 'addressed', 'archived'];
+        $validTypes = ['praise', 'suggestion', 'concern', 'testimony', 'other'];
+        
+        if ($statusFilter !== 'all' && !in_array($statusFilter, $validStatuses)) {
+            $statusFilter = 'all';
+        }
+        if ($typeFilter !== 'all' && !in_array($typeFilter, $validTypes)) {
+            $typeFilter = 'all';
+        }
+        
+        $page = max(1, intval($_GET['page'] ?? 1));
+        $offset = ($page - 1) * ITEMS_PER_PAGE;
+        
+        // Use prepared statements to prevent SQL injection
+        $where = [];
+        $params = [];
+        if ($statusFilter !== 'all') {
+            $where[] = "status = ?";
+            $params[] = $statusFilter;
+        }
+        if ($typeFilter !== 'all') {
+            $where[] = "feedback_type = ?";
+            $params[] = $typeFilter;
+        }
+        $whereClause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
+        
+        $countStmt = $db->prepare("SELECT COUNT(*) as total FROM feedback $whereClause");
+        $countStmt->execute($params);
+        $total = $countStmt->fetch()['total'];
+        $totalPages = ceil($total / ITEMS_PER_PAGE);
+        
+        $params[] = ITEMS_PER_PAGE;
+        $params[] = $offset;
+        $stmt = $db->prepare("SELECT * FROM feedback $whereClause ORDER BY created_at DESC LIMIT ? OFFSET ?");
+        foreach ($params as $i => $param) {
+            $stmt->bindValue($i + 1, $param, is_int($param) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+        $stmt->execute();
         $feedbacks = $stmt->fetchAll();
     } catch (PDOException $e) {
         error_log("Database error loading feedback: " . $e->getMessage());
         $feedbacks = [];
+        $total = 0;
+        $totalPages = 0;
         $flash = getFlashMessage();
         if (!$flash) {
             $_SESSION['flash_message'] = 'Error loading feedback. Please refresh the page.';
@@ -148,6 +188,10 @@ if ($action === 'view' && $id) {
     ?>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Feedback</h2>
+        <div>
+            <a href="?status=all&type=all" class="btn btn-sm btn-outline-<?php echo $statusFilter === 'all' && $typeFilter === 'all' ? 'primary' : 'secondary'; ?>">All</a>
+            <a href="?status=new&type=all" class="btn btn-sm btn-outline-<?php echo $statusFilter === 'new' ? 'primary' : 'secondary'; ?>">New</a>
+        </div>
     </div>
     
     <div class="card">
@@ -156,7 +200,7 @@ if ($action === 'view' && $id) {
                 <p class="text-muted">No feedback found.</p>
             <?php else: ?>
                 <div class="table-responsive">
-                    <table class="table table-hover datatable" data-dt-options='{"order":[[4,"desc"]] }'>
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -187,6 +231,18 @@ if ($action === 'view' && $id) {
                         </tbody>
                     </table>
                 </div>
+                
+                <?php if ($totalPages > 1): ?>
+                    <nav>
+                        <ul class="pagination">
+                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                <li class="page-item <?php echo $i === $page ? 'active' : ''; ?>">
+                                    <a class="page-link" href="?page=<?php echo $i; ?>&status=<?php echo $statusFilter; ?>&type=<?php echo $typeFilter; ?>"><?php echo $i; ?></a>
+                                </li>
+                            <?php endfor; ?>
+                        </ul>
+                    </nav>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>

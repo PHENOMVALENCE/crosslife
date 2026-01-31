@@ -8,7 +8,6 @@
 ob_start();
 
 require_once __DIR__ . '/../admin/config/config.php';
-require_once __DIR__ . '/../includes/EmailService.php';
 
 // Clear any output buffer
 ob_clean();
@@ -49,19 +48,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $db->prepare("INSERT INTO feedback (name, email, feedback_type, message, status) VALUES (?, ?, ?, ?, 'new')");
         $stmt->execute([$name ?: null, $email ?: null, $feedback_type, $message]);
         
-        // Send email notification + auto-reply via EmailService
-        try {
-            if (class_exists('EmailService')) {
-                $emailService = new EmailService();
-                $emailService->sendFeedbackNotification([
-                    'name' => $name,
-                    'email' => $email,
-                    'feedback_type' => $feedback_type,
-                    'message' => $message,
-                ]);
+        // Send email notification (optional - will fail silently if PHPMailer not configured)
+        if (file_exists(__DIR__ . '/../admin/config/email.php')) {
+            require_once __DIR__ . '/../admin/config/email.php';
+            try {
+                sendFeedbackNotification($name ?: 'Anonymous', $email, $feedback_type, $message);
+            } catch (Exception $e) {
+                // Log but don't fail the form submission
+                error_log('Email notification failed: ' . $e->getMessage());
             }
-        } catch (Throwable $e) {
-            error_log('Feedback email error: ' . $e->getMessage());
         }
         
         $response['status'] = 'success';

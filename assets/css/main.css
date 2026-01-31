@@ -143,7 +143,7 @@ h6 {
 # Global Header
 --------------------------------------------------------------*/
 .header {
-  --background-color: rgba(26, 23, 21, 0.95); /* Solid dark background on mobile by default */
+  --background-color: rgba(255, 255, 255, 0);
   --default-color: #ffffff;
   --heading-color: #ffffff;
   color: var(--default-color);
@@ -151,11 +151,6 @@ h6 {
   transition: all 0.5s;
   z-index: 997;
   padding: 20px 0 0 0;
-}
-
-/* Prevent fixed header from overlapping hero/main on all pages */
-.header.fixed-top + .main {
-  padding-top: 120px;
 }
 
 .header .top-row {
@@ -214,23 +209,6 @@ h6 {
 ------------------------------*/
 .scrolled .header {
   --background-color: #1a1715;
-  --heading-color: #ffffff;
-  --default-color: #ffffff;
-  --nav-color: rgba(255, 255, 255, 0.9);
-}
-
-/* Header at top of page on desktop: transparent/light background for hero pages */
-@media (min-width: 992px) {
-  body:not(.scrolled) .header {
-    --background-color: rgba(255, 255, 255, 0.05);
-    --heading-color: #ffffff;
-    --default-color: #ffffff;
-    --nav-color: rgba(255, 255, 255, 0.8);
-  }
-
-  body:not(.scrolled) .header .nav-wrap {
-    background-color: color-mix(in srgb, var(--default-color), transparent 92%);
-  }
 }
 
 /*--------------------------------------------------------------
@@ -1004,11 +982,6 @@ section,
   overflow: hidden;
 }
 
-/* Prevent hero content from sitting under fixed header (anchor + mobile) */
-#hero {
-  scroll-margin-top: 120px;
-}
-
 .hero .hero-content {
   width: 100%;
   position: relative;
@@ -1137,9 +1110,9 @@ section,
   }
 }
 
-/* Page Header Styles (hero section below site header) */
+/* Page Header Styles */
 .page-header {
-  padding: 60px 0 80px;
+  padding: 120px 0 80px;
   position: relative;
   background-size: cover;
   background-position: center;
@@ -1241,16 +1214,12 @@ section,
 
 @media (max-width: 992px) {
   .hero {
-    padding: 150px 0 60px 0 !important; /* Extra top padding so content sits below fixed header on mobile */
+    padding: 80px 0;
     min-height: 80vh;
   }
 
   .hero .hero-content {
     min-height: 80vh;
-  }
-
-  #hero {
-    scroll-margin-top: 150px;
   }
 }
 
@@ -1948,180 +1917,6 @@ section,
 .features-cards .feature-benefits li i {
   color: var(--accent-color);
   font-size: 1rem;
-}
-
-/* Compact Identity / Foundation / Culture cards */
-.feature-cards-compact {
-  margin-bottom: 0;
-}
-
-.feature-card-compact {
-  padding: 1.25rem 1.5rem;
-  height: 100%;
-}
-
-.feature-card-compact-head {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
-.feature-card-compact .feature-icon-compact {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  margin-bottom: 0;
-  flex-shrink: 0;
-}
-
-.feature-card-compact .feature-icon-compact i {
-  font-size: 1.25rem;
-}
-
-.feature-card-compact-head h3 {
-  font-size: 1.15rem;
-  font-weight: 700;
-  margin-bottom: 0;
-  line-height: 1.3;
-  flex: 1;
-  min-width: 0;
-}
-
-.feature-card-compact-intro {
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin-bottom: 0.875rem;
-  color: color-mix(in srgb, var(--default-color), transparent 20%);
-}
-
-.feature-card-compact .feature-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.feature-card-compact .feature-tags span {
-  display: inline-block;
-  padding: 0.35rem 0.65rem;
-  font-size: 0.8rem;
-  background: color-mix(in srgb, var(--accent-color), transparent 90%);
-  color: var(--heading-color);
-  border-radius: 6px;
-  border: 1px solid color-mix(in srgb, var(--accent-color), transparent 75%);
-  line-height: 1.3;
-}
-
-.feature-card-compact.highlighted .feature-tags span {
-  background: color-mix(in srgb, var(--accent-color), transparent 85%);
-  border-color: color-mix(in srgb, var(--accent-color), transparent 65%);
-}
-
-.feature-card-compact:hover {
-  transform: translateY(-4px);
-}
-
-/* Expandable card: teaser + "more" on same page */
-.feature-card-compact[data-expandable] {
-  cursor: pointer;
-}
-
-.feature-card-compact-head {
-  position: relative;
-}
-
-.feature-card-toggle {
-  margin-left: auto;
-  font-size: 1.1rem;
-  color: var(--accent-color);
-  transition: transform 0.3s ease;
-  flex-shrink: 0;
-}
-
-.feature-card-read-more {
-  font-size: 0.85rem;
-  color: var(--accent-color);
-  font-weight: 500;
-  display: inline-block;
-  margin-top: 0.25rem;
-}
-
-.feature-card-more {
-  display: none;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid color-mix(in srgb, var(--accent-color), transparent 85%);
-}
-
-.feature-card-compact.expanded .feature-card-more {
-  display: block;
-  animation: featureExpand 0.3s ease;
-}
-
-.feature-card-compact.expanded .feature-card-read-more {
-  display: none;
-}
-
-.feature-card-compact.expanded .feature-card-toggle {
-  transform: rotate(180deg);
-}
-
-.feature-card-compact.expanded[data-expandable] {
-  cursor: default;
-}
-
-.feature-more-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1rem 0;
-}
-
-.feature-more-list li {
-  padding: 0.35rem 0;
-  padding-left: 1.25rem;
-  position: relative;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: var(--heading-color);
-}
-
-.feature-more-list li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.65em;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-color);
-}
-
-.feature-card-more p {
-  font-size: 0.9rem;
-  line-height: 1.55;
-  margin-bottom: 0.75rem;
-  color: color-mix(in srgb, var(--default-color), transparent 20%);
-}
-
-.feature-card-close {
-  margin-top: 0.25rem;
-}
-
-.feature-card-close:hover {
-  background: var(--accent-color);
-  border-color: var(--accent-color);
-  color: var(--contrast-color);
-}
-
-@keyframes featureExpand {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .features-cards .feature-image {
@@ -4699,7 +4494,7 @@ section,
   }
 
   .page-header {
-    padding: 150px 0 60px !important; /* Clear fixed header on mobile */
+    padding: 100px 0 60px;
   }
 
   .page-header h1 {
@@ -5841,7 +5636,7 @@ section,
 /* Responsive Enhancements */
 @media (max-width: 992px) {
   .page-header {
-    padding: 150px 0 80px !important;
+    padding: 120px 0 80px;
   }
 
   .page-header h1 {
@@ -5858,7 +5653,7 @@ section,
 
 @media (max-width: 768px) {
   .page-header {
-    padding: 150px 0 60px !important; /* Clear fixed header on mobile */
+    padding: 100px 0 60px;
   }
 
   .page-header h1 {
@@ -5906,167 +5701,6 @@ section,
 
 .ministries.section .container {
   position: relative;
-}
-
-/* Leadership Page – same base theme as ministries */
-.leadership.section {
-  background: linear-gradient(to bottom, var(--background-color) 0%, color-mix(in srgb, var(--background-color), white 5%) 100%);
-}
-
-.leadership.section .container {
-  position: relative;
-}
-
-/* Leader cards – good size, clear photo, contact as styled buttons (match ministry-card theme) */
-.leader-card {
-  background: var(--surface-color);
-  padding: 0;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  height: 100%;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.leader-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: var(--accent-color);
-  transform: scaleX(0);
-  transition: transform 0.4s ease;
-  z-index: 1;
-}
-
-.leader-card:hover::before {
-  transform: scaleX(1);
-}
-
-.leader-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-}
-
-/* Photo: good size, consistent aspect ratio, object-fit cover for clean crop */
-.leader-card__image {
-  aspect-ratio: 1;
-  overflow: hidden;
-  background: var(--background-color);
-  flex-shrink: 0;
-}
-
-.leader-card__image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
-  transition: transform 0.4s ease;
-}
-
-.leader-card:hover .leader-card__image img {
-  transform: scale(1.05);
-}
-
-.leader-card__body {
-  padding: 1.5rem 1.75rem 1.75rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.leader-card__name {
-  font-size: 1.35rem;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-  color: var(--heading-color);
-  line-height: 1.3;
-}
-
-.leader-card__role {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--accent-color);
-}
-
-.leader-card__departments {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin-bottom: 0.75rem;
-}
-
-.leader-card__departments .tag {
-  display: inline-block;
-  padding: 0.25rem 0.6rem;
-  font-size: 0.72rem;
-  font-weight: 500;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--accent-color), transparent 88%);
-  color: var(--accent-color);
-}
-
-.leader-card__bio {
-  font-size: 0.9rem;
-  color: var(--default-color);
-  line-height: 1.65;
-  margin-bottom: 1rem;
-  flex: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Contact: styled as buttons (outline + filled on hover) */
-.leader-card__contact {
-  margin-top: auto;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.leader-card__contact .contact-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--default-color);
-  margin-bottom: 0.6rem;
-}
-
-.leader-card__contact-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.leader-card__contact a.contact-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--accent-color);
-  background: color-mix(in srgb, var(--accent-color), transparent 92%);
-  border: 1px solid color-mix(in srgb, var(--accent-color), transparent 70%);
-  border-radius: 8px;
-  text-decoration: none;
-  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
-}
-
-.leader-card__contact a.contact-btn:hover {
-  background: var(--accent-color);
-  color: var(--contrast-color);
-  border-color: var(--accent-color);
-  text-decoration: none;
 }
 
 /* Sermons Page */
@@ -6658,125 +6292,6 @@ html {
   font-size: 0.95rem;
 }
 
-/* Compact Senior Pastor layout (less space, horizontal on desktop) */
-.leader-card-compact {
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.leader-card-compact .leader-card-inner {
-  flex-direction: column;
-}
-
-.leader-card-compact .leader-media {
-  padding-top: 75%;
-  border-radius: 16px 16px 0 0;
-}
-
-.leader-card-compact .leader-content {
-  padding: 1.5rem 1.75rem;
-}
-
-.leader-card-compact .leader-header {
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom-width: 1px;
-}
-
-.leader-card-compact .leader-name {
-  font-size: 1.5rem;
-}
-
-.leader-card-compact .leader-initials {
-  font-size: 0.95rem;
-  margin-bottom: 0.5rem;
-}
-
-.leader-card-compact .leader-bio-section {
-  margin-bottom: 1rem;
-}
-
-.leader-card-compact .leader-bio {
-  font-size: 0.95rem;
-  line-height: 1.65;
-  margin-bottom: 0;
-}
-
-.leader-contact-inline {
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding-top: 1rem;
-  margin-top: 0;
-}
-
-.leader-contact-inline .contact-item {
-  padding: 0.4rem 0.75rem;
-  font-size: 0.875rem;
-  color: inherit;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.leader-contact-inline a.contact-item {
-  text-decoration: none;
-}
-
-.leader-contact-inline a.contact-item:hover {
-  color: var(--accent-color);
-}
-
-.leader-contact-inline .contact-item:hover {
-  transform: none;
-}
-
-@media (min-width: 768px) {
-  .leader-card-compact .leader-card-inner {
-    flex-direction: row;
-  }
-
-  .leader-card-compact .leader-media {
-    flex: 0 0 260px;
-    width: 260px;
-    padding-top: 0;
-    height: 320px;
-    border-radius: 16px 0 0 16px;
-  }
-
-  .leader-card-compact .leader-image-wrapper {
-    border-radius: 16px 0 0 16px;
-  }
-
-  .leader-card-compact .leader-image,
-  .leader-card-compact .leader-image-overlay {
-    border-radius: 16px 0 0 16px;
-  }
-
-  .leader-card-compact .leader-content {
-    flex: 1;
-    min-width: 0;
-    padding: 1.5rem 2rem;
-  }
-
-  .leader-card-compact .leader-header {
-    text-align: left;
-  }
-
-  .leader-card-compact .leader-name {
-    font-size: 1.4rem;
-  }
-}
-
-@media (min-width: 992px) {
-  .leader-card-compact .leader-media {
-    flex: 0 0 280px;
-    width: 280px;
-    height: 340px;
-  }
-}
-
 /* Responsive Design */
 @media (max-width: 991px) {
   .leader-content {
@@ -6899,23 +6414,10 @@ html {
     font-size: 2rem !important;
   }
   
-  /* Hero Section - padding-top clears fixed header so text doesn't overlap */
+  /* Hero Section */
   .hero {
-    padding: 160px 0 40px 0 !important;
+    padding: 80px 0 40px 0;
     min-height: 70vh;
-  }
-
-  #hero {
-    scroll-margin-top: 160px;
-  }
-
-  /* Page header & title - clear fixed header on all pages */
-  .page-header {
-    padding: 160px 0 50px !important;
-  }
-
-  .page-title {
-    padding: 160px 0 60px !important;
   }
   
   .hero h1 {
@@ -6938,8 +6440,8 @@ html {
     margin-bottom: 0.5rem;
   }
   
-  /* Sections - exclude hero/page-header which need extra top padding for fixed header */
-  section:not(.hero):not(.page-header), .section:not(.hero):not(.page-header) {
+  /* Sections */
+  section, .section {
     padding: 40px 0;
   }
   
@@ -6998,41 +6500,13 @@ html {
     padding: 0.5rem 0;
   }
   
-  /* Navigation – keep header distinct from hero on mobile */
+  /* Navigation */
   .header {
     padding: 15px 0 0 0;
-    background-color: rgba(26, 23, 21, 0.98) !important;
-    --background-color: rgba(26, 23, 21, 0.98) !important;
-    --heading-color: #ffffff !important;
-    --default-color: #ffffff !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   }
   
   .header .top-row .logo .sitename {
     font-size: 20px;
-    color: #ffffff !important;
-  }
-  
-  .header .social-links a,
-  .header .btn-search {
-    color: #ffffff !important;
-  }
-  
-  /* Push main content below fixed header on mobile */
-  .header.fixed-top + .main {
-    padding-top: 100px;
-  }
-  
-  .page-header {
-    padding: 40px 0 60px;
-  }
-  
-  .page-header h1 {
-    font-size: 2rem;
-  }
-  
-  .page-header p {
-    font-size: 1rem;
   }
   
   /* Contact Forms */
@@ -7077,7 +6551,7 @@ html {
 /* Medium Devices (tablets, 768px and up) */
 @media (min-width: 768px) and (max-width: 991.98px) {
   .hero {
-    padding: 120px 0 50px 0; /* Clear fixed header on tablet */
+    padding: 100px 0 50px 0;
   }
   
   .hero h1 {
@@ -7108,16 +6582,8 @@ html {
   }
 }
 
-/* Mobile-specific improvements - hero/header/page-header/page-title clear fixed header */
+/* Mobile-specific improvements */
 @media (max-width: 991.98px) {
-  .page-header {
-    padding-top: 150px !important;
-  }
-
-  .page-title {
-    padding-top: 150px !important;
-  }
-
   /* Navigation */
   .navmenu ul {
     max-height: calc(100vh - 100px);
@@ -7210,7 +6676,7 @@ html {
 @media (max-width: 991.98px) and (orientation: landscape) {
   .hero {
     min-height: 60vh;
-    padding: 130px 0 30px 0 !important; /* Keep content below fixed header */
+    padding: 60px 0 30px 0;
   }
   
   .section-title {
@@ -7295,477 +6761,5 @@ html, body {
   .footer,
   .scroll-top {
     display: none !important;
-  }
-
-
-}
-
-/* Slider */
-.slider {
-  overflow: hidden;
-  width: 100%;
-  padding: 60px 0;
-}
-
-.slider-track {
-  display: flex;
-  width: calc(380px * 10 + 32px * 10);
-  animation: scroll 28s linear infinite;
-}
-
-.slider-item {
-  min-width: 200px;
-  margin-right: 20px;
-}
-
-/* FEATURE CARD */
-.feature-card1 {
-  background: linear-gradient(160deg, #c85716, #0b0b0b);
-  height: 300px;
-  display: flex;
-  flex-direction: column;
-  border-radius: 10px;
-  padding: 20px;
-  color: #ffffff;
-  border: 1.5px solid #c85716;
-  box-shadow:
-    0 0 15px rgba(255, 196, 2, 0.25),
-    0 10px 40px rgba(0, 0, 0, 0.8);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
-
-.feature-card1:hover {
-  transform: translateY(-10px);
-  box-shadow:
-    0 0 30px rgba(212, 175, 55, 0.6),
-    0 20px 50px rgba(0, 0, 0, 0.9);
-}
-
-/*/* Icon
-.feature-icon {
-  width: 64px;
-  height: 64px;
-  background: linear-gradient(135deg, #d4af37, #f5d76e);
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.feature-icon i {
-  font-size: 28px;
-  color: #000;
-}
-
-/* Title */
-.feature-card1 h3 {
-  font-size: 1.4rem;
-  margin-bottom: 12px;
-  color: #f5d76e;
-}
-
-/* Text */
-.feature-card1 p {
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: #dcdcdc;
-}
-
-/* Benefits list */
-.feature-benefits {
-  list-style: none;
-  padding: 0;
-  margin-top: 18px;
-}
-
-.feature-benefits li {
-  display: flex;
-  align-items: center;
-  font-size: 0.9rem;
-  margin-bottom: 10px;
-  color: #eaeaea;
-}
-
-.feature-benefits i {
-  color: #d4af37;
-  margin-right: 10px;
-  font-size: 1rem;
-}
-
-/* Infinite animation */
-@keyframes scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-/* Pause on hover */
-.slider-track:hover {
-  animation-play-state: paused;
-}
-
-/* ================= FEATURES CARDS SECTION ================= */
-
-/* Card wrapper */
-.feature-card {
-  background-color: #c85716;
-  border-radius: 18px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
-}
-
-/* Card hover */
-.feature-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
-}
-
-/* Card image */
-.feature-card .card-img-top {
-  width: 140px;
-  height: 140px;
-  margin: 2rem auto 0;       /* center image */
-  border-radius: 30%;
-  object-fit: cover;
-  border: 4px solid rgba(255, 255, 255, 0.4);
-  box-shadow:
-    0 10px 30px #c85716,
-    inset 0 0 0 #c85716;
-  background: #c85716;
-}
-
-/* Card body */
-/* Space between image and text */
-.feature-card .card-body {
-  padding-top: 1.25rem;
-  text-align: center;          /* keeps layout balanced */
-}
-
-.feature-card .card-text {
-  margin-top: 0.75rem;
-}
-
-
-/* Title */
-/* Fix heading alignment */
-.feature-card .card-title {
-  display: block;              /* remove flex distortion */
-  text-align: left;            /* straight text */
-  letter-spacing: 0.3px;
-}
-
-.feature-card .card-title i {
-  margin-right: 6px;
-  vertical-align: middle;
-}
-/* Text */
-.feature-card .card-text {
-  font-size: 0.95rem;
-  line-height: 1.65;
-  color: #c85716;
-  margin-bottom: 3px;
-}
-
-/* Footer */
-.feature-card .card-footer {
-  background-color: transparent;
-  border-top: none;
-  padding: 1.25rem 1.75rem 1.75rem;
-}
-
-/* Button */
-.feature-card .btn {
-  border-radius: 999px;
-  padding: 0.45rem 1.4rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #ffffff;
-  background-color: #c85716;
-  border: none;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-/* Button hover */
-.feature-card .btn:hover {
-  background-color: #c85716;
-  transform: translateY(-2px);
-}
-
-/*--------------------------------------------------------------
-# Church Activities (What We Do) Section
---------------------------------------------------------------*/
-.what-we-do.section {
-  padding: 80px 0;
-}
-
-.what-we-do .activity-card {
-  background: var(--surface-color);
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(200, 87, 22, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.what-we-do .activity-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 40px rgba(200, 87, 22, 0.12);
-}
-
-.what-we-do .activity-card .card-img-top {
-  width: 100%;
-  height: 180px;
-  margin: 0;
-  border-radius: 0;
-  object-fit: cover;
-  border: none;
-  border-bottom: 3px solid rgba(200, 87, 22, 0.2);
-}
-
-.what-we-do .activity-card .card-body {
-  padding: 1.5rem 1.75rem;
-  text-align: left;
-  flex: 1;
-}
-
-.what-we-do .activity-card .card-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--heading-color);
-  margin-bottom: 0.5rem;
-}
-
-.what-we-do .activity-card .card-title i {
-  color: var(--accent-color);
-  margin-right: 0.35rem;
-}
-
-.what-we-do .activity-card .card-text {
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: var(--default-color);
-  margin-bottom: 0;
-}
-
-.what-we-do .activity-card .card-footer {
-  padding: 1rem 1.75rem 1.5rem;
-  text-align: center;
-}
-
-/* Church Activities buttons (links styled as buttons) */
-.what-we-do .btn-activity {
-  display: inline-block;
-  padding: 0.5rem 1.5rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #fff !important;
-  background: var(--accent-color);
-  border: 2px solid var(--accent-color);
-  border-radius: 999px;
-  text-decoration: none !important;
-  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
-}
-
-.what-we-do .btn-activity:hover {
-  background: color-mix(in srgb, var(--accent-color), black 12%);
-  border-color: color-mix(in srgb, var(--accent-color), black 12%);
-  color: #fff !important;
-  transform: translateY(-2px);
-}
-
-@media (max-width: 767px) {
-  .what-we-do.section {
-    padding: 60px 0;
-  }
-
-  .what-we-do .activity-card .card-img-top {
-    height: 160px;
-  }
-
-  .what-we-do .activity-card .card-body {
-    padding: 1.25rem 1.5rem;
-  }
-
-  .what-we-do .activity-card .card-footer {
-    padding: 1rem 1.5rem;
-  }
-
-  .what-we-do .btn-activity {
-    padding: 0.5rem 1.25rem;
-    font-size: 0.875rem;
-  }
-}
-
-/*--------------------------------------------------------------
-# Giving Section (Support the Ministry) – simple, uncluttered
---------------------------------------------------------------*/
-.giving.section {
-  padding: 100px 0;
-  background: var(--background-color);
-}
-
-.giving-content {
-  max-width: 480px;
-}
-
-.giving-subtitle {
-  display: inline-block;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--accent-color);
-  margin-bottom: 0.75rem;
-}
-
-.giving-title {
-  font-family: var(--heading-font);
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--heading-color);
-  margin-bottom: 1.5rem;
-  line-height: 1.25;
-}
-
-.giving-lead {
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: color-mix(in srgb, var(--default-color), transparent 15%);
-  margin-bottom: 2rem;
-}
-
-/* Single “Ways to Give” block */
-.giving-simple {
-  padding: 1.5rem 1.75rem;
-  background: var(--surface-color);
-  border-radius: 14px;
-  border: 1px solid color-mix(in srgb, var(--accent-color), transparent 92%);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-}
-
-.giving-simple-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--heading-color);
-  margin: 0 0 1rem 0;
-}
-
-.giving-simple-row {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-}
-
-.giving-simple-icon {
-  flex-shrink: 0;
-  width: 56px;
-  height: 56px;
-  object-fit: contain;
-}
-
-.giving-simple-row div {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.giving-simple-number {
-  font-size: 1rem;
-  color: var(--heading-color);
-}
-
-.giving-simple-name {
-  font-size: 0.9rem;
-  color: color-mix(in srgb, var(--default-color), transparent 25%);
-}
-
-.giving-cta {
-  display: inline-block;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--accent-color);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.giving-cta:hover {
-  color: color-mix(in srgb, var(--accent-color), black 15%);
-}
-
-.giving-image-wrapper {
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
-}
-
-.giving-image {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 16px;
-  object-fit: cover;
-}
-
-@media (max-width: 991px) {
-  .giving.section {
-    padding: 80px 0;
-  }
-
-  .giving-content {
-    max-width: 100%;
-  }
-
-  .giving-title {
-    font-size: 1.85rem;
-  }
-
-  .giving-image-wrapper {
-    margin-top: 2rem;
-  }
-}
-
-@media (max-width: 767px) {
-  .giving.section {
-    padding: 60px 0;
-  }
-
-  .giving-title {
-    font-size: 1.6rem;
-  }
-
-  .giving-lead {
-    margin-bottom: 1.5rem;
-  }
-
-  .giving-simple {
-    padding: 1.25rem 1.5rem;
-  }
-
-  .giving-simple-row {
-    flex-wrap: wrap;
-  }
-}
-
-/* ================= RESPONSIVE TWEAKS ================= */
-
-@media (max-width: 767px) {
-  .features-cards {
-    padding: 60px 0;
-  }
-
-  .feature-card .card-img-top {
-    height: 200px;
-  }
-
-  .feature-card .card-body {
-    padding: 1.5rem;
   }
 }

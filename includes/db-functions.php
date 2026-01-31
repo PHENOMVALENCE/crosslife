@@ -1,8 +1,7 @@
 <?php
 /**
  * Database Functions for Frontend
- * Single source of truth: frontend pages should display only data returned by these
- * functions so the Cross Admin controls what appears on the public site.
+ * Functions to fetch data from database for display on frontend pages
  */
 
 require_once __DIR__ . '/../admin/config/database.php';
@@ -49,7 +48,7 @@ function getAllEvents($limit = null) {
 }
 
 /**
- * Get active ministries (used by public ministries page; data managed in Admin → Ministries)
+ * Get active ministries
  */
 function getActiveMinistries() {
     $db = getDB();
@@ -67,21 +66,12 @@ function getActiveDiscipleshipPrograms() {
 }
 
 /**
- * Get active leadership for frontend display.
- * Returns only columns needed for the public leadership page; excludes internal fields.
- * Order: display_order, then name for stable sorting.
+ * Get active leadership
  */
 function getActiveLeadership() {
     $db = getDB();
-    $stmt = $db->query(
-        "SELECT id, name, role, " .
-        "COALESCE(departments, '') AS departments, " .
-        "bio, image_url, email, phone " .
-        "FROM leadership " .
-        "WHERE status = 'active' " .
-        "ORDER BY display_order ASC, name ASC"
-    );
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $db->query("SELECT * FROM leadership WHERE status = 'active' ORDER BY display_order ASC, name ASC");
+    return $stmt->fetchAll();
 }
 
 /**
