@@ -8,6 +8,7 @@
 ob_start();
 
 require_once __DIR__ . '/../admin/config/config.php';
+require_once __DIR__ . '/../includes/EmailService.php';
 
 // Clear any output buffer
 ob_clean();
@@ -40,15 +41,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $db->prepare("INSERT INTO prayer_requests (name, email, prayer_request, status) VALUES (?, ?, ?, 'new')");
         $stmt->execute([$name ?: null, $email ?: null, $prayer_request]);
         
-        // Send email notification (optional - will fail silently if PHPMailer not configured)
-        if (file_exists(__DIR__ . '/../admin/config/email.php')) {
-            require_once __DIR__ . '/../admin/config/email.php';
-            try {
-                sendPrayerRequestNotification($name ?: 'Anonymous', $email, $prayer_request);
-            } catch (Exception $e) {
-                // Log but don't fail the form submission
-                error_log('Email notification failed: ' . $e->getMessage());
+        // Send email notification + auto-reply via EmailService
+        try {
+            if (class_exists('EmailService')) {
+                $emailService = new EmailService();
+                $emailService->sendPrayerNotification([
+                    'name' => $name,
+                    'email' => $email,
+                    'prayer_request' => $prayer_request,
+                ]);
             }
+        } catch (Throwable $e) {
+            error_log('Prayer request email error: ' . $e->getMessage());
         }
         
         $response['status'] = 'success';

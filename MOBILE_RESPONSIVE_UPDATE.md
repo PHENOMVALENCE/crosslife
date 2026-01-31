@@ -9,7 +9,7 @@ The entire CrossLife Mission Network website has been updated to be fully mobile
 - **Location**: Footer bottom links section
 - **Pages Updated**:
   - `index.html`
-  - `index.php`
+  - `index.html`
   - `contacts.html`
   - `ministries.php`
   - `sermons.html`
@@ -136,7 +136,7 @@ The entire CrossLife Mission Network website has been updated to be fully mobile
 
 ### HTML/PHP Files:
 - `index.html` - Added admin link, viewport meta already present
-- `index.php` - Added admin link, viewport meta already present
+- `index.html` - Added admin link, viewport meta already present
 - `contacts.html` - Added admin link, viewport meta already present
 - `ministries.php` - Added admin link, viewport meta already present
 - `sermons.html` - Added admin link

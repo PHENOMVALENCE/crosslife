@@ -199,7 +199,7 @@ $flash = getFlashMessage();
     <div class="login-container">
         <div class="login-header">
             <img src="../assets/img/logo.jpeg" alt="CrossLife Mission Network">
-            <h1>Admin Panel</h1>
+            <h1>Cross Admin</h1>
             <p>CrossLife Mission Network</p>
         </div>
         
@@ -233,7 +233,7 @@ $flash = getFlashMessage();
             </form>
             
             <div class="back-link">
-                <a href="../index.html">
+                <a href="../index.php">
                     <i class="bi bi-arrow-left me-2"></i>Back to Website
                 </a>
             </div>

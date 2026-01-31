@@ -5,7 +5,7 @@
 ### 📁 File Structure
 
 ```
-crosslife_2/
+crosslife/
 ├── admin/                          # Admin Dashboard
 │   ├── config/
 │   │   ├── database.php           # Database connection
@@ -13,7 +13,7 @@ crosslife_2/
 │   ├── includes/
 │   │   ├── header.php             # Admin header & sidebar
 │   │   └── footer.php             # Admin footer
-│   ├── index.php                  # Dashboard
+│   ├── index.html                  # Dashboard
 │   ├── login.php                  # Login page
 │   ├── logout.php                 # Logout handler
 │   ├── sermons.php                # Sermons CRUD
@@ -151,7 +151,7 @@ Complete MySQL database with:
    Edit `admin/config/database.php` with your MySQL credentials
 
 3. **Login:**
-   - URL: `http://localhost/crosslife_2/admin/login.php`
+   - URL: `http://localhost/crosslife/admin/login.php`
    - Username: `admin`
    - Password: `admin123`
 
@@ -176,6 +176,6 @@ Complete MySQL database with:
 The complete admin dashboard is ready to use. All CRUD operations are functional, forms are connected, and the system is secure and ready for production use.
 
 For detailed documentation, see:
-- `admin/README.md` - Admin panel documentation
+- `admin/README.md` - Cross Admin documentation
 - `INSTALLATION.md` - Installation instructions
 

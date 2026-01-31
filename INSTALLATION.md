@@ -24,9 +24,9 @@ define('DB_PASS', '');            // Your MySQL password (leave empty for XAMPP 
 define('DB_NAME', 'crosslife');
 ```
 
-### Step 3: Access Admin Panel
+### Step 3: Access Cross Admin
 
-1. Navigate to: `http://localhost/crosslife_2/admin/login.php`
+1. Navigate to: `http://localhost/crosslife/admin/login.php`
 2. Login with:
    - **Username:** `admin`
    - **Password:** `admin123`
@@ -62,7 +62,7 @@ All forms on the website are now connected to the database:
 - Prayer request form (`contacts.html`) → Saves to `prayer_requests` table
 - Feedback form (`index.html` & `contacts.html`) → Saves to `feedback` table
 
-## Admin Panel Features
+## Cross Admin Features
 
 ### Dashboard
 - Overview statistics
@@ -88,7 +88,7 @@ All forms on the website are now connected to the database:
 ## Security Notes
 
 1. **Change default password immediately**
-2. The admin panel uses session-based authentication
+2. The Cross Admin uses session-based authentication
 3. All passwords are hashed using PHP's `password_hash()`
 4. SQL injection protection via prepared statements
 5. XSS protection through output escaping
@@ -119,7 +119,7 @@ Ensure these directories exist and are writable:
 
 1. Import the database schema
 2. Configure database credentials
-3. Login to admin panel
+3. Login to Cross Admin
 4. Change default password
 5. Start adding content!
 
