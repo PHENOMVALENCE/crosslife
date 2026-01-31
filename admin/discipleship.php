@@ -1,10 +1,17 @@
 <?php
+<<<<<<< HEAD
 /**
  * Discipleship Module - Admin
  * Programs, modules, resources, questions. Process POST (and redirects) before any output.
  */
 require_once __DIR__ . '/config/config.php';
 requireLogin();
+=======
+$pageTitle = 'Discipleship Programs';
+require_once 'config/config.php';
+requireLogin();
+require_once 'includes/header.php';
+>>>>>>> TestBranch
 
 $pageTitle = 'Discipleship Programs';
 $db = getDB();

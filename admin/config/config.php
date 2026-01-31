@@ -9,6 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+
 // Site Configuration (guard so database.php can load first without duplicate constant warnings)
 if (!defined('SITE_NAME')) {
     define('SITE_NAME', 'CrossLife Mission Network');
@@ -34,6 +35,7 @@ if (!defined('UPLOAD_URL')) {
 if (!defined('STUDENT_LOGIN_URL')) {
     define('STUDENT_LOGIN_URL', (defined('SITE_URL') ? SITE_URL : '') . '/student/login.php');
 }
+
 
 // Security
 define('SESSION_TIMEOUT', 3600); // 1 hour in seconds
