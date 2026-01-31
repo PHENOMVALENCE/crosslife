@@ -1026,28 +1026,13 @@ $upcomingEvents = getUpcomingEvents(4);
 
   <!-- Global Search Script -->
   <script>
-    // Global Search Functionality
+    // Enhanced Global Search with Database Content
     document.addEventListener('DOMContentLoaded', function() {
       const searchForm = document.getElementById('globalSearchForm');
       const searchInput = document.getElementById('globalSearchInput');
       const searchResults = document.getElementById('searchResults');
       const searchResultsList = document.getElementById('searchResultsList');
-
-      // Searchable content sections
-      const searchableSections = [
-        { id: 'hero', title: 'Home', keywords: 'home welcome introduction vision mission', page: 'index.php' },
-        { id: 'about', title: 'About Us', keywords: 'about mandate vision mission history', page: 'index.php' },
-        { id: 'statement-of-faith', title: 'Statement of Faith', keywords: 'faith beliefs doctrine scripture godhead jesus holy spirit', page: 'index.php' },
-        { id: 'features', title: 'Core Beliefs', keywords: 'beliefs core godhead jesus christ holy spirit identity', page: 'index.php' },
-        { id: 'leadership', title: 'Leadership', keywords: 'leadership pastor lenhard kyamba executive board', page: 'index.php' },
-        { id: 'ministries', title: 'Ministries', keywords: 'ministries teaching discipleship prayer outreach worship fellowship', page: 'ministries.php' },
-        { id: 'sermons', title: 'Sermons', keywords: 'sermons teaching video audio youtube crosslife tv', page: 'sermons.php' },
-        { id: 'discipleship', title: 'Discipleship', keywords: 'discipleship school of christ academy foundation leadership ministry sonship', page: 'discipleship.php' },
-        { id: 'events', title: 'Events', keywords: 'events calendar services bible study prayer meetings', page: 'events.php' },
-        { id: 'what-we-do', title: 'What We Do', keywords: 'activities programs worship teaching ministry outreach', page: 'index.php' },
-        { id: 'giving', title: 'Giving', keywords: 'giving offering support ministry donation', page: 'index.php' },
-        { id: 'contact', title: 'Contact', keywords: 'contact inquiry prayer request feedback', page: 'contacts.php' }
-      ];
+      let searchTimeout;
 
       if (searchForm) {
         searchForm.addEventListener('submit', function(e) {
@@ -1056,8 +1041,12 @@ $upcomingEvents = getUpcomingEvents(4);
         });
 
         searchInput.addEventListener('input', function() {
+          clearTimeout(searchTimeout);
           if (this.value.length > 2) {
-            performSearch();
+            // Debounce search to avoid too many requests
+            searchTimeout = setTimeout(() => {
+              performSearch();
+            }, 300);
           } else {
             searchResults.style.display = 'none';
           }
@@ -1065,19 +1054,30 @@ $upcomingEvents = getUpcomingEvents(4);
       }
 
       function performSearch() {
-        const query = searchInput.value.toLowerCase().trim();
+        const query = searchInput.value.trim();
         if (query.length < 2) {
           searchResults.style.display = 'none';
           return;
         }
 
-        const results = searchableSections.filter(section => {
-          return section.title.toLowerCase().includes(query) || 
-                 section.keywords.toLowerCase().includes(query) ||
-                 section.id.toLowerCase().includes(query);
-        });
+        // Show loading state
+        searchResultsList.innerHTML = '<li class="text-muted"><i class="bi bi-hourglass-split me-2"></i>Searching...</li>';
+        searchResults.style.display = 'block';
 
-        displayResults(results, query);
+        // Fetch results from API
+        fetch(`api/search.php?q=${encodeURIComponent(query)}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.success && data.results) {
+              displayResults(data.results, query);
+            } else {
+              searchResultsList.innerHTML = '<li class="text-muted">No results found. Try different keywords.</li>';
+            }
+          })
+          .catch(error => {
+            console.error('Search error:', error);
+            searchResultsList.innerHTML = '<li class="text-danger"><i class="bi bi-exclamation-circle me-2"></i>Search error. Please try again.</li>';
+          });
       }
 
       function displayResults(results, query) {
@@ -1091,16 +1091,59 @@ $upcomingEvents = getUpcomingEvents(4);
 
         results.forEach(result => {
           const li = document.createElement('li');
-          li.className = 'mb-2';
-          const href = result.page === window.location.pathname.split('/').pop() || (result.page === 'index.php' && (window.location.pathname === '/' || window.location.pathname.endsWith('index.php')))
-            ? `#${result.id}` 
-            : `${result.page}${result.id ? '#' + result.id : ''}`;
-          li.innerHTML = `
-            <a href="${href}" class="search-result-link text-decoration-none" data-bs-dismiss="modal">
-              <i class="bi bi-arrow-right me-2"></i>
-              <strong>${result.title}</strong>
-            </a>
+          li.className = 'mb-3 pb-2 border-bottom';
+          
+          const link = document.createElement('a');
+          link.href = result.url;
+          link.className = 'search-result-link text-decoration-none d-block';
+          link.setAttribute('data-bs-dismiss', 'modal');
+          
+          // Add click handler for smooth scrolling to anchors
+          link.addEventListener('click', function(e) {
+            const url = new URL(result.url, window.location.origin);
+            const currentPage = window.location.pathname.split('/').pop() || 'index.php';
+            const targetPage = url.pathname.split('/').pop() || 'index.php';
+            
+            // If same page and has hash, prevent default and smooth scroll
+            if (currentPage === targetPage && url.hash) {
+              e.preventDefault();
+              const target = document.querySelector(url.hash);
+              if (target) {
+                // Close modal first
+                const modal = bootstrap.Modal.getInstance(document.getElementById('searchModal'));
+                if (modal) modal.hide();
+                
+                // Then smooth scroll to target
+                setTimeout(() => {
+                  target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  // Add temporary highlight
+                  target.style.transition = 'background-color 0.3s';
+                  target.style.backgroundColor = 'rgba(200, 87, 22, 0.1)';
+                  setTimeout(() => {
+                    target.style.backgroundColor = '';
+                  }, 2000);
+                }, 300);
+              }
+            }
+            // Otherwise let the link navigate normally
+          });
+          
+          link.innerHTML = `
+            <div class="d-flex align-items-start">
+              <div class="me-3">
+                <i class="bi bi-${result.icon} fs-5" style="color: var(--accent-color);"></i>
+              </div>
+              <div class="flex-grow-1">
+                <div class="d-flex justify-content-between align-items-start">
+                  <strong class="d-block">${result.title}</strong>
+                  <span class="badge bg-secondary ms-2" style="font-size: 0.7rem;">${result.type}</span>
+                </div>
+                <small class="text-muted d-block mt-1">${result.description}</small>
+              </div>
+            </div>
           `;
+          
+          li.appendChild(link);
           searchResultsList.appendChild(li);
         });
 

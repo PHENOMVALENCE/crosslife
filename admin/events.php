@@ -14,8 +14,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     // Handle image upload
-    $image_url = sanitize($_POST['image_url'] ?? '');
-    if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
+    // Start with existing image (if editing) or from hidden field
+    $image_url = sanitize($_POST['current_image_url'] ?? '');
+    
+    // Check if user explicitly removed the image
+    if (isset($_POST['remove_image']) && $_POST['remove_image'] === '1') {
+        $image_url = '';
+    }
+    // Check if a new file was uploaded
+    elseif (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
         $upload_dir = '../assets/img/uploads/events/';
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0755, true);
@@ -29,9 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $upload_path = $upload_dir . $new_filename;
             
             if (move_uploaded_file($_FILES['image_file']['tmp_name'], $upload_path)) {
-                $image_url = '/assets/img/uploads/events/' . $new_filename;
+                $image_url = 'assets/img/uploads/events/' . $new_filename;
             }
         }
+    } 
+    // If no file uploaded, check if a new URL was provided (different from current)
+    elseif (!empty($_POST['image_url']) && $_POST['image_url'] !== $_POST['current_image_url']) {
+        $image_url = sanitize($_POST['image_url']);
     }
     
     $data = [
@@ -120,18 +131,32 @@ if ($action === 'add' || $action === 'edit') {
                         
                         <div class="mb-3">
                             <label class="form-label">Event Image</label>
-                            <input type="file" class="form-control" name="image_file" accept="image/*">
+                            <!-- Hidden field to preserve current image -->
+                            <input type="hidden" name="current_image_url" id="currentImageUrl" value="<?php echo htmlspecialchars($event['image_url'] ?? ''); ?>">
+                            <input type="hidden" name="remove_image" id="removeImageFlag" value="0">
+                            
+                            <input type="file" class="form-control" name="image_file" id="imageFileInput" accept="image/*">
                             <small class="text-muted">Upload an image file (JPG, PNG, GIF, WebP) or use URL below</small>
-                            <?php if (!empty($event['image_url'])): ?>
-                                <div class="mt-2">
-                                    <img src="<?php echo htmlspecialchars($event['image_url']); ?>" alt="Current image" style="max-width: 200px; max-height: 150px;">
+                            
+                            <!-- Image Preview -->
+                            <div class="mt-3" id="imagePreviewContainer" <?php echo empty($event['image_url']) ? 'style="display:none;"' : ''; ?>>
+                                <div class="card" style="max-width: 400px;">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <label class="form-label mb-0"><strong>Image Preview</strong></label>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" id="removeImageBtn" onclick="removeImage()">
+                                                <i class="bi bi-trash"></i> Remove
+                                            </button>
+                                        </div>
+                                        <img id="imagePreview" src="<?php echo htmlspecialchars($event['image_url'] ?? ''); ?>" alt="Preview" class="img-fluid rounded" style="max-height: 300px; width: 100%; object-fit: contain; background: #f8f9fa;">
+                                    </div>
                                 </div>
-                            <?php endif; ?>
+                            </div>
                         </div>
                         
                         <div class="mb-3">
                             <label class="form-label">Or Image URL</label>
-                            <input type="url" class="form-control" name="image_url" value="<?php echo htmlspecialchars($event['image_url'] ?? ''); ?>" placeholder="https://example.com/image.jpg">
+                            <input type="url" class="form-control" name="image_url" id="imageUrlInput" value="<?php echo htmlspecialchars($event['image_url'] ?? ''); ?>" placeholder="https://example.com/image.jpg">
                             <small class="text-muted">Leave empty if uploading a file above</small>
                         </div>
                     </div>
@@ -231,4 +256,66 @@ if ($action === 'add' || $action === 'edit') {
 
 require_once 'includes/footer.php';
 ?>
+
+<script>
+// Image preview functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('imageFileInput');
+    const urlInput = document.getElementById('imageUrlInput');
+    const preview = document.getElementById('imagePreview');
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    
+    // Preview when file is selected
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                    // Clear URL input when file is selected
+                    urlInput.value = '';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
+    // Preview when URL is entered
+    if (urlInput) {
+        urlInput.addEventListener('blur', function(e) {
+            const url = e.target.value.trim();
+            if (url) {
+                preview.src = url;
+                previewContainer.style.display = 'block';
+                // Clear file input when URL is entered
+                if (fileInput) fileInput.value = '';
+            }
+        });
+    }
+});
+
+// Remove image function
+function removeImage() {
+    const fileInput = document.getElementById('imageFileInput');
+    const urlInput = document.getElementById('imageUrlInput');
+    const currentImageUrl = document.getElementById('currentImageUrl');
+    const removeFlag = document.getElementById('removeImageFlag');
+    const preview = document.getElementById('imagePreview');
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    
+    // Clear inputs
+    if (fileInput) fileInput.value = '';
+    if (urlInput) urlInput.value = '';
+    if (currentImageUrl) currentImageUrl.value = '';
+    
+    // Set remove flag
+    if (removeFlag) removeFlag.value = '1';
+    
+    // Hide preview
+    preview.src = '';
+    previewContainer.style.display = 'none';
+}
+</script>
 
