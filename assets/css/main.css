@@ -982,6 +982,11 @@ section,
   overflow: hidden;
 }
 
+/* Prevent hero content from sitting under fixed header (anchor + mobile) */
+#hero {
+  scroll-margin-top: 120px;
+}
+
 .hero .hero-content {
   width: 100%;
   position: relative;
@@ -1214,12 +1219,16 @@ section,
 
 @media (max-width: 992px) {
   .hero {
-    padding: 80px 0;
+    padding: 150px 0 60px 0 !important; /* Extra top padding so content sits below fixed header on mobile */
     min-height: 80vh;
   }
 
   .hero .hero-content {
     min-height: 80vh;
+  }
+
+  #hero {
+    scroll-margin-top: 150px;
   }
 }
 
@@ -4668,7 +4677,7 @@ section,
   }
 
   .page-header {
-    padding: 100px 0 60px;
+    padding: 150px 0 60px !important; /* Clear fixed header on mobile */
   }
 
   .page-header h1 {
@@ -5810,7 +5819,7 @@ section,
 /* Responsive Enhancements */
 @media (max-width: 992px) {
   .page-header {
-    padding: 120px 0 80px;
+    padding: 150px 0 80px !important;
   }
 
   .page-header h1 {
@@ -5827,7 +5836,7 @@ section,
 
 @media (max-width: 768px) {
   .page-header {
-    padding: 100px 0 60px;
+    padding: 150px 0 60px !important; /* Clear fixed header on mobile */
   }
 
   .page-header h1 {
@@ -6707,10 +6716,23 @@ html {
     font-size: 2rem !important;
   }
   
-  /* Hero Section */
+  /* Hero Section - padding-top clears fixed header so text doesn't overlap */
   .hero {
-    padding: 80px 0 40px 0;
+    padding: 160px 0 40px 0 !important;
     min-height: 70vh;
+  }
+
+  #hero {
+    scroll-margin-top: 160px;
+  }
+
+  /* Page header & title - clear fixed header on all pages */
+  .page-header {
+    padding: 160px 0 50px !important;
+  }
+
+  .page-title {
+    padding: 160px 0 60px !important;
   }
   
   .hero h1 {
@@ -6733,8 +6755,8 @@ html {
     margin-bottom: 0.5rem;
   }
   
-  /* Sections */
-  section, .section {
+  /* Sections - exclude hero/page-header which need extra top padding for fixed header */
+  section:not(.hero):not(.page-header), .section:not(.hero):not(.page-header) {
     padding: 40px 0;
   }
   
@@ -6844,7 +6866,7 @@ html {
 /* Medium Devices (tablets, 768px and up) */
 @media (min-width: 768px) and (max-width: 991.98px) {
   .hero {
-    padding: 100px 0 50px 0;
+    padding: 120px 0 50px 0; /* Clear fixed header on tablet */
   }
   
   .hero h1 {
@@ -6875,8 +6897,16 @@ html {
   }
 }
 
-/* Mobile-specific improvements */
+/* Mobile-specific improvements - hero/header/page-header/page-title clear fixed header */
 @media (max-width: 991.98px) {
+  .page-header {
+    padding-top: 150px !important;
+  }
+
+  .page-title {
+    padding-top: 150px !important;
+  }
+
   /* Navigation */
   .navmenu ul {
     max-height: calc(100vh - 100px);
@@ -6969,7 +6999,7 @@ html {
 @media (max-width: 991.98px) and (orientation: landscape) {
   .hero {
     min-height: 60vh;
-    padding: 60px 0 30px 0;
+    padding: 130px 0 30px 0 !important; /* Keep content below fixed header */
   }
   
   .section-title {
