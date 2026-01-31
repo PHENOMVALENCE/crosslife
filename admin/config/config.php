@@ -15,6 +15,9 @@ define('SITE_URL', 'http://localhost/crosslife_2');
 define('ADMIN_URL', SITE_URL . '/admin');
 define('UPLOAD_DIR', '../assets/img/uploads/');
 define('UPLOAD_URL', SITE_URL . '/assets/img/uploads/');
+// Audio sermons: stored under project root /uploads/audio/
+define('AUDIO_UPLOAD_DIR', dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'audio' . DIRECTORY_SEPARATOR);
+define('AUDIO_UPLOAD_WEB', '/uploads/audio/');
 
 // Security
 define('SESSION_TIMEOUT', 3600); // 1 hour in seconds

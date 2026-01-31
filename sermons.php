@@ -140,6 +140,28 @@ $settings = getSiteSettings();
       height: 100%;
       border: 0;
     }
+    /* View Audio Sermons: always clickable and responsive */
+    .view-audio-wrap {
+      position: relative;
+      z-index: 2;
+    }
+    .view-audio-btn {
+      position: relative;
+      z-index: 2;
+      pointer-events: auto !important;
+      cursor: pointer !important;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0.5rem 1.25rem;
+    }
+    @media (max-width: 768px) {
+      .view-audio-btn {
+        width: 100%;
+        min-height: 48px;
+      }
+    }
   </style>
 </head>
 
@@ -253,8 +275,8 @@ $settings = getSiteSettings();
               </div>
               <h3>Audio Sermons</h3>
               <p>Listen to our audio sermons and teachings. Stream or download audio content to listen on the go.</p>
-              <div class="sermon-links mt-3">
-                <a href="audio-sermons.php" class="btn btn-outline">
+              <div class="sermon-links mt-3 view-audio-wrap">
+                <a href="audio-sermons.php" class="btn btn-outline view-audio-btn" role="button">
                   <i class="bi bi-headphones me-2"></i>View Audio Sermons
                 </a>
               </div>

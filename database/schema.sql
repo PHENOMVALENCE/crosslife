@@ -189,9 +189,9 @@ CREATE TABLE IF NOT EXISTS site_settings (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Insert default admin user (password: admin123 - CHANGE THIS!)
--- Password hash for 'admin123'
+-- Password hash for 'admin123' (bcrypt)
 INSERT INTO admins (username, email, password, full_name, role, status) VALUES
-('admin', 'admin@crosslife.org', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Administrator', 'super_admin', 'active')
+('admin', 'admin@crosslife.org', '$2y$12$yTdfpBmy0NqcDh/51wBcr.R24KHWfBJ9JMrRmSORE66Ml8d05tWtO', 'Administrator', 'super_admin', 'active')
 ON DUPLICATE KEY UPDATE username=username;
 
 -- Insert default site settings

@@ -271,7 +271,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 
                 <div class="menu-section">Content</div>
                 <a href="sermons.php" class="menu-item <?php echo $currentPage === 'sermons.php' ? 'active' : ''; ?>">
-                    <i class="bi bi-play-circle"></i>Sermons
+                    <i class="bi bi-headphones"></i>Audio Sermons
                 </a>
                 <a href="events.html" class="menu-item <?php echo $currentPage === 'events.html' ? 'active' : ''; ?>">
                     <i class="bi bi-calendar-event"></i>Events
