@@ -87,6 +87,7 @@ $siteName = SITE_NAME;
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
                     <input type="password" class="form-control" id="password" name="password" required>
+                    <div class="form-text"><a href="forgot-password.php">Forgot password?</a></div>
                 </div>
                 <button type="submit" class="btn btn-login"><i class="bi bi-box-arrow-in-right me-2"></i>Login</button>
             </form>

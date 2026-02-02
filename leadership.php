@@ -87,7 +87,7 @@ function leadership_display_image_url($image_url, $placeholder) {
             <li><a href="ministries.php">Ministries</a></li>
             <li><a href="sermons.php">Sermons</a></li>
             <li><a href="discipleship.php">Discipleship</a></li>
-            <li><a href="events.html">Events</a></li>
+            <li><a href="events.php">Events</a></li>
             <li><a href="contacts.html">Contact</a></li>
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>

@@ -1,17 +1,11 @@
 <?php
-<<<<<<< HEAD
 /**
  * Discipleship Module - Admin
  * Programs, modules, resources, questions. Process POST (and redirects) before any output.
  */
 require_once __DIR__ . '/config/config.php';
 requireLogin();
-=======
-$pageTitle = 'Discipleship Programs';
-require_once 'config/config.php';
-requireLogin();
-require_once 'includes/header.php';
->>>>>>> TestBranch
+
 
 $pageTitle = 'Discipleship Programs';
 $db = getDB();
@@ -312,6 +306,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // ---------- Output: include header and render view ----------
 require_once __DIR__ . '/includes/header.php';
+
+// Breadcrumb and wrapper for ELMS-style layout
+$discBreadcrumb = [['Discipleship', 'discipleship.php']];
+if ($action === 'list' || $action === '') {
+    $discBreadcrumb[] = ['Programs', ''];
+} elseif ($action === 'add' || $action === 'edit') {
+    $discBreadcrumb[] = [$id ? 'Edit program' : 'Add program', ''];
+} elseif ($action === 'modules' && $currentProgram) {
+    $discBreadcrumb[] = [htmlspecialchars($currentProgram['program_name']), 'discipleship.php?action=modules&id=' . (int)$currentProgram['id']];
+    $discBreadcrumb[] = ['Modules', ''];
+} elseif (in_array($action, ['module_add', 'module_edit'])) {
+    if ($program_id) {
+        $p = $db->query("SELECT program_name FROM discipleship_programs WHERE id = " . (int)$program_id)->fetch();
+        if ($p) {
+            $discBreadcrumb[] = [htmlspecialchars($p['program_name']), 'discipleship.php?action=modules&id=' . $program_id];
+            $discBreadcrumb[] = [$module ? 'Edit module' : 'Add module', ''];
+        }
+    }
+} elseif (in_array($action, ['resources', 'resource_add', 'resource_edit']) && $currentModule) {
+    $discBreadcrumb[] = [htmlspecialchars($currentProgram['program_name'] ?? ''), 'discipleship.php?action=modules&id=' . (int)$currentModule['program_id']];
+    $discBreadcrumb[] = ['Modules', 'discipleship.php?action=modules&id=' . (int)$currentModule['program_id']];
+    $discBreadcrumb[] = [htmlspecialchars($currentModule['title']), ''];
+} elseif (in_array($action, ['questions', 'question_add', 'question_edit', 'option_add', 'option_edit']) && $currentModule) {
+    $discBreadcrumb[] = [htmlspecialchars($currentProgram['program_name'] ?? ''), 'discipleship.php?action=modules&id=' . (int)$currentModule['program_id']];
+    $discBreadcrumb[] = ['Modules', 'discipleship.php?action=modules&id=' . (int)$currentModule['program_id']];
+    $discBreadcrumb[] = [htmlspecialchars($currentModule['title']), 'discipleship.php?action=questions&module_id=' . (int)$currentModule['id']];
+    $discBreadcrumb[] = ['Questions', ''];
+}
+echo '<div class="admin-discipleship">';
+if (count($discBreadcrumb) > 1) {
+    echo '<nav class="disc-breadcrumb"><ol class="breadcrumb mb-0">';
+    foreach ($discBreadcrumb as $i => $item) {
+        $label = $item[0];
+        $url = $item[1] ?? '';
+        $active = ($i === count($discBreadcrumb) - 1) || $url === '';
+        echo '<li class="breadcrumb-item' . ($active ? ' active' : '') . '">';
+        if (!$active && $url) echo '<a href="' . htmlspecialchars($url) . '">' . htmlspecialchars($label) . '</a>'; else echo htmlspecialchars($label);
+        echo '</li>';
+    }
+    echo '</ol></nav>';
+}
 
 // Load program for modules/resources/questions context
 $currentProgram = null;
@@ -994,4 +1029,5 @@ if ($action === 'add' || $action === 'edit') {
     <?php
 }
 
+echo '</div>'; /* .admin-discipleship */
 require_once __DIR__ . '/includes/footer.php';

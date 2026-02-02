@@ -1,11 +1,11 @@
 <?php
 /**
  * Events Page - CrossLife Mission Network
- * Display upcoming and past events from database
+ * Display events from database (managed in Admin → Events)
  */
 require_once 'includes/db-functions.php';
 
-$events = getAllEvents();
+$events = getPublicEvents();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,7 +44,7 @@ $events = getAllEvents();
 
       <div class="top-row d-flex align-items-center justify-content-between">
         <a href="index.html" class="logo d-flex align-items-center">
-          <img src="assets/img/logo.jpeg" alt="CrossLife Mission Network Logo">
+          <img src="assets/img/logo.png" alt="CrossLife Mission Network Logo">
           <h1 class="sitename">CrossLife Mission Network</h1>
         </a>
 
@@ -71,12 +71,13 @@ $events = getAllEvents();
             <li><a href="index.html">Home</a></li>
             <li><a href="index.html#about">About</a></li>
             <li><a href="index.html#features">Core Beliefs</a></li>
-            <li><a href="index.html#leadership">Leadership</a></li>
-            <li><a href="ministries.html">Ministries</a></li>
+            <li><a href="leadership.php">Leadership</a></li>
+            <li><a href="ministries.php">Ministries</a></li>
             <li><a href="sermons.html">Sermons</a></li>
             <li><a href="discipleship.html">Discipleship</a></li>
             <li><a href="events.php" class="active">Events</a></li>
             <li><a href="contacts.html">Contact</a></li>
+            <li><a href="galley.html">Galley</a></li>
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
@@ -110,33 +111,47 @@ $events = getAllEvents();
               <p class="lead">No events scheduled at the moment. Please check back soon!</p>
             </div>
           <?php else: ?>
-            <?php foreach ($events as $index => $event): ?>
-              <div class="col-lg-6" data-aos="fade-up" data-aos-delay="<?php echo 150 + ($index * 50); ?>">
+            <?php foreach ($events as $index => $event):
+              $eventDate = strtotime($event['event_date']);
+              $isPast = ($event['status'] === 'completed' || (date('Y-m-d', $eventDate) < date('Y-m-d')));
+              $imgUrl = !empty($event['image_url']) ? htmlspecialchars($event['image_url']) : '';
+              if ($imgUrl && strpos($imgUrl, 'http') !== 0 && $imgUrl[0] !== '/') {
+                $imgUrl = ltrim($imgUrl, '/');
+              }
+            ?>
+              <div class="col-lg-6" data-aos="fade-up" data-aos-delay="<?php echo 150 + ($index * 50); ?>" id="event-<?php echo (int)$event['id']; ?>">
                 <div class="event-card">
                   <div class="event-date">
-                    <span class="day"><?php echo date('d', strtotime($event['event_date'])); ?></span>
-                    <span class="month"><?php echo date('M', strtotime($event['event_date'])); ?></span>
+                    <span class="day"><?php echo date('d', $eventDate); ?></span>
+                    <span class="month"><?php echo date('M', $eventDate); ?></span>
                   </div>
                   <div class="event-content">
                     <h3><?php echo htmlspecialchars($event['title']); ?></h3>
-                    <?php if ($event['event_time']): ?>
-                      <p class="event-time">
-                        <i class="bi bi-clock me-2"></i><?php echo date('g:i A', strtotime($event['event_time'])); ?>
-                        <?php if ($event['end_date'] && $event['end_date'] != $event['event_date']): ?>
-                          - <?php echo date('M d, Y', strtotime($event['end_date'])); ?>
-                        <?php endif; ?>
-                      </p>
+                    <?php if (!empty($event['status']) && $event['status'] !== 'upcoming'): ?>
+                      <span class="badge <?php echo $isPast ? 'bg-secondary' : 'bg-info'; ?> mb-2"><?php echo htmlspecialchars(ucfirst($event['status'])); ?></span>
                     <?php endif; ?>
-                    <?php if ($event['location']): ?>
+                    <p class="event-time">
+                      <i class="bi bi-calendar3 me-2"></i><?php echo date('l, M j, Y', $eventDate); ?>
+                      <?php if (!empty($event['event_time'])): ?>
+                        <i class="bi bi-clock ms-2 me-2"></i><?php echo date('g:i A', strtotime($event['event_time'])); ?>
+                      <?php endif; ?>
+                      <?php if (!empty($event['end_date']) && $event['end_date'] !== $event['event_date']): ?>
+                        – <?php echo date('M j, Y', strtotime($event['end_date'])); ?>
+                        <?php if (!empty($event['end_time'])): ?> at <?php echo date('g:i A', strtotime($event['end_time'])); ?><?php endif; ?>
+                      <?php endif; ?>
+                    </p>
+                    <?php if (!empty($event['location'])): ?>
                       <p class="event-location"><i class="bi bi-geo-alt me-2"></i><?php echo htmlspecialchars($event['location']); ?></p>
                     <?php endif; ?>
-                    <?php if ($event['event_type']): ?>
+                    <?php if (!empty($event['event_type'])): ?>
                       <span class="badge bg-primary mb-2"><?php echo htmlspecialchars($event['event_type']); ?></span>
                     <?php endif; ?>
-                    <p><?php echo htmlspecialchars($event['description']); ?></p>
-                    <?php if ($event['image_url']): ?>
+                    <?php if (!empty($event['description'])): ?>
+                      <p><?php echo nl2br(htmlspecialchars($event['description'])); ?></p>
+                    <?php endif; ?>
+                    <?php if ($imgUrl): ?>
                       <div class="event-image mt-3">
-                        <img src="<?php echo htmlspecialchars($event['image_url']); ?>" alt="<?php echo htmlspecialchars($event['title']); ?>" class="img-fluid rounded">
+                        <img src="<?php echo htmlspecialchars($imgUrl); ?>" alt="<?php echo htmlspecialchars($event['title']); ?>" class="img-fluid rounded" loading="lazy">
                       </div>
                     <?php endif; ?>
                   </div>
@@ -293,6 +308,7 @@ $events = getAllEvents();
           </div>
           <div class="col-lg-6">
             <div class="footer-bottom-links">
+              <a href="admin/login.php"><i class="bi bi-shield-lock me-1"></i>Admin</a>
               <a href="#">Privacy Policy</a>
               <a href="#">Terms of Service</a>
               <a href="#">Cookie Policy</a>

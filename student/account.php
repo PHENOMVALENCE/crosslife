@@ -1,6 +1,6 @@
 <?php
 /**
- * Student account – profile and change password
+ * Student account – profile, change password, My Enrollments
  */
 require_once __DIR__ . '/../admin/config/config.php';
 require_once __DIR__ . '/../includes/discipleship-functions.php';
@@ -13,6 +13,7 @@ $profileSaved = false;
 $passwordSaved = false;
 $profileError = '';
 $passwordError = '';
+$enrollments = discipleship_get_student_enrollments($student['id']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update_profile'])) {
@@ -58,11 +59,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+$breadcrumb = [['Dashboard', 'dashboard.php'], ['Account', '']];
 require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0">My account</h1>
+    <h1 class="h3 mb-0" style="color: var(--text-primary);">My account</h1>
     <a href="dashboard.php" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Dashboard</a>
 </div>
 
@@ -90,13 +92,14 @@ require_once __DIR__ . '/includes/header.php';
                     <label class="form-label">Phone (optional)</label>
                     <input type="text" class="form-control" name="phone" value="<?php echo htmlspecialchars($student['phone'] ?? ''); ?>">
                 </div>
-                <button type="submit" class="btn btn-accent">Save profile</button>
+                <button type="submit" class="btn btn-elms-accent">Save profile</button>
             </form>
         </div>
     </div>
     <div class="col-lg-6">
         <div class="account-section">
             <h2 class="h5 mb-3"><i class="bi bi-lock me-2"></i>Change password</h2>
+            <p class="small text-muted mb-2"><a href="forgot-password.php">Forgot password?</a></p>
             <?php if ($passwordSaved): ?>
                 <div class="alert alert-success py-2">Password updated successfully.</div>
             <?php endif; ?>
@@ -118,10 +121,37 @@ require_once __DIR__ . '/includes/header.php';
                     <label class="form-label">Confirm new password *</label>
                     <input type="password" class="form-control" name="confirm_password" required>
                 </div>
-                <button type="submit" class="btn btn-accent">Change password</button>
+                <button type="submit" class="btn btn-elms-accent">Change password</button>
             </form>
         </div>
     </div>
+</div>
+
+<!-- My Enrollments -->
+<div class="account-section mt-4">
+    <h2 class="h5 mb-3"><i class="bi bi-journal-bookmark me-2"></i>My enrollments</h2>
+    <?php if (empty($enrollments)): ?>
+        <p class="text-muted mb-0">You are not enrolled in any program yet. <a href="dashboard.php">Go to Dashboard</a> to enroll.</p>
+    <?php else: ?>
+        <ul class="list-group list-group-flush">
+            <?php foreach ($enrollments as $e):
+                $isCompleted = isset($e['status']) && $e['status'] === 'completed';
+            ?>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span><?php echo htmlspecialchars($e['program_name']); ?></span>
+                    <span>
+                        <?php if ($isCompleted): ?>
+                            <span class="badge badge-status-completed me-2">Completed</span>
+                            <a href="certificate.php?enrollment_id=<?php echo (int)$e['id']; ?>" class="btn btn-outline-elms btn-sm">Certificate</a>
+                        <?php else: ?>
+                            <span class="badge badge-status-active me-2">Active</span>
+                            <a href="program.php?enrollment_id=<?php echo (int)$e['id']; ?>" class="btn btn-outline-elms btn-sm">Continue</a>
+                        <?php endif; ?>
+                    </span>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
 </div>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

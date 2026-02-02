@@ -113,6 +113,114 @@
 .module-content-block .content-html ul, .module-content-block .content-html ol { margin-bottom: 0.75rem; padding-left: 1.5rem; }
 .module-content-block audio, .module-content-block video { max-width: 100%; border-radius: 8px; }
 
+/* Learning materials – stepped layout */
+.learning-materials-section {
+  margin-bottom: 2rem;
+}
+.learning-materials-section .section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary, #2c3e50);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--accent, #17a2b8);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.material-step {
+  background: #fff;
+  border-radius: 10px;
+  border-left: 4px solid var(--accent, #17a2b8);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  transition: box-shadow 0.2s;
+}
+.material-step:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.material-step-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.material-step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent, #17a2b8);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.material-step-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary, #2c3e50);
+  margin: 0;
+}
+.material-type-badge {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  margin-left: auto;
+}
+.material-type-badge.text { background: #e9ecef; color: #495057; }
+.material-type-badge.audio { background: #cfe2ff; color: #084298; }
+.material-type-badge.video { background: #cff4fc; color: #055160; }
+.material-type-badge.pdf { background: #f8d7da; color: #842029; }
+.material-step-body { line-height: 1.6; }
+.material-step-body .content-html p { margin-bottom: 0.5rem; }
+.material-step-body audio, .material-step-body video { max-width: 100%; border-radius: 8px; margin-top: 0.5rem; }
+
+/* Assessment block – clear “then attempt test” section */
+.assessment-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px dashed rgba(0,0,0,0.1);
+}
+.assessment-section .section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary, #2c3e50);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.assessment-section .section-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary, #6c757d);
+  margin-bottom: 1rem;
+}
+.assessment-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+  border-radius: 8px;
+  background: var(--accent, #17a2b8);
+  color: #fff;
+  border: none;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.assessment-cta:hover { background: #138496; color: #fff; }
+.assessment-card {
+  background: #fff;
+  border-radius: 10px;
+  border-top: 3px solid var(--accent, #17a2b8);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
 /* PDF viewer */
 .pdf-resource { border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; overflow: hidden; background: #f8f9fa; }
 .pdf-actions { padding: 0.5rem 0; }

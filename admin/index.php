@@ -37,152 +37,195 @@ $stats['feedback'] = $stmt->fetch();
 $recentContacts = $db->query("SELECT * FROM contact_inquiries ORDER BY created_at DESC LIMIT 5")->fetchAll();
 $recentPrayers = $db->query("SELECT * FROM prayer_requests ORDER BY created_at DESC LIMIT 5")->fetchAll();
 $recentEvents = $db->query("SELECT * FROM events WHERE event_date >= CURDATE() ORDER BY event_date ASC LIMIT 5")->fetchAll();
+
+// Discipleship summary (if tables exist)
+$stats['discipleship'] = ['programs' => 0, 'enrollments' => 0];
+try {
+    $stats['discipleship']['programs'] = (int) $db->query("SELECT COUNT(*) FROM discipleship_programs WHERE status IN ('active', 'upcoming')")->fetchColumn();
+    $stats['discipleship']['enrollments'] = (int) $db->query("SELECT COUNT(*) FROM discipleship_enrollments WHERE status = 'active'")->fetchColumn();
+} catch (PDOException $e) { /* ignore */ }
+
+$adminName = isset($currentAdmin['full_name']) ? $currentAdmin['full_name'] : 'Admin';
 ?>
 
-<div class="row">
-    <div class="col-md-3 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div style="width: 60px; height: 60px; background: rgba(200, 87, 22, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                            <i class="bi bi-building" style="font-size: 2rem; color: var(--accent-color);"></i>
-                        </div>
+<div class="dashboard-overview mb-4">
+    <h1 class="h4 mb-1 fw-bold">Dashboard</h1>
+    <p class="text-muted small mb-0">Welcome back. Here’s an overview of your site.</p>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-4">
+        <a href="sermons.php" class="text-decoration-none d-block">
+            <div class="card dashboard-stat-card h-100 border-0 shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="dashboard-stat-icon bg-primary bg-opacity-10 text-primary">
+                        <i class="bi bi-play-circle-fill"></i>
                     </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0" style="color: var(--default-color); opacity: 0.7;">Total Ministries</h6>
-                        <h3 class="mb-0" style="color: var(--heading-color);"><?php echo $stats['ministries']['total']; ?></h3>
-                        <small style="color: var(--accent-color);">Active ministries</small>
+                    <div class="ms-3 flex-grow-1 min-w-0">
+                        <div class="text-muted small text-uppercase fw-semibold">Sermons</div>
+                        <div class="h4 mb-0 fw-bold"><?php echo (int) ($stats['sermons']['total'] ?? 0); ?></div>
+                        <div class="small text-primary"><?php echo (int) ($stats['sermons']['published'] ?? 0); ?> published</div>
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
-    
-    <div class="col-md-3 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div style="width: 60px; height: 60px; background: rgba(200, 87, 22, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                            <i class="bi bi-envelope" style="font-size: 2rem; color: var(--accent-color);"></i>
-                        </div>
+    <div class="col-sm-6 col-lg-4">
+        <a href="events.php" class="text-decoration-none d-block">
+            <div class="card dashboard-stat-card h-100 border-0 shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="dashboard-stat-icon bg-success bg-opacity-10 text-success">
+                        <i class="bi bi-calendar-event"></i>
                     </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0" style="color: var(--default-color); opacity: 0.7;">Total Messages</h6>
-                        <h3 class="mb-0" style="color: var(--heading-color);"><?php echo $stats['contacts']['total']; ?></h3>
-                        <small style="color: var(--accent-color);"><?php echo $stats['contacts']['new']; ?> new</small>
+                    <div class="ms-3 flex-grow-1 min-w-0">
+                        <div class="text-muted small text-uppercase fw-semibold">Events</div>
+                        <div class="h4 mb-0 fw-bold"><?php echo (int) ($stats['events']['total'] ?? 0); ?></div>
+                        <div class="small text-success"><?php echo (int) ($stats['events']['upcoming'] ?? 0); ?> upcoming</div>
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
-    
-    <div class="col-md-3 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div style="width: 60px; height: 60px; background: rgba(200, 87, 22, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                            <i class="bi bi-pray" style="font-size: 2rem; color: var(--accent-color);"></i>
-                        </div>
+    <div class="col-sm-6 col-lg-4">
+        <a href="ministries.php" class="text-decoration-none d-block">
+            <div class="card dashboard-stat-card h-100 border-0 shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="dashboard-stat-icon bg-info bg-opacity-10 text-info">
+                        <i class="bi bi-building"></i>
                     </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0" style="color: var(--default-color); opacity: 0.7;">Total Prayer Requests</h6>
-                        <h3 class="mb-0" style="color: var(--heading-color);"><?php echo $stats['prayers']['total']; ?></h3>
-                        <small style="color: var(--accent-color);"><?php echo $stats['prayers']['new']; ?> new</small>
+                    <div class="ms-3 flex-grow-1 min-w-0">
+                        <div class="text-muted small text-uppercase fw-semibold">Ministries</div>
+                        <div class="h4 mb-0 fw-bold"><?php echo (int) ($stats['ministries']['total'] ?? 0); ?></div>
+                        <div class="small text-info">Active</div>
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
-    
-    <div class="col-md-3 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div style="width: 60px; height: 60px; background: rgba(200, 87, 22, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                            <i class="bi bi-chat-left-text" style="font-size: 2rem; color: var(--accent-color);"></i>
-                        </div>
+    <div class="col-sm-6 col-lg-4">
+        <a href="contacts.php" class="text-decoration-none d-block">
+            <div class="card dashboard-stat-card h-100 border-0 shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="dashboard-stat-icon bg-warning bg-opacity-10 text-warning">
+                        <i class="bi bi-envelope"></i>
                     </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0" style="color: var(--default-color); opacity: 0.7;">Total Feedback</h6>
-                        <h3 class="mb-0" style="color: var(--heading-color);"><?php echo $stats['feedback']['total']; ?></h3>
-                        <small style="color: var(--accent-color);"><?php echo $stats['feedback']['new']; ?> new</small>
+                    <div class="ms-3 flex-grow-1 min-w-0">
+                        <div class="text-muted small text-uppercase fw-semibold">Messages</div>
+                        <div class="h4 mb-0 fw-bold"><?php echo (int) ($stats['contacts']['total'] ?? 0); ?></div>
+                        <div class="small text-warning"><?php echo (int) ($stats['contacts']['new'] ?? 0); ?> new</div>
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <a href="prayer-requests.php" class="text-decoration-none d-block">
+            <div class="card dashboard-stat-card h-100 border-0 shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="dashboard-stat-icon bg-secondary bg-opacity-10 text-secondary">
+                        <i class="bi bi-heart"></i>
+                    </div>
+                    <div class="ms-3 flex-grow-1 min-w-0">
+                        <div class="text-muted small text-uppercase fw-semibold">Prayer requests</div>
+                        <div class="h4 mb-0 fw-bold"><?php echo (int) ($stats['prayers']['total'] ?? 0); ?></div>
+                        <div class="small text-secondary"><?php echo (int) ($stats['prayers']['new'] ?? 0); ?> new</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <a href="feedback.php" class="text-decoration-none d-block">
+            <div class="card dashboard-stat-card h-100 border-0 shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="dashboard-stat-icon bg-dark bg-opacity-10 text-dark">
+                        <i class="bi bi-chat-left-text"></i>
+                    </div>
+                    <div class="ms-3 flex-grow-1 min-w-0">
+                        <div class="text-muted small text-uppercase fw-semibold">Feedback</div>
+                        <div class="h4 mb-0 fw-bold"><?php echo (int) ($stats['feedback']['total'] ?? 0); ?></div>
+                        <div class="small text-dark"><?php echo (int) ($stats['feedback']['new'] ?? 0); ?> new</div>
+                    </div>
+                </div>
+            </div>
+        </a>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="bi bi-envelope me-2"></i>Recent Contact Inquiries</h5>
+<?php if (($stats['discipleship']['programs'] ?? 0) > 0): ?>
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <a href="discipleship.php" class="text-decoration-none d-block">
+            <div class="card dashboard-stat-card border-0 shadow-sm border-start border-4 border-primary">
+                <div class="card-body d-flex align-items-center flex-wrap gap-3">
+                    <div class="dashboard-stat-icon bg-primary bg-opacity-10 text-primary">
+                        <i class="bi bi-journal-bookmark"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="mb-0 fw-bold">Discipleship</h5>
+                        <p class="text-muted small mb-0"><?php echo (int) $stats['discipleship']['programs']; ?> programs · <?php echo (int) $stats['discipleship']['enrollments']; ?> active enrollments</p>
+                    </div>
+                    <span class="btn btn-outline-primary btn-sm">Manage <i class="bi bi-arrow-right ms-1"></i></span>
+                </div>
             </div>
-            <div class="card-body">
+        </a>
+    </div>
+</div>
+<?php endif; ?>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-bottom d-flex align-items-center justify-content-between py-3">
+                <h5 class="mb-0 fw-semibold"><i class="bi bi-envelope me-2 text-primary"></i>Recent contact inquiries</h5>
+                <a href="contacts.php" class="btn btn-sm btn-outline-primary">View all</a>
+            </div>
+            <div class="card-body p-0">
                 <?php if (empty($recentContacts)): ?>
-                    <p class="text-muted mb-0">No inquiries yet.</p>
+                    <p class="text-muted mb-0 p-3">No inquiries yet.</p>
                 <?php else: ?>
-                    <div class="list-group list-group-flush">
+                    <ul class="list-group list-group-flush">
                         <?php foreach ($recentContacts as $contact): ?>
-                            <div class="list-group-item px-0">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h6 class="mb-1"><?php echo htmlspecialchars($contact['name']); ?></h6>
-                                        <p class="mb-1 small text-muted"><?php echo htmlspecialchars($contact['subject']); ?></p>
-                                        <small class="text-muted"><?php echo formatDateTime($contact['created_at']); ?></small>
-                                    </div>
-                                    <span class="badge bg-<?php echo $contact['status'] === 'new' ? 'primary' : 'secondary'; ?>">
-                                        <?php echo ucfirst($contact['status']); ?>
-                                    </span>
+                            <li class="list-group-item border-0 py-3 d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1 min-w-0">
+                                    <div class="fw-semibold"><?php echo htmlspecialchars($contact['name']); ?></div>
+                                    <div class="small text-muted"><?php echo htmlspecialchars($contact['subject']); ?></div>
+                                    <div class="small text-muted mt-1"><?php echo formatDateTime($contact['created_at']); ?></div>
                                 </div>
-                            </div>
+                                <span class="badge rounded-pill bg-<?php echo $contact['status'] === 'new' ? 'primary' : 'secondary'; ?> ms-2"><?php echo ucfirst($contact['status']); ?></span>
+                            </li>
                         <?php endforeach; ?>
-                    </div>
-                    <div class="mt-3">
-                        <a href="contacts.php" class="btn btn-sm btn-outline-primary">View All</a>
-                    </div>
+                    </ul>
                 <?php endif; ?>
             </div>
         </div>
     </div>
-    
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>Upcoming Events</h5>
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-bottom d-flex align-items-center justify-content-between py-3">
+                <h5 class="mb-0 fw-semibold"><i class="bi bi-calendar-event me-2 text-success"></i>Upcoming events</h5>
+                <a href="events.php" class="btn btn-sm btn-outline-success">View all</a>
             </div>
-            <div class="card-body">
+            <div class="card-body p-0">
                 <?php if (empty($recentEvents)): ?>
-                    <p class="text-muted mb-0">No upcoming events.</p>
+                    <p class="text-muted mb-0 p-3">No upcoming events.</p>
                 <?php else: ?>
-                    <div class="list-group list-group-flush">
+                    <ul class="list-group list-group-flush">
                         <?php foreach ($recentEvents as $event): ?>
-                            <div class="list-group-item px-0">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h6 class="mb-1"><?php echo htmlspecialchars($event['title']); ?></h6>
-                                        <p class="mb-1 small text-muted">
-                                            <i class="bi bi-calendar me-1"></i><?php echo formatDate($event['event_date']); ?>
-                                            <?php if ($event['event_time']): ?>
-                                                <i class="bi bi-clock ms-2 me-1"></i><?php echo date('g:i A', strtotime($event['event_time'])); ?>
-                                            <?php endif; ?>
-                                        </p>
+                            <li class="list-group-item border-0 py-3 d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1 min-w-0">
+                                    <div class="fw-semibold"><?php echo htmlspecialchars($event['title']); ?></div>
+                                    <div class="small text-muted">
+                                        <i class="bi bi-calendar3 me-1"></i><?php echo formatDate($event['event_date']); ?>
+                                        <?php if (!empty($event['event_time'])): ?>
+                                            <i class="bi bi-clock ms-2 me-1"></i><?php echo date('g:i A', strtotime($event['event_time'])); ?>
+                                        <?php endif; ?>
                                     </div>
-                                    <span class="badge bg-<?php echo $event['status'] === 'upcoming' ? 'success' : 'secondary'; ?>">
-                                        <?php echo ucfirst($event['status']); ?>
-                                    </span>
                                 </div>
-                            </div>
+                                <span class="badge rounded-pill bg-<?php echo $event['status'] === 'upcoming' ? 'success' : 'secondary'; ?> ms-2"><?php echo ucfirst($event['status']); ?></span>
+                            </li>
                         <?php endforeach; ?>
-                    </div>
-                    <div class="mt-3">
-                        <a href="events.php" class="btn btn-sm btn-outline-primary">View All</a>
-                    </div>
+                    </ul>
                 <?php endif; ?>
             </div>
         </div>

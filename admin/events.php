@@ -1,6 +1,7 @@
 <?php
 $pageTitle = 'Events Management';
-require_once 'includes/header.php';
+require_once 'config/config.php';
+requireLogin();
 
 $db = getDB();
 $action = $_GET['action'] ?? 'list';
@@ -11,22 +12,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         if (isset($_POST['delete'])) {
             if (empty($_POST['id'])) {
-                redirect('events.html', 'Invalid event ID.', 'danger');
+                redirect('events.php', 'Invalid event ID.', 'danger');
             }
             
             $stmt = $db->prepare("DELETE FROM events WHERE id = ?");
             $stmt->execute([$_POST['id']]);
             
             if ($stmt->rowCount() > 0) {
-                redirect('events.html', 'Event deleted successfully.');
+                redirect('events.php', 'Event deleted successfully.');
             } else {
-                redirect('events.html', 'Event not found or already deleted.', 'warning');
+                redirect('events.php', 'Event not found or already deleted.', 'warning');
             }
         }
         
         // Validate required fields
         if (empty($_POST['title']) || empty($_POST['event_date'])) {
-            redirect('events.html?action=' . ($id ? 'edit&id=' . $id : 'add'), 'Title and Event Date are required fields.', 'danger');
+            redirect('events.php?action=' . ($id ? 'edit&id=' . $id : 'add'), 'Title and Event Date are required fields.', 'danger');
         }
         
         $data = [
@@ -49,32 +50,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $db->prepare("SELECT id FROM events WHERE id = ?");
             $stmt->execute([$eventId]);
             if (!$stmt->fetch()) {
-                redirect('events.html', 'Event not found.', 'danger');
+                redirect('events.php', 'Event not found.', 'danger');
             }
             
             $stmt = $db->prepare("UPDATE events SET title = ?, description = ?, event_date = ?, event_time = ?, end_date = ?, end_time = ?, location = ?, event_type = ?, image_url = ?, status = ? WHERE id = ?");
             $stmt->execute([$data['title'], $data['description'], $data['event_date'], $data['event_time'], $data['end_date'], $data['end_time'], $data['location'], $data['event_type'], $data['image_url'], $data['status'], $eventId]);
             
             if ($stmt->rowCount() > 0) {
-                redirect('events.html', 'Event updated successfully.');
+                redirect('events.php', 'Event updated successfully.');
             } else {
-                redirect('events.html', 'No changes were made.', 'info');
+                redirect('events.php', 'No changes were made.', 'info');
             }
         } else {
             $stmt = $db->prepare("INSERT INTO events (title, description, event_date, event_time, end_date, end_time, location, event_type, image_url, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([$data['title'], $data['description'], $data['event_date'], $data['event_time'], $data['end_date'], $data['end_time'], $data['location'], $data['event_type'], $data['image_url'], $data['status']]);
             
-            if ($stmt->rowCount() > 0) {
-                redirect('events.html', 'Event added successfully.');
+                if ($stmt->rowCount() > 0) {
+                redirect('events.php', 'Event added successfully.');
             } else {
-                redirect('events.html?action=add', 'Failed to add event. Please try again.', 'danger');
+                redirect('events.php?action=add', 'Failed to add event. Please try again.', 'danger');
             }
         }
     } catch (PDOException $e) {
-        redirect('events.html', handleDBError($e, 'A database error occurred. Please try again.'), 'danger');
+        redirect('events.php', handleDBError($e, 'A database error occurred. Please try again.'), 'danger');
     } catch (Exception $e) {
-        error_log("Error in events.html: " . $e->getMessage());
-        redirect('events.html', 'An error occurred: ' . htmlspecialchars($e->getMessage()), 'danger');
+        error_log("Error in events.php: " . $e->getMessage());
+        redirect('events.php', 'An error occurred: ' . htmlspecialchars($e->getMessage()), 'danger');
 
     }
 }
@@ -87,12 +88,17 @@ if ($action === 'add' || $action === 'edit') {
             $stmt->execute([$id]);
             $event = $stmt->fetch();
             if (!$event) {
-                redirect('events.html', 'Event not found.', 'danger');
+                redirect('events.php', 'Event not found.', 'danger');
             }
         } catch (PDOException $e) {
-            redirect('events.html', handleDBError($e, 'Error loading event.'), 'danger');
+            redirect('events.php', handleDBError($e, 'Error loading event.'), 'danger');
         }
     }
+}
+
+require_once 'includes/header.php';
+
+if ($action === 'add' || $action === 'edit') {
     ?>
     <div class="card">
         <div class="card-header">
@@ -197,7 +203,7 @@ if ($action === 'add' || $action === 'edit') {
                 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-primary"><i class="bi bi-save me-2"></i>Save Event</button>
-                    <a href="events.html" class="btn btn-secondary">Cancel</a>
+                    <a href="events.php" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
@@ -227,14 +233,14 @@ if ($action === 'add' || $action === 'edit') {
             <a href="?status=upcoming" class="btn btn-sm btn-outline-<?php echo ($_GET['status'] ?? '') === 'upcoming' ? 'primary' : 'secondary'; ?>">Upcoming</a>
             <a href="?status=ongoing" class="btn btn-sm btn-outline-<?php echo ($_GET['status'] ?? '') === 'ongoing' ? 'primary' : 'secondary'; ?>">Ongoing</a>
             <a href="?status=completed" class="btn btn-sm btn-outline-<?php echo ($_GET['status'] ?? '') === 'completed' ? 'primary' : 'secondary'; ?>">Completed</a>
-            <a href="events.html?action=add" class="btn btn-primary ms-2"><i class="bi bi-plus-circle me-2"></i>Add New Event</a>
+            <a href="events.php?action=add" class="btn btn-primary ms-2"><i class="bi bi-plus-circle me-2"></i>Add New Event</a>
         </div>
     </div>
     
     <div class="card">
         <div class="card-body">
             <?php if (empty($events)): ?>
-                <p class="text-muted">No events found. <a href="events.html?action=add">Add your first event</a>.</p>
+                <p class="text-muted">No events found. <a href="events.php?action=add">Add your first event</a>.</p>
             <?php else: ?>
                 <div class="table-responsive">
                     <table class="table table-hover datatable" data-dt-options='{"order":[[1,"desc"]]}'>
@@ -255,7 +261,7 @@ if ($action === 'add' || $action === 'edit') {
                                     <td><?php echo htmlspecialchars($event['location']); ?></td>
                                     <td><span class="badge bg-<?php echo $event['status'] === 'upcoming' ? 'success' : ($event['status'] === 'ongoing' ? 'warning' : 'secondary'); ?>"><?php echo ucfirst($event['status']); ?></span></td>
                                     <td>
-                                        <a href="events.html?action=edit&id=<?php echo $event['id']; ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                        <a href="events.php?action=edit&id=<?php echo $event['id']; ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
                                         <form method="POST" style="display: inline;" onsubmit="return confirm('Delete this event?');">
                                             <input type="hidden" name="id" value="<?php echo $event['id']; ?>">
                                             <button type="submit" name="delete" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>

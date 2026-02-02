@@ -49,6 +49,20 @@ function getAllEvents($limit = null) {
 }
 
 /**
+ * Get events for public frontend (excludes cancelled).
+ * Order: upcoming/ongoing first by date, then past events.
+ */
+function getPublicEvents($limit = null) {
+    $db = getDB();
+    $where = "WHERE status != 'cancelled'";
+    $order = "ORDER BY (event_date >= CURDATE() OR status = 'ongoing') DESC, event_date ASC, event_time ASC";
+    $limitClause = $limit ? "LIMIT " . intval($limit) : "";
+    
+    $stmt = $db->query("SELECT * FROM events $where $order $limitClause");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
  * Get active ministries (used by public ministries page; data managed in Admin → Ministries)
  */
 function getActiveMinistries() {

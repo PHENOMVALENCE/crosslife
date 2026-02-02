@@ -64,15 +64,12 @@ if ($enrollmentId) {
 }
 
 $pageTitle = $program['program_name'];
+$breadcrumb = [
+    ['Dashboard', 'dashboard.php'],
+    [htmlspecialchars($program['program_name']), '']
+];
 require_once __DIR__ . '/includes/header.php';
 ?>
-
-<nav aria-label="breadcrumb" class="student-breadcrumb mb-3">
-    <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
-        <li class="breadcrumb-item active"><?php echo htmlspecialchars($program['program_name']); ?></li>
-    </ol>
-</nav>
 
 <?php if (!$enrollment): ?>
     <div class="student-card card mb-4">
@@ -80,7 +77,7 @@ require_once __DIR__ . '/includes/header.php';
             <h1 class="h3 mb-3"><?php echo htmlspecialchars($program['program_name']); ?></h1>
             <div class="text-muted mb-4" style="max-width: 60ch;"><?php echo nl2br(htmlspecialchars($program['description'])); ?></div>
             <form method="POST" action="program.php?program_id=<?php echo (int) $programId; ?>">
-                <button type="submit" class="btn btn-accent"><i class="bi bi-plus-circle me-2"></i>Enroll in this program</button>
+                <button type="submit" class="btn btn-elms-accent"><i class="bi bi-plus-circle me-2"></i>Enroll in this program</button>
             </form>
         </div>
     </div>
@@ -110,16 +107,20 @@ require_once __DIR__ . '/includes/header.php';
             <div class="<?php echo $rowClass; ?>">
                 <div class="d-flex flex-wrap align-items-center gap-2">
                     <span class="module-num"><?php echo $i + 1; ?> of <?php echo $totalMods; ?></span>
-                    <span class="fw-semibold"><?php echo htmlspecialchars($mod['title']); ?></span>
                     <?php if ($passed): ?>
-                        <span class="badge badge-passed">Passed</span>
-                    <?php elseif (!$unlocked): ?>
-                        <span class="badge badge-locked">Locked</span>
+                        <i class="bi bi-check-circle-fill module-status-passed" aria-hidden="true"></i>
+                        <span class="badge badge-status-active">Passed</span>
+                    <?php elseif ($unlocked): ?>
+                        <i class="bi bi-circle-fill module-status-unlocked" style="font-size: 0.6rem;" aria-hidden="true"></i>
+                    <?php else: ?>
+                        <i class="bi bi-lock-fill module-status-locked" aria-hidden="true"></i>
+                        <span class="badge badge-status-locked">Locked</span>
                     <?php endif; ?>
+                    <span class="fw-semibold"><?php echo htmlspecialchars($mod['title']); ?></span>
                 </div>
                 <div class="mt-2 mt-md-0 ms-md-auto">
                     <?php if ($unlocked): ?>
-                        <a href="module.php?enrollment_id=<?php echo $enrollmentId; ?>&module_id=<?php echo (int) $mod['id']; ?>" class="btn btn-accent btn-sm">
+                        <a href="module.php?enrollment_id=<?php echo $enrollmentId; ?>&module_id=<?php echo (int) $mod['id']; ?>" class="btn btn-elms-accent btn-sm">
                             <?php echo $passed ? 'Review' : 'Start'; ?> <i class="bi bi-arrow-right ms-1"></i>
                         </a>
                     <?php else: ?>

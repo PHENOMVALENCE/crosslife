@@ -1,6 +1,11 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
-// Note: requireLogin() should be called BEFORE including this header file
+// Ensure pages including this header enforce login. If a page needs to skip
+// authentication it can set `$skipRequireLogin = true;` before including.
+if (empty($skipRequireLogin)) {
+    requireLogin();
+}
+// Note: pages may call requireLogin() before including this header if preferred
 
 $currentAdmin = getCurrentAdmin();
 $currentPage = basename($_SERVER['PHP_SELF']);
@@ -30,6 +35,9 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     
     <!-- Main CSS File -->
     <link href="../assets/css/main.css" rel="stylesheet">
+    <?php if ($currentPage === 'discipleship.php'): ?>
+    <link href="../assets/css/elms-discipleship.css" rel="stylesheet">
+    <?php endif; ?>
     
     <style>
         :root {
@@ -241,6 +249,29 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         
         .admin-content {
             padding: 2rem;
+        }
+        
+        /* Dashboard stat cards */
+        .dashboard-overview { padding: 0 0.25rem; }
+        .dashboard-stat-card {
+            border-radius: 10px;
+            border-top: 3px solid var(--accent-color);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .dashboard-stat-card:hover {
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1) !important;
+            transform: translateY(-2px);
+        }
+        a:hover .dashboard-stat-card { color: inherit; }
+        .dashboard-stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
         }
         
         /* DataTables tweaks for admin */

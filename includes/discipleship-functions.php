@@ -101,13 +101,22 @@ function discipleship_get_enrollment_for_student_program($studentId, $programId)
 }
 
 /**
- * Get enrollments for a student
+ * Get enrollments for a student (with optional progress: modules_total, modules_passed)
  */
 function discipleship_get_student_enrollments($studentId) {
     $db = getDB();
-    $stmt = $db->prepare("SELECT e.*, p.program_name, p.description, p.duration FROM discipleship_enrollments e JOIN discipleship_programs p ON p.id = e.program_id WHERE e.student_id = ? AND e.status = 'active' ORDER BY e.enrolled_at DESC");
+    $stmt = $db->prepare("SELECT e.*, p.program_name, p.description, p.duration, p.image_url FROM discipleship_enrollments e JOIN discipleship_programs p ON p.id = e.program_id WHERE e.student_id = ? AND e.status IN ('active', 'completed') ORDER BY e.enrolled_at DESC");
     $stmt->execute([$studentId]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($rows as &$row) {
+        $stmt2 = $db->prepare("SELECT COUNT(*) FROM discipleship_modules WHERE program_id = ?");
+        $stmt2->execute([$row['program_id']]);
+        $row['modules_total'] = (int) $stmt2->fetchColumn();
+        $stmt2 = $db->prepare("SELECT COUNT(*) FROM discipleship_module_progress WHERE enrollment_id = ? AND passed_at IS NOT NULL");
+        $stmt2->execute([$row['id']]);
+        $row['modules_passed'] = (int) $stmt2->fetchColumn();
+    }
+    return $rows;
 }
 
 /**
@@ -162,6 +171,7 @@ function discipleship_record_attempt($enrollmentId, $moduleId, $scorePct, $passe
         }
         if ($passed) {
             $db->prepare("INSERT INTO discipleship_module_progress (enrollment_id, module_id, passed_at) VALUES (?, ?, NOW()) ON DUPLICATE KEY UPDATE passed_at = NOW(), updated_at = NOW()")->execute([$enrollmentId, $moduleId]);
+            discipleship_check_and_set_program_completed($db, $enrollmentId);
         }
         $db->commit();
         return $attemptId;
@@ -169,6 +179,84 @@ function discipleship_record_attempt($enrollmentId, $moduleId, $scorePct, $passe
         $db->rollBack();
         throw $e;
     }
+}
+
+/**
+ * When a module is passed, check if all modules in the program are passed; if so, mark enrollment completed.
+ */
+function discipleship_check_and_set_program_completed($db, $enrollmentId) {
+    $stmt = $db->prepare("SELECT program_id FROM discipleship_enrollments WHERE id = ? AND status = 'active'");
+    $stmt->execute([$enrollmentId]);
+    $row = $stmt->fetch();
+    if (!$row) return;
+    $programId = (int) $row['program_id'];
+    $stmt = $db->prepare("SELECT COUNT(*) FROM discipleship_modules WHERE program_id = ?");
+    $stmt->execute([$programId]);
+    $total = (int) $stmt->fetchColumn();
+    $stmt = $db->prepare("SELECT COUNT(*) FROM discipleship_module_progress WHERE enrollment_id = ? AND passed_at IS NOT NULL");
+    $stmt->execute([$enrollmentId]);
+    $passed = (int) $stmt->fetchColumn();
+    if ($total > 0 && $passed >= $total) {
+        $db->prepare("UPDATE discipleship_enrollments SET status = 'completed', completed_at = NOW() WHERE id = ?")->execute([$enrollmentId]);
+    }
+}
+
+/**
+ * Get last quiz attempt for an enrollment+module (for review)
+ */
+function discipleship_get_last_attempt($enrollmentId, $moduleId) {
+    $db = getDB();
+    $stmt = $db->prepare("SELECT * FROM discipleship_module_attempts WHERE enrollment_id = ? AND module_id = ? ORDER BY attempted_at DESC LIMIT 1");
+    $stmt->execute([$enrollmentId, $moduleId]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+/**
+ * Get answers for an attempt (question_id, option_id, is_correct); join to question/option text for display.
+ */
+function discipleship_get_attempt_answers_with_text($attemptId) {
+    $db = getDB();
+    $stmt = $db->prepare("
+        SELECT a.question_id, a.option_id, a.is_correct,
+               q.question_text, o.option_text, o.feedback_text
+        FROM discipleship_attempt_answers a
+        JOIN discipleship_questions q ON q.id = a.question_id
+        JOIN discipleship_question_options o ON o.id = a.option_id
+        WHERE a.attempt_id = ?
+        ORDER BY q.display_order ASC, q.id ASC
+    ");
+    $stmt->execute([$attemptId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
+ * Get correct option_id per question for a module (for showing correct answer in review)
+ */
+function discipleship_get_correct_options_by_question($moduleId) {
+    $db = getDB();
+    $stmt = $db->prepare("
+        SELECT q.id AS question_id, o.id AS option_id, o.option_text
+        FROM discipleship_questions q
+        JOIN discipleship_question_options o ON o.question_id = q.id AND o.is_correct = 1
+        WHERE q.module_id = ?
+        ORDER BY q.display_order ASC, q.id ASC
+    ");
+    $stmt->execute([$moduleId]);
+    $out = [];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $out[$row['question_id']] = $row;
+    }
+    return $out;
+}
+
+/**
+ * Count attempts for enrollment+module (for attempt limit)
+ */
+function discipleship_count_attempts($enrollmentId, $moduleId) {
+    $db = getDB();
+    $stmt = $db->prepare("SELECT COUNT(*) FROM discipleship_module_attempts WHERE enrollment_id = ? AND module_id = ?");
+    $stmt->execute([$enrollmentId, $moduleId]);
+    return (int) $stmt->fetchColumn();
 }
 
 /**
