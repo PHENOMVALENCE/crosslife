@@ -6,46 +6,36 @@ require_once 'includes/header.php';
 
 $db = getDB();
 
-// Get statistics
+// Church web app statistics
 $stats = [];
 
-// Sermons count
 $stmt = $db->query("SELECT COUNT(*) as total, SUM(CASE WHEN status = 'published' THEN 1 ELSE 0 END) as published FROM sermons");
 $stats['sermons'] = $stmt->fetch();
 
-// Events count
 $stmt = $db->query("SELECT COUNT(*) as total, SUM(CASE WHEN status = 'upcoming' THEN 1 ELSE 0 END) as upcoming FROM events");
 $stats['events'] = $stmt->fetch();
 
-// Ministries count
 $stmt = $db->query("SELECT COUNT(*) as total FROM ministries WHERE status = 'active'");
 $stats['ministries'] = $stmt->fetch();
 
-// Contact inquiries
 $stmt = $db->query("SELECT COUNT(*) as total, SUM(CASE WHEN status = 'new' THEN 1 ELSE 0 END) as new FROM contact_inquiries");
 $stats['contacts'] = $stmt->fetch();
 
-// Prayer requests
 $stmt = $db->query("SELECT COUNT(*) as total, SUM(CASE WHEN status = 'new' THEN 1 ELSE 0 END) as new FROM prayer_requests");
 $stats['prayers'] = $stmt->fetch();
 
-// Feedback
 $stmt = $db->query("SELECT COUNT(*) as total, SUM(CASE WHEN status = 'new' THEN 1 ELSE 0 END) as new FROM feedback");
 $stats['feedback'] = $stmt->fetch();
 
-// Recent activities
 $recentContacts = $db->query("SELECT * FROM contact_inquiries ORDER BY created_at DESC LIMIT 5")->fetchAll();
 $recentPrayers = $db->query("SELECT * FROM prayer_requests ORDER BY created_at DESC LIMIT 5")->fetchAll();
 $recentEvents = $db->query("SELECT * FROM events WHERE event_date >= CURDATE() ORDER BY event_date ASC LIMIT 5")->fetchAll();
 
-// Discipleship summary (if tables exist)
 $stats['discipleship'] = ['programs' => 0, 'enrollments' => 0];
 try {
     $stats['discipleship']['programs'] = (int) $db->query("SELECT COUNT(*) FROM discipleship_programs WHERE status IN ('active', 'upcoming')")->fetchColumn();
     $stats['discipleship']['enrollments'] = (int) $db->query("SELECT COUNT(*) FROM discipleship_enrollments WHERE status = 'active'")->fetchColumn();
 } catch (PDOException $e) { /* ignore */ }
-
-$adminName = isset($currentAdmin['full_name']) ? $currentAdmin['full_name'] : 'Admin';
 ?>
 
 <div class="dashboard-overview mb-4">
@@ -233,4 +223,3 @@ $adminName = isset($currentAdmin['full_name']) ? $currentAdmin['full_name'] : 'A
 </div>
 
 <?php require_once 'includes/footer.php'; ?>
-

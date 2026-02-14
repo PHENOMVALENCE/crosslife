@@ -6,8 +6,8 @@
 
 // Database configuration
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_USER', 'cross_user');
+define('DB_PASS', 'CrossLife@2026!');
 define('DB_NAME', 'crosslife');
 define('DB_CHARSET', 'utf8mb4');
 

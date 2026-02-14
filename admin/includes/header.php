@@ -35,6 +35,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     
     <!-- Main CSS File -->
     <link href="../assets/css/main.css" rel="stylesheet">
+    <link href="../assets/css/admin-elms.css" rel="stylesheet">
     <?php if ($currentPage === 'discipleship.php'): ?>
     <link href="../assets/css/elms-discipleship.css" rel="stylesheet">
     <?php endif; ?>
@@ -500,7 +501,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <a href="index.php" class="menu-item <?php echo $currentPage === 'index.php' ? 'active' : ''; ?>">
                     <i class="bi bi-speedometer2"></i>Dashboard
                 </a>
-                
+
                 <div class="menu-section">Content</div>
                 <a href="sermons.php" class="menu-item <?php echo $currentPage === 'sermons.php' ? 'active' : ''; ?>">
                     <i class="bi bi-play-circle"></i>Sermons
@@ -511,13 +512,15 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <a href="ministries.php" class="menu-item <?php echo $currentPage === 'ministries.php' ? 'active' : ''; ?>">
                     <i class="bi bi-building"></i>Ministries
                 </a>
-                <a href="discipleship.php" class="menu-item <?php echo $currentPage === 'discipleship.php' ? 'active' : ''; ?>">
-                    <i class="bi bi-mortarboard"></i>Discipleship
-                </a>
                 <a href="leadership.php" class="menu-item <?php echo $currentPage === 'leadership.php' ? 'active' : ''; ?>">
                     <i class="bi bi-people"></i>Leadership
                 </a>
-                
+
+                <div class="menu-section">Discipleship</div>
+                <a href="discipleship.php" class="menu-item <?php echo $currentPage === 'discipleship.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-mortarboard"></i>Discipleship
+                </a>
+
                 <div class="menu-section">Communications</div>
                 <a href="contacts.php" class="menu-item <?php echo $currentPage === 'contacts.php' ? 'active' : ''; ?>">
                     <i class="bi bi-envelope"></i>Contact Inquiries
@@ -531,13 +534,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <a href="newsletter.php" class="menu-item <?php echo $currentPage === 'newsletter.php' ? 'active' : ''; ?>">
                     <i class="bi bi-envelope-paper-heart"></i>Newsletter
                 </a>
-                
+
                 <div class="menu-section">System</div>
                 <a href="users.php" class="menu-item <?php echo $currentPage === 'users.php' ? 'active' : ''; ?>">
                     <i class="bi bi-people-fill"></i>Users & Students
                 </a>
                 <a href="settings.php" class="menu-item <?php echo $currentPage === 'settings.php' ? 'active' : ''; ?>">
-                    <i class="bi bi-book"></i>User Manual & Account
+                    <i class="bi bi-gear"></i>Settings
                 </a>
                 <a href="logout.php" class="menu-item">
                     <i class="bi bi-box-arrow-right"></i>Logout
@@ -556,7 +559,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </div>
                 <div class="admin-user">
                     <div class="admin-user-info d-none d-md-block">
-                        <div class="admin-user-name"><?php echo htmlspecialchars($currentAdmin['full_name']); ?></div>
+                        <div class="admin-user-badge">
+                            <span class="badge badge-admin">ADMIN</span>
+                            <span class="admin-user-name"><?php echo htmlspecialchars($currentAdmin['full_name']); ?></span>
+                        </div>
                         <div class="admin-user-role"><?php echo ucfirst(str_replace('_', ' ', $currentAdmin['role'])); ?></div>
                     </div>
                     <a href="logout.php" class="btn-logout">
