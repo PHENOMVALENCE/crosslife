@@ -1,0 +1,30 @@
+================================================================================
+PHP UPLOAD LIMITS – Fix "POST body dropped" for audio sermons
+================================================================================
+
+Your upload was ~25 MB. PHP rejected it because post_max_size (and/or
+upload_max_filesize) was smaller than the request size.
+
+WHAT TO DO
+----------
+1. Find your php.ini:
+   - Run:  php --ini
+   - Or check: C:\xampp\php\php.ini  /  C:\wamp64\bin\php\php8.x.x\php.ini
+   - Or: C:\php\php.ini  (if you installed PHP manually)
+
+2. Edit php.ini and set (use 64M or 128M for long sermons):
+
+   post_max_size = 64M
+   upload_max_filesize = 64M
+
+   They must be at least as large as your biggest audio file.
+   post_max_size must be >= upload_max_filesize (the whole request is larger
+   than the file because of form fields).
+
+3. Restart:
+   - If using "php -S localhost:8000", stop it (Ctrl+C) and start again.
+   - If using XAMPP/WAMP, restart Apache from the control panel.
+
+4. Reload the Add Audio Sermon page and try uploading again.
+
+================================================================================

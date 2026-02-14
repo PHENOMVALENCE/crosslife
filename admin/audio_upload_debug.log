@@ -1,0 +1,41 @@
+[2026-02-14 12:55:29] POST hit sermons.php
+[2026-02-14 15:55:29] POST received {"delete":false,"title":""}
+[2026-02-14 13:18:19] POST hit sermons.php
+[2026-02-14 16:18:19] After requireLogin (logged in)
+[2026-02-14 16:18:19] POST body dropped by PHP (likely post_max_size exceeded) Content-Length: 26163860
+[2026-02-14 13:35:22] POST hit sermons.php
+[2026-02-14 16:35:22] After requireLogin (logged in)
+[2026-02-14 16:35:22] POST body dropped by PHP (likely post_max_size exceeded) Content-Length: 26163868
+[2026-02-14 13:40:20] POST hit sermons.php
+[2026-02-14 16:40:20] After requireLogin (logged in)
+[2026-02-14 16:40:20] POST received {"delete":false,"title":"ghh"}
+[2026-02-14 16:40:20] FILES state {"name":"Dunsin_Oyekan_-_Burn_CeeNaija.com_.mp3","error":0,"size":26163041,"tmp_name":"exists"}
+[2026-02-14 16:40:20] Upload OK, checking format and size
+[2026-02-14 16:40:20] Upload dir C:\Users\Pretty_Mk\CrossLife Mk code\crosslife\uploads\audio writable=yes
+[2026-02-14 16:40:20] move_uploaded_file {"from":"C:\\Users\\Pretty_Mk\\AppData\\Local\\Temp\\phpE359.tmp","to":"C:\\Users\\Pretty_Mk\\CrossLife Mk code\\crosslife\\uploads\\audio\\20260214-164020_Dunsin_Oyekan_-_Burn_CeeNaija.com_.mp3"}
+[2026-02-14 16:40:20] File saved OK /uploads/audio/20260214-164020_Dunsin_Oyekan_-_Burn_CeeNaija.com_.mp3
+[2026-02-14 16:40:20] INSERT sermon {"title":"ghh","audio_url":"/uploads/audio/20260214-164020_Dunsin_Oyekan_-_Burn_CeeNaija.com_.mp3"}
+[2026-02-14 16:40:21] INSERT result lastInsertId=1 rowCount=1
+[2026-02-14 16:40:21] SUCCESS: sermon added id=1
+[2026-02-14 13:59:12] POST hit sermons.php
+[2026-02-14 16:59:12] After requireLogin (logged in)
+[2026-02-14 16:59:12] POST received {"delete":false,"title":"ghjhj"}
+[2026-02-14 16:59:12] FILES state {"name":"Dunsin_Oyekan_-_Burn_CeeNaija.com_.mp3","error":0,"size":26163041,"tmp_name":"exists"}
+[2026-02-14 16:59:12] Upload OK, checking format and size
+[2026-02-14 16:59:12] Upload dir C:\Users\Pretty_Mk\CrossLife Mk code\crosslife\uploads\audio writable=yes
+[2026-02-14 16:59:12] move_uploaded_file {"from":"C:\\Users\\Pretty_Mk\\AppData\\Local\\Temp\\php2B3D.tmp","to":"C:\\Users\\Pretty_Mk\\CrossLife Mk code\\crosslife\\uploads\\audio\\20260214-165912_Dunsin_Oyekan_-_Burn_CeeNaija.com_.mp3"}
+[2026-02-14 16:59:12] File saved OK /uploads/audio/20260214-165912_Dunsin_Oyekan_-_Burn_CeeNaija.com_.mp3
+[2026-02-14 16:59:12] INSERT sermon {"title":"ghjhj","audio_url":"/uploads/audio/20260214-165912_Dunsin_Oyekan_-_Burn_CeeNaija.com_.mp3"}
+[2026-02-14 16:59:12] INSERT result lastInsertId=2 rowCount=1
+[2026-02-14 16:59:12] SUCCESS: sermon added id=2
+[2026-02-14 13:59:31] POST hit sermons.php
+[2026-02-14 16:59:31] After requireLogin (logged in)
+[2026-02-14 16:59:31] POST received {"delete":true,"title":""}
+[2026-02-14 14:00:24] POST hit sermons.php
+[2026-02-14 17:00:24] After requireLogin (logged in)
+[2026-02-14 17:00:24] POST received {"delete":false,"title":"ghhfhjk"}
+[2026-02-14 17:00:24] FILES state {"name":"Dunsin_Oyekan_-_Burn_CeeNaija.com_.mp3","error":0,"size":26163041,"tmp_name":"exists"}
+[2026-02-14 17:00:24] Upload OK, checking format and size
+[2026-02-14 17:00:24] Upload dir C:\Users\Pretty_Mk\CrossLife Mk code\crosslife\uploads\audio writable=yes
+[2026-02-14 17:00:24] move_uploaded_file {"from":"C:\\Users\\Pretty_Mk\\AppData\\Local\\Temp\\php42AA.tmp","to":"C:\\Users\\Pretty_Mk\\CrossLife Mk code\\crosslife\\uploads\\audio\\20260214-170024_Dunsin_Oyekan_-_Burn_CeeNaija.com_.mp3"}
+[2026-02-14 17:00:24] File saved OK /uploads/audio/20260214-170024_Dunsin_Oyekan_-_Burn_CeeNaija.com_.mp3

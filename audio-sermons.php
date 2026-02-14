@@ -69,131 +69,43 @@ $settings = getSiteSettings();
   <link href="assets/css/main.css" rel="stylesheet">
   
   <style>
+    .audio-page .section-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; color: #1a1a1a; }
     .audio-sermon-card {
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      background: white;
-      margin-bottom: 2rem;
-    }
-    .audio-sermon-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
-    .audio-card-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .audio-card-header::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-      animation: pulse 4s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.5; }
-      50% { transform: scale(1.1); opacity: 0.8; }
-    }
-    .audio-icon-wrapper {
-      width: 80px;
-      height: 80px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-      backdrop-filter: blur(10px);
-    }
-    .audio-icon-wrapper i {
-      font-size: 2.5rem;
-    }
-    .audio-card-body {
-      padding: 2rem;
-    }
-    .audio-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.75rem;
-      color: #333;
-      line-height: 1.3;
-    }
-    .audio-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      font-size: 0.9rem;
-      color: #666;
-    }
-    .audio-meta-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .audio-meta-item i {
-      color: #667eea;
-    }
-    .audio-description {
-      color: #555;
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-    }
-    .audio-player-container {
-      background: #f8f9fa;
+      background: #fff;
+      border: 1px solid #e5e7eb;
       border-radius: 10px;
-      padding: 1.5rem;
-      margin-top: 1rem;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
     }
-    .audio-player-container audio {
-      width: 100%;
-      height: 50px;
+    .audio-sermon-card:hover { border-color: #c4b87b; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .audio-card-header {
+      padding: 1rem 1.25rem;
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
     }
-    .audio-badge {
-      display: inline-block;
-      padding: 0.4rem 1rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-right: 0.5rem;
-      margin-bottom: 0.5rem;
+    .audio-card-header h2 { font-size: 1.15rem; font-weight: 600; margin: 0; color: #1a1a1a; }
+    .audio-card-meta { font-size: 0.875rem; color: #6b7280; margin-top: 0.35rem; }
+    .audio-card-meta span + span::before { content: " · "; color: #9ca3af; }
+    .audio-card-body { padding: 1.25rem; }
+    .audio-description { font-size: 0.9rem; color: #4b5563; line-height: 1.5; margin-bottom: 1rem; }
+    .audio-player-wrap {
+      background: #f3f4f6;
+      border-radius: 8px;
+      padding: 1rem;
     }
-    .badge-category {
-      background: #e3f2fd;
-      color: #1976d2;
-    }
-    .badge-speaker {
-      background: #f3e5f5;
-      color: #7b1fa2;
-    }
+    .audio-player-wrap audio { width: 100%; height: 40px; }
+    .audio-player-wrap .btn-dl { margin-top: 0.75rem; font-size: 0.875rem; }
     .filter-section {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      padding: 2rem;
-      border-radius: 12px;
-      margin-bottom: 3rem;
-    }
-    .empty-state {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: #666;
-    }
-    .empty-state i {
-      font-size: 5rem;
-      color: #ccc;
+      background: #f9fafb;
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
       margin-bottom: 1.5rem;
+      border: 1px solid #e5e7eb;
     }
-    .empty-state h3 {
-      color: #999;
-      margin-bottom: 1rem;
-    }
+    .filter-section .form-label { font-size: 0.875rem; font-weight: 500; color: #374151; }
+    .empty-state { text-align: center; padding: 3rem 1.5rem; color: #6b7280; }
+    .empty-state i { font-size: 3rem; color: #d1d5db; margin-bottom: 1rem; }
+    .empty-state h3 { font-size: 1.1rem; color: #4b5563; margin-bottom: 0.5rem; }
   </style>
 </head>
 
@@ -260,7 +172,7 @@ $settings = getSiteSettings();
     </section>
 
     <!-- Audio Sermons Section -->
-    <section id="audio-sermons" class="sermons section">
+    <section id="audio-sermons" class="sermons section audio-page">
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
@@ -311,70 +223,35 @@ $settings = getSiteSettings();
           </div>
         <?php else: ?>
           <div class="row">
-            <?php foreach ($paginatedSermons as $sermon): 
-              $thumbnail = !empty($sermon['thumbnail_url']) ? $sermon['thumbnail_url'] : 'assets/img/_MG_5281.jpg';
-            ?>
-              <div class="col-lg-12 mb-4" data-aos="fade-up" data-aos-delay="100">
+            <?php foreach ($paginatedSermons as $sermon): ?>
+              <div class="col-12" data-aos="fade-up" data-aos-delay="100">
                 <div class="audio-sermon-card">
                   <div class="audio-card-header">
-                    <div class="d-flex align-items-center">
-                      <div class="audio-icon-wrapper">
-                        <i class="bi bi-headphones"></i>
-                      </div>
-                      <div class="flex-grow-1">
-                        <h2 class="text-white mb-2"><?php echo htmlspecialchars($sermon['title']); ?></h2>
-                        <div class="d-flex flex-wrap gap-3">
-                          <?php if (!empty($sermon['speaker'])): ?>
-                            <span class="text-white-50">
-                              <i class="bi bi-person"></i> <?php echo htmlspecialchars($sermon['speaker']); ?>
-                            </span>
-                          <?php endif; ?>
-                          <?php if (!empty($sermon['sermon_date'])): ?>
-                            <span class="text-white-50">
-                              <i class="bi bi-calendar"></i> <?php echo date('F j, Y', strtotime($sermon['sermon_date'])); ?>
-                            </span>
-                          <?php endif; ?>
-                        </div>
-                      </div>
+                    <h2><?php echo htmlspecialchars($sermon['title']); ?></h2>
+                    <div class="audio-card-meta">
+                      <?php if (!empty($sermon['speaker'])): ?><span><?php echo htmlspecialchars($sermon['speaker']); ?></span><?php endif; ?>
+                      <?php if (!empty($sermon['sermon_date'])): ?><span><?php echo date('F j, Y', strtotime($sermon['sermon_date'])); ?></span><?php endif; ?>
+                      <?php if (!empty($sermon['category'])): ?><span><?php echo htmlspecialchars($sermon['category']); ?></span><?php endif; ?>
                     </div>
                   </div>
-                  
                   <div class="audio-card-body">
-                    <div class="mb-3">
-                      <?php if (!empty($sermon['category'])): ?>
-                        <span class="audio-badge badge-category">
-                          <i class="bi bi-tag"></i> <?php echo htmlspecialchars($sermon['category']); ?>
-                        </span>
-                      <?php endif; ?>
-                      <?php if (!empty($sermon['speaker'])): ?>
-                        <span class="audio-badge badge-speaker">
-                          <i class="bi bi-person"></i> <?php echo htmlspecialchars($sermon['speaker']); ?>
-                        </span>
-                      <?php endif; ?>
-                    </div>
-                    
                     <?php if (!empty($sermon['description'])): ?>
                       <p class="audio-description"><?php echo nl2br(htmlspecialchars($sermon['description'])); ?></p>
                     <?php endif; ?>
-                    
                     <?php if (!empty($sermon['audio_url'])): ?>
-                      <div class="audio-player-container">
+                      <div class="audio-player-wrap">
                         <audio controls preload="metadata" class="w-100">
                           <source src="<?php echo htmlspecialchars($sermon['audio_url']); ?>" type="audio/mpeg">
                           <source src="<?php echo htmlspecialchars($sermon['audio_url']); ?>" type="audio/ogg">
                           <source src="<?php echo htmlspecialchars($sermon['audio_url']); ?>" type="audio/wav">
                           Your browser does not support the audio element.
                         </audio>
-                        <div class="mt-2 text-center">
-                          <a href="<?php echo htmlspecialchars($sermon['audio_url']); ?>" download class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-download me-2"></i>Download Audio
-                          </a>
-                        </div>
+                        <a href="<?php echo htmlspecialchars($sermon['audio_url']); ?>" download class="btn btn-sm btn-outline-primary btn-dl">
+                          <i class="bi bi-download me-1"></i>Download
+                        </a>
                       </div>
                     <?php else: ?>
-                      <div class="alert alert-info">
-                        <i class="bi bi-info-circle me-2"></i>Audio file not available at this time.
-                      </div>
+                      <p class="text-muted small mb-0">Audio not available.</p>
                     <?php endif; ?>
                   </div>
                 </div>
