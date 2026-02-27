@@ -158,6 +158,18 @@ h6 {
   padding-top: 120px;
 }
 
+@media (max-width: 768px) {
+  .header.fixed-top + .main {
+    padding-top: 100px;
+  }
+}
+
+@media (max-width: 576px) {
+  .header.fixed-top + .main {
+    padding-top: 85px;
+  }
+}
+
 .header .top-row {
   padding-bottom: 10px;
 }
@@ -179,6 +191,106 @@ h6 {
   margin: 0;
 }
 
+.header .search-toggle .btn-search {
+  background: none;
+  border: none;
+  color: var(--heading-color);
+  font-size: 18px;
+  padding: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.header .search-toggle .btn-search:hover {
+  color: var(--accent-color);
+}
+
+/* Mobile and Tablet Responsive Adjustments */
+@media (max-width: 1200px) {
+  .header {
+    padding: 15px 0 0 0;
+  }
+
+  .header .top-row {
+    padding-bottom: 8px;
+  }
+
+  .header .top-row .logo img {
+    max-height: 35px;
+    margin-right: 8px;
+  }
+
+  .header .top-row .logo .sitename {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 12px 0 0 0;
+  }
+
+  .header .top-row {
+    padding-bottom: 5px;
+  }
+
+  .header .top-row .logo img {
+    max-height: 32px;
+    margin-right: 8px;
+  }
+
+  .header .top-row .logo .sitename {
+    font-size: 18px;
+  }
+
+  .header .social-links a {
+    font-size: 16px;
+    padding: 0 6px;
+  }
+
+  .header .search-toggle .btn-search {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 576px) {
+  .header {
+    padding: 10px 0 0 0;
+  }
+
+  .header .top-row {
+    padding-bottom: 3px;
+  }
+
+  .header .top-row .logo img {
+    max-height: 28px;
+    margin-right: 6px;
+  }
+
+  .header .top-row .logo .sitename {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .header .social-links a {
+    font-size: 14px;
+    padding: 0 5px;
+  }
+
+  .header .search-toggle .btn-search {
+    font-size: 16px;
+    padding: 3px;
+  }
+
+  .header .d-flex {
+    gap: 10px;
+  }
+
+  .header .me-3 {
+    margin-right: 8px !important;
+  }
+}
+
 .header .social-links a {
   color: var(--heading-color);
   padding: 0 8px;
@@ -190,6 +302,8 @@ h6 {
 .header .social-links a:hover {
   color: var(--accent-color);
 }
+
+/* Note: Mobile social links font-size is already handled in responsive media queries above */
 
 @media (max-width: 1200px) {
   .header .social-links {
@@ -204,10 +318,36 @@ h6 {
   justify-content: center;
 }
 
+@media (max-width: 768px) {
+  .header .nav-wrap {
+    margin-top: 5px;
+  }
+}
+
+@media (max-width: 576px) {
+  .header .nav-wrap {
+    margin-top: 3px;
+  }
+}
+
 .header .mobile-nav-toggle {
   position: fixed;
   top: 20px;
   right: 5px;
+}
+
+@media (max-width: 768px) {
+  .header .mobile-nav-toggle {
+    top: 18px;
+    right: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .header .mobile-nav-toggle {
+    top: 15px;
+    right: 8px;
+  }
 }
 
 /* Global Header on Scroll
