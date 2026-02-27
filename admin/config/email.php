@@ -4,21 +4,27 @@
  * PHPMailer Setup for CrossLife Mission Network
  */
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 // Email Settings - Update these with your SMTP credentials
-define('SMTP_HOST', 'smtp.gmail.com'); // Change to your SMTP server
+// IMPORTANT: Username must exactly match your Gmail address
+define('SMTP_HOST', 'smtp.gmail.com');
 define('SMTP_PORT', 587);
-define('SMTP_USERNAME', 'your-email@gmail.com'); // Change to your email
-define('SMTP_PASSWORD', 'your-app-password'); // Change to your email password or app password
+define('SMTP_USERNAME', 'mwiganivalence@gmail.com'); // Primary sending account
+define('SMTP_PASSWORD', 'cwrg wxki urrn lgkn'); // App password provided by user
 define('SMTP_ENCRYPTION', 'tls'); // 'tls' or 'ssl'
-define('SMTP_FROM_EMAIL', 'karibu@crosslife.org');
+define('SMTP_FROM_EMAIL', 'mwiganivalence@gmail.coms');
 define('SMTP_FROM_NAME', 'CrossLife Mission Network');
 define('SMTP_REPLY_TO_EMAIL', 'karibu@crosslife.org');
 define('SMTP_REPLY_TO_NAME', 'CrossLife Mission Network');
 
 // Recipient Email (where form submissions are sent)
-define('CONTACT_EMAIL', 'karibu@crosslife.org');
-define('PRAYER_REQUEST_EMAIL', 'karibu@crosslife.org');
-define('FEEDBACK_EMAIL', 'karibu@crosslife.org');
+// All submissions go to this mailbox as requested
+define('CONTACT_EMAIL', 'mwiganivalence@gmail.com');
+define('PRAYER_REQUEST_EMAIL', 'mwiganivalence@gmail.com');
+define('FEEDBACK_EMAIL', 'mwiganivalence@gmail.com');
 
 /**
  * Send Email using PHPMailer
@@ -42,10 +48,6 @@ function sendEmail($to, $subject, $body, $altBody = '', $attachments = []) {
     require_once __DIR__ . '/../../vendor/phpmailer/phpmailer/src/PHPMailer.php';
     require_once __DIR__ . '/../../vendor/phpmailer/phpmailer/src/SMTP.php';
     require_once __DIR__ . '/../../vendor/phpmailer/phpmailer/src/Exception.php';
-    
-    use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\SMTP;
-    use PHPMailer\PHPMailer\Exception;
     
     $mail = new PHPMailer(true);
     
@@ -144,7 +146,46 @@ function sendContactNotification($name, $email, $phone, $subject, $message) {
     $altBody .= "Subject: $subject\n\n";
     $altBody .= "Message:\n$message\n";
     
-    return sendEmail($to, $emailSubject, $body, $altBody);
+    // Send to admin
+    $adminSent = sendEmail($to, $emailSubject, $body, $altBody);
+    
+    // Optional auto‑reply to visitor
+    if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $replySubject = 'Thank you for contacting CrossLife Mission Network';
+        $replyBody = "
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #c85716; color: white; padding: 20px; text-align: center; }
+                .content { background: #f9f9f9; padding: 20px; border: 1px solid #ddd; }
+                .message-box { background: white; padding: 15px; border-left: 4px solid #c85716; margin-top: 15px; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h2>Thank You for Reaching Out</h2>
+                </div>
+                <div class='content'>
+                    <p>Dear " . htmlspecialchars($name ?: 'Beloved in Christ') . ",</p>
+                    <p>Thank you for contacting CrossLife Mission Network. We have received your message and a member of our team will respond as soon as possible.</p>
+                    <div class='message-box'>
+                        <p><strong>Your message:</strong></p>
+                        <p>" . nl2br(htmlspecialchars($message)) . "</p>
+                    </div>
+                    <p>Grace and Peace be multiplied to you in Jesus' Name.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        ";
+        $replyAlt = "Thank you for contacting CrossLife Mission Network.\n\nYour message:\n$message\n";
+        sendEmail($email, $replySubject, $replyBody, $replyAlt);
+    }
+    
+    return $adminSent;
 }
 
 /**
@@ -190,7 +231,46 @@ function sendPrayerRequestNotification($name, $email, $prayer_request) {
     if (!empty($email)) $altBody .= "Email: $email\n";
     $altBody .= "\nPrayer Request:\n$prayer_request\n";
     
-    return sendEmail($to, $emailSubject, $body, $altBody);
+    // Send to admin
+    $adminSent = sendEmail($to, $emailSubject, $body, $altBody);
+    
+    // Optional auto‑reply to requester
+    if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $replySubject = 'Thank you for your prayer request';
+        $replyBody = "
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #dc3545; color: white; padding: 20px; text-align: center; }
+                .content { background: #f9f9f9; padding: 20px; border: 1px solid #ddd; }
+                .prayer-box { background: white; padding: 15px; border-left: 4px solid #dc3545; margin-top: 15px; font-style: italic; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h2>We Are Praying With You</h2>
+                </div>
+                <div class='content'>
+                    <p>Dear " . htmlspecialchars($name ?: 'Beloved in Christ') . ",</p>
+                    <p>Thank you for sharing your prayer request with CrossLife Mission Network. Our team is standing with you in prayer.</p>
+                    <div class='prayer-box'>
+                        <p><strong>Your prayer request:</strong></p>
+                        <p>" . nl2br(htmlspecialchars($prayer_request)) . "</p>
+                    </div>
+                    <p>Grace and Peace be multiplied to you in Jesus' Name.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        ";
+        $replyAlt = "We are praying with you.\n\nYour prayer request:\n$prayer_request\n";
+        sendEmail($email, $replySubject, $replyBody, $replyAlt);
+    }
+    
+    return $adminSent;
 }
 
 /**
@@ -241,6 +321,45 @@ function sendFeedbackNotification($name, $email, $feedback_type, $message) {
     $altBody .= "Type: " . ucfirst($feedback_type) . "\n\n";
     $altBody .= "Feedback:\n$message\n";
     
-    return sendEmail($to, $emailSubject, $body, $altBody);
+    // Send to admin
+    $adminSent = sendEmail($to, $emailSubject, $body, $altBody);
+    
+    // Optional auto‑reply to sender
+    if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $replySubject = 'Thank you for your feedback';
+        $replyBody = "
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #ffc107; color: #333; padding: 20px; text-align: center; }
+                .content { background: #f9f9f9; padding: 20px; border: 1px solid #ddd; }
+                .feedback-box { background: white; padding: 15px; border-left: 4px solid #ffc107; margin-top: 15px; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h2>Thank You for Your Feedback</h2>
+                </div>
+                <div class='content'>
+                    <p>Dear " . htmlspecialchars($name ?: 'Beloved in Christ') . ",</p>
+                    <p>Thank you for sharing your feedback with CrossLife Mission Network. We truly appreciate your input.</p>
+                    <div class='feedback-box'>
+                        <p><strong>Your feedback:</strong></p>
+                        <p>" . nl2br(htmlspecialchars($message)) . "</p>
+                    </div>
+                    <p>Grace and Peace be multiplied to you in Jesus' Name.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        ";
+        $replyAlt = "Thank you for your feedback.\n\nYour feedback:\n$message\n";
+        sendEmail($email, $replySubject, $replyBody, $replyAlt);
+    }
+    
+    return $adminSent;
 }
 
