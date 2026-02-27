@@ -15,7 +15,9 @@ define('SMTP_PORT', 587);
 define('SMTP_USERNAME', 'mwiganivalence@gmail.com'); // Primary sending account
 define('SMTP_PASSWORD', 'cwrg wxki urrn lgkn'); // App password provided by user
 define('SMTP_ENCRYPTION', 'tls'); // 'tls' or 'ssl'
+
 define('SMTP_FROM_EMAIL', 'mwiganivalence@gmail.com');
+
 define('SMTP_FROM_NAME', 'CrossLife Mission Network');
 define('SMTP_REPLY_TO_EMAIL', 'karibu@crosslife.org');
 define('SMTP_REPLY_TO_NAME', 'CrossLife Mission Network');
