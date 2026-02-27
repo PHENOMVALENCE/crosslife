@@ -179,17 +179,21 @@ h6 {
 }
 
 .header .top-row .logo img {
-  max-height: 32px;
-  margin-right: 8px;
+  max-height: 45px;
+  margin-right: 10px;
 }
 
 .header .top-row .logo .sitename {
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  color: var(--heading-color);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  background: linear-gradient(135deg, #d4af37, #f5d76e, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   font-family: var(--heading-font);
   margin: 0;
+  text-shadow: none;
 }
 
 .header .search-toggle .btn-search {
@@ -217,13 +221,13 @@ h6 {
   }
 
   .header .top-row .logo img {
-    max-height: 28px;
-    margin-right: 6px;
+    max-height: 40px;
+    margin-right: 8px;
   }
 
   .header .top-row .logo .sitename {
-    font-size: 18px;
-    letter-spacing: 1.5px;
+    font-size: 22px;
+    letter-spacing: 2px;
   }
 }
 
@@ -237,13 +241,13 @@ h6 {
   }
 
   .header .top-row .logo img {
-    max-height: 26px;
+    max-height: 35px;
     margin-right: 6px;
   }
 
   .header .top-row .logo .sitename {
-    font-size: 16px;
-    letter-spacing: 1px;
+    font-size: 18px;
+    letter-spacing: 1.5px;
   }
 
   .header .social-links a {
@@ -266,13 +270,13 @@ h6 {
   }
 
   .header .top-row .logo img {
-    max-height: 24px;
+    max-height: 30px;
     margin-right: 5px;
   }
 
   .header .top-row .logo .sitename {
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 700;
     letter-spacing: 1px;
   }
 

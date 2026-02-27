@@ -45,21 +45,8 @@ $events = getPublicEvents();
       <div class="top-row d-flex align-items-center justify-content-between">
         <a href="index.html" class="logo d-flex align-items-center">
           <img src="assets/img/logo.png" alt="CrossLife Mission Network Logo">
-          <h1 class="sitename">CrossLife Mission Network</h1>
+          <h1 class="sitename">CROSSLIFE</h1>
         </a>
-
-        <div class="d-flex align-items-center">
-          <div class="search-toggle me-3">
-            <button type="button" class="btn-search" data-bs-toggle="modal" data-bs-target="#searchModal" aria-label="Search">
-              <i class="bi bi-search"></i>
-            </button>
-          </div>
-          <div class="social-links">
-            <a href="https://www.facebook.com/crosslife_tz" class="facebook" target="_blank" rel="noopener noreferrer"><i class="bi bi-facebook"></i></a>
-            <a href="https://www.instagram.com/crosslife_tz" class="instagram" target="_blank" rel="noopener noreferrer"><i class="bi bi-instagram"></i></a>
-            <a href="https://www.youtube.com/@CrossLifeTV" class="youtube" target="_blank" rel="noopener noreferrer"><i class="bi bi-youtube"></i></a>
-          </div>
-        </div>
       </div>
 
     </div>
@@ -70,7 +57,7 @@ $events = getPublicEvents();
           <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="index.html#about">About</a></li>
-            <li><a href="index.html#features">Core Beliefs</a></li>
+            <li><a href="index.html#statement-of-faith">Statement of Faith</a></li>
             <li><a href="leadership.php">Leadership</a></li>
             <li><a href="ministries.php">Ministries</a></li>
             <li><a href="sermons.html">Sermons</a></li>
@@ -78,6 +65,17 @@ $events = getPublicEvents();
             <li><a href="events.php" class="active">Events</a></li>
             <li><a href="contacts.html">Contact</a></li>
             <li><a href="galley.html">Galley</a></li>
+            <li class="nav-social-search">
+              <div class="nav-icons">
+                <button type="button" class="btn-search" data-bs-toggle="modal" data-bs-target="#searchModal" aria-label="Search">
+                  <i class="bi bi-search"></i>
+                </button>
+                <a href="https://www.facebook.com/crosslife_tz" class="facebook" target="_blank" rel="noopener noreferrer"><i class="bi bi-facebook"></i></a>
+                <a href="https://www.instagram.com/crosslife_tz" class="instagram" target="_blank" rel="noopener noreferrer"><i class="bi bi-instagram"></i></a>
+                <a href="https://www.youtube.com/@CrossLifeTV" class="youtube" target="_blank" rel="noopener noreferrer"><i class="bi bi-youtube"></i></a>
+                <a href="https://www.tiktok.com/@CrossLife" class="tiktok" target="_blank" rel="noopener noreferrer"><i class="bi bi-tiktok"></i></a>
+              </div>
+            </li>
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
