@@ -89,8 +89,8 @@ function leadership_display_image_url($image_url, $placeholder) {
               </div>
             </li>
           </ul>
-          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </div>
     </div>
 

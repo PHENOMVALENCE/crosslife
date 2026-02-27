@@ -66,6 +66,11 @@ body {
   font-family: var(--default-font);
 }
 
+/* Index page with hero section - dark background to prevent white flash */
+body.index-page {
+  background-color: #000000;
+}
+
 a {
   color: var(--accent-color);
   text-decoration: none;
@@ -157,22 +162,41 @@ h6 {
   right: 0;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  border: none;
+  box-shadow: none;
 }
 
-/* Prevent fixed header from overlapping hero/main on all pages */
+/* Main content area */
+.main {
+  margin: 0;
+  padding: 0;
+}
+
+/* Prevent fixed header from overlapping content on pages WITHOUT hero section */
 .header.fixed-top + .main {
-  padding-top: 100px;
+  padding-top: 0;
+}
+
+/* Pages with hero section - hero handles its own spacing */
+.header.fixed-top + .main .hero:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* Pages WITHOUT hero section need padding to prevent header overlap */
+.header.fixed-top + .main .page-header:first-child {
+  padding-top: 120px;
 }
 
 @media (max-width: 768px) {
-  .header.fixed-top + .main {
-    padding-top: 85px;
+  .header.fixed-top + .main .page-header:first-child {
+    padding-top: 100px;
   }
 }
 
 @media (max-width: 576px) {
-  .header.fixed-top + .main {
-    padding-top: 70px;
+  .header.fixed-top + .main .page-header:first-child {
+    padding-top: 85px;
   }
 }
 
@@ -326,10 +350,12 @@ h6 {
 }
 
 .header .nav-wrap {
-  background-color: color-mix(in srgb, var(--default-color), transparent 92%);
+  background-color: transparent;
   margin-top: 10px;
+  margin-bottom: 0;
   display: flex;
   justify-content: center;
+  border: none;
 }
 
 @media (max-width: 768px) {
@@ -347,21 +373,35 @@ h6 {
 .header .mobile-nav-toggle {
   position: fixed;
   top: 14px;
-  right: 5px;
+  right: 15px;
+  z-index: 9999;
+  cursor: pointer;
+  pointer-events: auto;
+  color: var(--nav-color);
+  font-size: 28px;
+  line-height: 0;
+  transition: color 0.3s;
+}
+
+@media (max-width: 1199px) {
+  .header .mobile-nav-toggle {
+    display: block !important;
+  }
 }
 
 @media (max-width: 768px) {
   .header .mobile-nav-toggle {
     top: 12px;
-    right: 8px;
+    right: 12px;
+    font-size: 26px;
   }
 }
 
 @media (max-width: 576px) {
   .header .mobile-nav-toggle {
     top: 10px;
-    right: 6px;
-    font-size: 22px;
+    right: 10px;
+    font-size: 24px;
   }
 }
 
@@ -538,12 +578,17 @@ body:not(.scrolled) .header .nav-wrap {
 /* Navmenu - Mobile */
 @media (max-width: 1199px) {
   .mobile-nav-toggle {
+    display: block !important;
     color: var(--nav-color);
     font-size: 28px;
     line-height: 0;
-    margin-right: 10px;
     cursor: pointer;
     transition: color 0.3s;
+    position: fixed;
+    top: 14px;
+    right: 15px;
+    z-index: 9999;
+    pointer-events: auto;
   }
 
   .navmenu {
@@ -554,11 +599,12 @@ body:not(.scrolled) .header .nav-wrap {
   .navmenu ul {
     display: none;
     list-style: none;
-    position: absolute;
-    inset: 60px 20px 20px 20px;
+    position: fixed;
+    inset: 0;
+    top: 70px;
     padding: 10px 0;
     margin: 0;
-    border-radius: 6px;
+    border-radius: 0;
     background-color: var(--nav-mobile-background-color);
     overflow-y: auto;
     transition: 0.3s;
@@ -641,9 +687,9 @@ body:not(.scrolled) .header .nav-wrap {
 
   .mobile-nav-active .mobile-nav-toggle {
     color: #fff;
-    position: absolute;
+    position: fixed;
     font-size: 32px;
-    top: 15px;
+    top: 14px;
     right: 15px;
     margin-right: 0;
     z-index: 9999;
@@ -1272,7 +1318,8 @@ section,
 # Hero Section
 --------------------------------------------------------------*/
 .hero {
-  padding: 120px 0 60px 0;
+  padding: 0;
+  margin: 0;
   min-height: 100vh;
   position: relative;
   display: flex;
