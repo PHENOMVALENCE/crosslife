@@ -373,8 +373,8 @@ h6 {
 .header .mobile-nav-toggle {
   position: fixed;
   top: 14px;
-  left: 15px;
-  right: auto;
+  left: auto;
+  right: 15px;
   z-index: 9999;
   cursor: pointer;
   pointer-events: auto;
@@ -404,7 +404,7 @@ h6 {
 @media (max-width: 768px) {
   .header .mobile-nav-toggle {
     top: 12px;
-    left: 12px;
+    right: 12px;
     font-size: 26px;
   }
 }
@@ -412,7 +412,7 @@ h6 {
 @media (max-width: 576px) {
   .header .mobile-nav-toggle {
     top: 10px;
-    left: 10px;
+    right: 10px;
     font-size: 24px;
   }
 }
@@ -598,8 +598,8 @@ body:not(.scrolled) .header .nav-wrap {
     transition: color 0.3s;
     position: fixed;
     top: 14px;
-    left: 15px; /* Move hamburger to the left side */
-    right: auto;
+    left: auto; /* Move hamburger to the left side */
+    right: 15px;
     z-index: 9999;
     pointer-events: auto;
   }

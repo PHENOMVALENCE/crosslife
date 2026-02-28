@@ -64,7 +64,7 @@ $events = getPublicEvents();
             <li><a href="discipleship.html">Discipleship</a></li>
             <li><a href="events.php" class="active">Events</a></li>
             <li><a href="contacts.html">Contact</a></li>
-            <li><a href="galley.html">Galley</a></li>
+            <li><a href="galley.html">Gallery</a></li>
             <li class="nav-social-search">
               <div class="nav-icons">
                 <button type="button" class="btn-search" data-bs-toggle="modal" data-bs-target="#searchModal" aria-label="Search">
