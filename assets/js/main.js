@@ -9,13 +9,20 @@
 (function() {
   "use strict";
 
+  console.log('[CROSSLIFE] main.js loaded');
+
   /**
    * Apply .scrolled class to the body as the page is scrolled down
    */
   function toggleScrolled() {
     const selectBody = document.querySelector('body');
     const selectHeader = document.querySelector('#header');
-    if (!selectHeader.classList.contains('scroll-up-sticky') && !selectHeader.classList.contains('sticky-top') && !selectHeader.classList.contains('fixed-top')) return;
+    if (!selectHeader) return;
+    if (
+      !selectHeader.classList.contains('scroll-up-sticky') &&
+      !selectHeader.classList.contains('sticky-top') &&
+      !selectHeader.classList.contains('fixed-top')
+    ) return;
     window.scrollY > 100 ? selectBody.classList.add('scrolled') : selectBody.classList.remove('scrolled');
   }
 
@@ -24,28 +31,73 @@
 
   /**
    * Mobile nav toggle
+   * Added console logs and a clear close mechanism (hamburger re‑click + ESC).
    */
-  const mobileNavToggleBtn = document.querySelector('.mobile-nav-toggle');
+  document.addEventListener('DOMContentLoaded', () => {
+    const mobileNavToggleBtn = document.querySelector('.mobile-nav-toggle');
+    const navMenu = document.querySelector('#navmenu');
+    console.log('[CROSSLIFE] mobile-nav-toggle element:', mobileNavToggleBtn);
 
-  function mobileNavToogle() {
-    document.querySelector('body').classList.toggle('mobile-nav-active');
-    mobileNavToggleBtn.classList.toggle('bi-list');
-    mobileNavToggleBtn.classList.toggle('bi-x');
-  }
-  if (mobileNavToggleBtn) {
-    mobileNavToggleBtn.addEventListener('click', mobileNavToogle);
-  }
+    if (!mobileNavToggleBtn) {
+      console.warn('[CROSSLIFE] mobile-nav-toggle NOT found on this page');
+      return;
+    }
 
-  /**
-   * Hide mobile nav on same-page/hash links
-   */
-  document.querySelectorAll('#navmenu a').forEach(navmenu => {
-    navmenu.addEventListener('click', () => {
-      if (document.querySelector('.mobile-nav-active')) {
-        mobileNavToogle();
+    const body = document.body;
+
+    function setMobileNavState(isActive) {
+      if (isActive) {
+        body.classList.add('mobile-nav-active');
+      } else {
+        body.classList.remove('mobile-nav-active');
+      }
+      const activeNow = body.classList.contains('mobile-nav-active');
+      console.log('[CROSSLIFE] mobile nav state =', activeNow);
+      mobileNavToggleBtn.classList.toggle('bi-list', !activeNow);
+      mobileNavToggleBtn.classList.toggle('bi-x', activeNow);
+    }
+
+    function toggleMobileNav() {
+      setMobileNavState(!body.classList.contains('mobile-nav-active'));
+    }
+
+    function closeMobileNav() {
+      if (body.classList.contains('mobile-nav-active')) {
+        setMobileNavState(false);
+      }
+    }
+
+    mobileNavToggleBtn.addEventListener('click', toggleMobileNav);
+    console.log('[CROSSLIFE] mobile-nav-toggle click handler attached');
+
+    // Close menu when clicking outside the menu list (on the overlay area)
+    if (navMenu) {
+      navMenu.addEventListener('click', (e) => {
+        const clickedInsideList = e.target.closest('#navmenu ul');
+        const clickedToggle = e.target.closest('.mobile-nav-toggle');
+        if (!clickedInsideList && !clickedToggle) {
+          console.log('[CROSSLIFE] Clicked outside mobile menu list, closing nav');
+          closeMobileNav();
+        }
+      });
+    }
+
+    // Close menu on ESC key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        console.log('[CROSSLIFE] ESC pressed, closing mobile nav if open');
+        closeMobileNav();
       }
     });
 
+    // Close menu when a nav link is clicked (navigation or same-page hash)
+    if (navMenu) {
+      navMenu.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          closeMobileNav();
+        });
+      });
+    }
   });
 
   /**
@@ -80,16 +132,18 @@
       window.scrollY > 100 ? scrollTop.classList.add('active') : scrollTop.classList.remove('active');
     }
   }
-  scrollTop.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+  if (scrollTop) {
+    scrollTop.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     });
-  });
 
-  window.addEventListener('load', toggleScrollTop);
-  document.addEventListener('scroll', toggleScrollTop);
+    window.addEventListener('load', toggleScrollTop);
+    document.addEventListener('scroll', toggleScrollTop);
+  }
 
   /**
    * Animation on scroll function and init
