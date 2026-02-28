@@ -7,13 +7,17 @@
 // Prevent any output before JSON
 ob_start();
 
+// Disable error output for JSON responses
+@error_reporting(0);
+@ini_set('display_errors', 0);
+
 require_once __DIR__ . '/../admin/config/config.php';
 require_once __DIR__ . '/../includes/EmailService.php';
 
 // Clear any output buffer
 ob_clean();
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 $response = ['status' => 'error', 'message' => 'An error occurred.'];
 

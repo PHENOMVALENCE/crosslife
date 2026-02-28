@@ -52,11 +52,6 @@
   --contrast-color: #ffffff;
 }
 
-/* Smooth scroll */
-:root {
-  scroll-behavior: smooth;
-}
-
 /*--------------------------------------------------------------
 # General Styling & Shared Classes
 --------------------------------------------------------------*/
@@ -64,6 +59,19 @@ body {
   color: var(--default-color);
   background-color: var(--background-color);
   font-family: var(--default-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Reset box-sizing for all elements */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 /* Index page with hero section - dark background to prevent white flash */
@@ -74,11 +82,11 @@ body.index-page {
 a {
   color: var(--accent-color);
   text-decoration: none;
-  transition: 0.3s;
+  transition: color 0.3s ease, opacity 0.3s ease;
 }
 
 a:hover {
-  color: color-mix(in srgb, var(--accent-color), transparent 25%);
+  color: color-mix(in srgb, var(--accent-color), black 10%);
   text-decoration: none;
 }
 
@@ -90,10 +98,53 @@ h5,
 h6 {
   color: var(--heading-color);
   font-family: var(--heading-font);
+  font-weight: 700;
+  line-height: 1.2;
 }
 
-/* PHP Email Form Messages
-------------------------------*/
+/* Button Consistency */
+.btn,
+button,
+input[type="button"],
+input[type="submit"] {
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  font-size: 15px;
+}
+
+.btn-primary,
+.send-button {
+  background-color: var(--accent-color);
+  color: var(--contrast-color);
+  border: 2px solid var(--accent-color);
+}
+
+.btn-primary:hover,
+.send-button:hover {
+  background-color: color-mix(in srgb, var(--accent-color), black 15%);
+  border-color: color-mix(in srgb, var(--accent-color), black 15%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--accent-color), transparent 60%);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--accent-color);
+  border: 2px solid var(--accent-color);
+}
+
+.btn-outline:hover {
+  background-color: var(--accent-color);
+  color: var(--contrast-color);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--accent-color), transparent 60%);
+}
+
+/* PHP Email Form Messages */
 .php-email-form .error-message {
   display: none;
   background: #df1529;
@@ -499,6 +550,16 @@ body:not(.scrolled) .header .nav-wrap {
   .navmenu .active,
   .navmenu .active:focus {
     color: var(--nav-hover-color);
+  }
+
+  .navmenu a.disabled-link {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .navmenu a.disabled-link:hover {
+    color: var(--nav-color) !important;
   }
 
   .navmenu .dropdown ul {
@@ -7708,344 +7769,310 @@ html, body {
   }
 }
 
-/* Slider */
-.slider {
+/* ============================
+   Convictions Carousel
+   ============================ */
+.convictions-carousel {
+  position: relative;
   overflow: hidden;
-  width: 100%;
-  padding: 40px 0;
+  padding: 20px 0 50px;
 }
 
-.slider-track {
+.convictions-track {
   display: flex;
-  width: calc(200px * 10 + 14px * 10);
-  animation: scroll 28s linear infinite;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
-.slider-item {
-  min-width: 200px;
-  margin-right: 14px;
-}
-
-/* FEATURE CARD - convictions: title + verses only, height fits content */
-.feature-card1 {
-  background: linear-gradient(135deg, rgba(200, 87, 22, 0.08), rgba(200, 87, 22, 0.02)),
+.conviction-card {
+  background: linear-gradient(135deg, rgba(200, 87, 22, 0.06), rgba(200, 87, 22, 0.01)),
               var(--surface-color);
-  height: 180px;
   display: flex;
   flex-direction: column;
-  border-radius: 14px;
-  padding: 16px;
-  padding-left: 18px;
+  border-radius: 16px;
+  padding: 28px 24px 22px;
   color: var(--default-color);
-  border: 1.5px solid color-mix(in srgb, var(--accent-color), transparent 80%);
+  border: 1.5px solid color-mix(in srgb, var(--accent-color), transparent 82%);
   border-left: 4px solid var(--accent-color);
   box-shadow:
-    0 8px 24px color-mix(in srgb, var(--default-color), transparent 92%),
+    0 6px 20px color-mix(in srgb, var(--default-color), transparent 93%),
     inset 0 1px 0 rgba(255, 255, 255, 0.5);
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  flex: 0 0 calc(33.333% - 16px);
+  margin: 0 8px;
+  min-height: 300px;
 }
 
-.feature-card1::after {
+.conviction-card::after {
   content: '';
   position: absolute;
   bottom: -50%;
   right: -50%;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(200, 87, 22, 0.05) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(200, 87, 22, 0.04) 0%, transparent 70%);
   pointer-events: none;
   transition: all 0.35s ease;
 }
 
-.card-number {
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: color-mix(in srgb, var(--accent-color), transparent 60%);
-  letter-spacing: 2px;
-  font-family: 'Montserrat', sans-serif;
-  text-shadow: none;
-  transition: all 0.35s ease;
-}
-
-/* Mobile responsive slider */
-@media (max-width: 768px) {
-  .slider {
-    padding: 20px 0;
-  }
-  
-  .slider-track {
-    width: calc(180px * 10 + 12px * 10);
-  }
-  
-  .slider-item {
-    min-width: 180px;
-    margin-right: 12px;
-  }
-  
-  .feature-card1 {
-    height: 170px;
-    padding: 14px;
-    padding-left: 16px;
-    border: 1.5px solid color-mix(in srgb, var(--accent-color), transparent 85%);
-  }
-  
-  .card-number {
-    font-size: 1.9rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .slider {
-    padding: 15px 0;
-  }
-  
-  .slider-track {
-    width: calc(160px * 10 + 10px * 10);
-  }
-  
-  .slider-item {
-    min-width: 160px;
-    margin-right: 10px;
-  }
-  
-  .feature-card1 {
-    height: 160px;
-    padding: 12px;
-    padding-left: 13px;
-    border-left: 3px solid var(--accent-color);
-    border-color: color-mix(in srgb, var(--accent-color), transparent 85%);
-  }
-  
-  .card-number {
-    font-size: 1.6rem;
-    top: 7px;
-    right: 11px;
-  }
-}
-
-@media (max-width: 400px) {
-  .slider {
-    padding: 12px 0;
-  }
-  
-  .slider-track {
-    width: calc(150px * 10 + 9px * 10);
-  }
-  
-  .slider-item {
-    min-width: 150px;
-    margin-right: 9px;
-  }
-  
-  .feature-card1 {
-    height: 150px;
-    padding: 11px;
-    padding-left: 12px;
-    border-left: 2.5px solid var(--accent-color);
-    border-color: color-mix(in srgb, var(--accent-color), transparent 88%);
-    border-radius: 6px;
-  }
-  
-  .card-number {
-    font-size: 1.4rem;
-    top: 6px;
-    right: 9px;
-  }
-}
-
-.feature-card1:hover {
-  transform: translateY(-8px);
-  border-color: color-mix(in srgb, var(--accent-color), transparent 60%);
-  border-left-color: var(--accent-color);
-  box-shadow:
-    0 15px 40px color-mix(in srgb, var(--default-color), transparent 88%),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
-}
-
-.feature-card1:hover .card-number {
-  color: color-mix(in srgb, var(--accent-color), transparent 35%);
-}
-
-.feature-card1:hover h3 {
-  color: var(--accent-color);
-}
-
-.feature-card1:hover::after {
-  bottom: -30%;
-  right: -30%;
-}
-
-/*/* Icon
-.feature-icon {
-  width: 64px;
-  height: 64px;
-  background: linear-gradient(135deg, #d4af37, #f5d76e);
-  border-radius: 14px;
+.conviction-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--accent-color), color-mix(in srgb, var(--accent-color), transparent 25%));
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
-}
-
-.feature-icon i {
-  font-size: 28px;
-  color: #000;
-}
-
-/* Title */
-.feature-card1 h3 {
-  font-size: 1.15rem;
-  margin-bottom: 7px;
-  color: var(--heading-color);
-  line-height: 1.25;
-  font-weight: 600;
-  text-shadow: none;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent-color), transparent 68%);
   transition: all 0.35s ease;
+  flex-shrink: 0;
 }
 
-/* Verses only (explanations removed) */
-.feature-card1 small {
-  font-size: 0.78rem;
-  line-height: 1.35;
-  color: color-mix(in srgb, var(--default-color), transparent 20%);
-  display: block;
-  margin-top: 4px;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  letter-spacing: 0.4px;
-  font-weight: 500;
-  text-shadow: none;
-}
-
-/* Icon inside feature-card1 */
-.feature-icon1 {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, var(--accent-color), color-mix(in srgb, var(--accent-color), transparent 30%));
-  border-radius: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 9px;
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-color), transparent 70%);
-  transition: all 0.35s ease;
-}
-
-.feature-icon1 i {
+.conviction-icon i {
   font-size: 24px;
   color: var(--contrast-color);
   font-weight: 600;
 }
 
-.feature-card1:hover .feature-icon1 {
+.conviction-card h3 {
+  font-size: 1.15rem;
+  margin-bottom: 10px;
+  color: var(--heading-color);
+  line-height: 1.3;
+  font-weight: 700;
+  transition: color 0.35s ease;
+}
+
+.conviction-desc {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--default-color), transparent 18%);
+  margin-bottom: 16px;
+  flex-grow: 1;
+}
+
+.conviction-scripture {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--accent-color), transparent 93%);
+  border-radius: 8px;
+  border-left: 3px solid color-mix(in srgb, var(--accent-color), transparent 40%);
+  margin-top: auto;
+}
+
+.conviction-scripture i {
+  color: var(--accent-color);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.conviction-scripture span {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--accent-color), transparent 15%);
+  letter-spacing: 0.3px;
+  line-height: 1.4;
+}
+
+/* Hover Effects */
+.conviction-card:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(in srgb, var(--accent-color), transparent 55%);
+  border-left-color: var(--accent-color);
+  box-shadow:
+    0 16px 44px color-mix(in srgb, var(--default-color), transparent 86%),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.conviction-card:hover h3 {
+  color: var(--accent-color);
+}
+
+.conviction-card:hover .conviction-icon {
   transform: scale(1.08) translateY(-2px);
   box-shadow: 0 6px 20px color-mix(in srgb, var(--accent-color), transparent 50%);
 }
 
-@media (max-width: 768px) {
-  .feature-card1 h3 {
-    font-size: 0.98rem;
-    margin-bottom: 5px;
-    color: var(--heading-color);
-  }
-  
-  .feature-card1 small {
-    font-size: 0.68rem;
-    line-height: 1.3;
-    color: color-mix(in srgb, var(--default-color), transparent 20%);
-  }
-  
-  .feature-icon1 {
-    width: 38px;
-    height: 38px;
-    margin-bottom: 7px;
-    box-shadow: 0 3px 8px color-mix(in srgb, var(--accent-color), transparent 75%);
-  }
-  
-  .feature-icon1 i {
-    font-size: 18px;
-  }
+.conviction-card:hover::after {
+  bottom: -30%;
+  right: -30%;
 }
 
+/* Carousel Arrow Controls */
+.convictions-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-calc(50% + 20px));
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--surface-color);
+  border: 1.5px solid color-mix(in srgb, var(--accent-color), transparent 60%);
+  color: var(--accent-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.convictions-arrow:hover {
+  background: var(--accent-color);
+  color: var(--contrast-color);
+  box-shadow: 0 6px 22px color-mix(in srgb, var(--accent-color), transparent 50%);
+}
+
+.convictions-arrow i {
+  font-size: 18px;
+}
+
+.convictions-prev {
+  left: -6px;
+}
+
+.convictions-next {
+  right: -6px;
+}
+
+/* Carousel Dots */
+.convictions-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.convictions-dots .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent-color), transparent 72%);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.convictions-dots .dot.active {
+  background: var(--accent-color);
+  transform: scale(1.3);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent-color), transparent 50%);
+}
+
+.convictions-dots .dot:hover {
+  background: color-mix(in srgb, var(--accent-color), transparent 30%);
+}
+
+/* Responsive - Tablet: show 2 cards */
+@media (max-width: 992px) {
+  .conviction-card {
+    flex: 0 0 calc(50% - 16px);
+    padding: 24px 20px 18px;
+  }
+
+  .conviction-card h3 {
+    font-size: 1.08rem;
+  }
+
+  .convictions-prev { left: -4px; }
+  .convictions-next { right: -4px; }
+}
+
+/* Responsive - Mobile: show 1 card */
 @media (max-width: 576px) {
-  .feature-card1 h3 {
-    font-size: 0.85rem;
-    margin-bottom: 4px;
-    color: var(--heading-color);
+  .convictions-carousel {
+    padding: 10px 0 40px;
   }
-  
-  .feature-card1 small {
-    font-size: 0.62rem;
-    line-height: 1.25;
-    color: color-mix(in srgb, var(--default-color), transparent 20%);
+
+  .conviction-card {
+    flex: 0 0 calc(100% - 16px);
+    padding: 22px 18px 16px;
+    border-radius: 12px;
+    min-height: auto;
   }
-  
-  .feature-icon1 {
-    width: 32px;
-    height: 32px;
-    margin-bottom: 6px;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px color-mix(in srgb, var(--accent-color), transparent 75%);
+
+  .conviction-icon {
+    width: 42px;
+    height: 42px;
+    margin-bottom: 10px;
   }
-  
-  .feature-icon1 i {
+
+  .conviction-icon i {
+    font-size: 20px;
+  }
+
+  .conviction-card h3 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .conviction-desc {
+    font-size: 0.84rem;
+    margin-bottom: 12px;
+  }
+
+  .conviction-scripture {
+    padding: 8px 12px;
+  }
+
+  .conviction-scripture span {
+    font-size: 0.74rem;
+  }
+
+  .convictions-arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .convictions-arrow i {
     font-size: 15px;
+  }
+
+  .convictions-prev { left: -2px; }
+  .convictions-next { right: -2px; }
+
+  .convictions-dots {
+    margin-top: 20px;
+    gap: 8px;
+  }
+
+  .convictions-dots .dot {
+    width: 8px;
+    height: 8px;
   }
 }
 
 @media (max-width: 400px) {
-  .feature-card1 h3 {
-    font-size: 0.72rem;
-    margin-bottom: 2px;
+  .conviction-card {
+    padding: 18px 15px 14px;
   }
-  
-  .feature-card1 small {
-    font-size: 0.55rem;
-    line-height: 1.25;
+
+  .conviction-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
   }
-  
-  .feature-icon1 {
-    width: 22px;
-    height: 22px;
-    margin-bottom: 4px;
-    border-radius: 5px;
+
+  .conviction-icon i {
+    font-size: 17px;
   }
-  
-  .feature-icon1 i {
-    font-size: 11px;
+
+  .conviction-card h3 {
+    font-size: 0.92rem;
   }
-}
 
-/* Benefits list */
-.feature-benefits {
-  list-style: none;
-  padding: 0;
-  margin-top: 18px;
-}
-
-.feature-benefits li {
-  display: flex;
-  align-items: center;
-  font-size: 0.9rem;
-  margin-bottom: 10px;
-  color: #eaeaea;
-}
-
-.feature-benefits i {
-  color: #d4af37;
-  margin-right: 10px;
-  font-size: 1rem;
-}
-
-/* Infinite animation */
-@keyframes scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  .conviction-desc {
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
 }
 
 /* Pause on hover */
