@@ -722,15 +722,17 @@
             <p class="mb-4">A non-denominational and inter-denominational Christian ministry in Dar es Salaam, Tanzania. We exist to manifest Sons of God who understand their identity in Christ and what Christ can accomplish through them.</p>
 
             <div class="newsletter-form">
-              <h5>Stay Updated</h5>
+              <h5><i class="bi bi-envelope-heart"></i> Stay Updated</h5>
+              <p class="newsletter-hint">Get devotionals, event updates and news from CrossLife straight to your inbox.</p>
               <form action="forms/newsletter.php" method="post" class="newsletter-form-submit">
+                <label for="newsletter-email" class="newsletter-label">Email Address</label>
                 <div class="input-group">
-                  <input type="email" name="email" class="form-control" placeholder="Enter your email" required="">
-                  <button type="submit" class="btn-subscribe">
-                    <i class="bi bi-send"></i>
+                  <input type="email" name="email" id="newsletter-email" class="form-control" placeholder="yourname@example.com" required="" autocomplete="email">
+                  <button type="submit" class="btn-subscribe" aria-label="Subscribe">
+                    Subscribe <i class="bi bi-arrow-right"></i>
                   </button>
                 </div>
-                <div class="loading" style="display: none;">Loading</div>
+                <div class="loading" style="display: none;">Subscribing...</div>
                 <div class="error-message" style="display: none;"></div>
                 <div class="sent-message" style="display: none;">You have been subscribed to the CrossLife newsletter. Thank you for staying connected!</div>
               </form>

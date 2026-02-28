@@ -875,32 +875,70 @@ body:not(.scrolled) .header .nav-wrap {
 }
 
 .footer .newsletter-form {
-  margin-top: 30px;
+  margin-top: 28px;
+  background: linear-gradient(135deg, rgba(200, 87, 22, 0.1), rgba(200, 87, 22, 0.03));
+  border: 1px solid rgba(200, 87, 22, 0.18);
+  border-radius: 14px;
+  padding: 22px 20px;
 }
 
 .footer .newsletter-form h5 {
-  color: var(--heading-color);
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 15px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
   font-family: var(--heading-font);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer .newsletter-form h5 i {
+  color: var(--accent-color);
+  font-size: 17px;
+}
+
+.footer .newsletter-form .newsletter-hint {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.footer .newsletter-form .newsletter-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
 .footer .newsletter-form .input-group {
   position: relative;
   display: flex;
-  border-radius: 50px;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 2px 10px color-mix(in srgb, var(--default-color), transparent 90%);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.footer .newsletter-form .input-group:focus-within {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(200, 87, 22, 0.15);
 }
 
 .footer .newsletter-form input[type=email] {
   flex: 1;
-  padding: 12px 20px;
+  padding: 13px 16px;
   border: none;
-  background-color: var(--surface-color);
-  color: var(--default-color);
+  background: transparent;
+  color: #ffffff;
   font-size: 14px;
+  min-width: 0;
+  font-family: var(--default-font);
 }
 
 .footer .newsletter-form input[type=email]:focus {
@@ -909,31 +947,63 @@ body:not(.scrolled) .header .nav-wrap {
 }
 
 .footer .newsletter-form input[type=email]::placeholder {
-  color: color-mix(in srgb, var(--default-color), transparent 60%);
+  color: rgba(255, 255, 255, 0.35);
+  font-style: italic;
+  font-size: 13px;
 }
 
 .footer .newsletter-form .btn-subscribe {
   background-color: var(--accent-color);
-  color: var(--contrast-color);
+  color: #ffffff;
   border: none;
-  padding: 12px 20px;
+  padding: 13px 22px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.3px;
 }
 
 .footer .newsletter-form .btn-subscribe:hover {
-  background-color: color-mix(in srgb, var(--accent-color), black 10%);
+  background-color: color-mix(in srgb, var(--accent-color), white 12%);
+  padding-right: 26px;
 }
 
 .footer .newsletter-form .btn-subscribe i {
-  font-size: 16px;
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.footer .newsletter-form .btn-subscribe:hover i {
+  transform: translateX(3px);
 }
 
 .footer .newsletter-form .loading,
 .footer .newsletter-form .error-message,
 .footer .newsletter-form .sent-message {
-  font-size: 13px;
-  margin-top: 8px;
+  font-size: 12px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.footer .newsletter-form .loading {
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.footer .newsletter-form .error-message {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.08);
+}
+
+.footer .newsletter-form .sent-message {
+  color: #51cf66;
+  background: rgba(81, 207, 102, 0.08);
 }
 
 .footer h4 {
