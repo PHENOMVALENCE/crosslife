@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Handle image upload
-        $image_url = sanitize($_POST['image_url'] ?? '');
+        $image_url = trim(strip_tags($_POST['image_url'] ?? ''));
         $uploadError = '';
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = UPLOAD_DIR;
@@ -396,10 +396,7 @@ if ($action === 'view') {
                             <input type="file" class="form-control" name="image" id="imageInput" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp">
                             <small class="form-text text-muted">JPG, PNG, GIF, WebP, max 5MB</small>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Image URL (Optional)</label>
-                            <input type="text" class="form-control" name="image_url" value="<?php echo htmlspecialchars($leader['image_url'] ?? ''); ?>" placeholder="Or enter URL/path">
-                        </div>
+                        <input type="hidden" name="image_url" value="<?php echo htmlspecialchars($leader['image_url'] ?? ''); ?>">
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Email</label>

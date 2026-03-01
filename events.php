@@ -60,7 +60,7 @@ $events = getPublicEvents();
             <li><a href="index.html#statement-of-faith">Statement of Faith</a></li>
             <li><a href="leadership.php">Leadership</a></li>
             <li><a href="ministries.php">Ministries</a></li>
-            <li><a href="sermons.html">Sermons</a></li>
+            <li><a href="sermons.php">Sermons</a></li>
             <li><a href="discipleship.html">Discipleship</a></li>
             <li><a href="events.php" class="active">Events</a></li>
             <li><a href="contacts.html">Contact</a></li>

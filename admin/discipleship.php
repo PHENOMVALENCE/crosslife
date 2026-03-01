@@ -68,6 +68,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $db->prepare("DELETE FROM discipleship_modules WHERE id = ?");
             $stmt->execute([$mid]);
             $pid = $row ? (int) $row['program_id'] : null;
+            // Renumber remaining modules after deletion
+            if ($pid && $stmt->rowCount() > 0) {
+                $reorder = $db->prepare("SELECT id FROM discipleship_modules WHERE program_id = ? ORDER BY display_order ASC, id ASC");
+                $reorder->execute([$pid]);
+                $remaining = $reorder->fetchAll(PDO::FETCH_COLUMN);
+                foreach ($remaining as $pos => $modId) {
+                    $db->prepare("UPDATE discipleship_modules SET display_order = ? WHERE id = ?")->execute([$pos + 1, $modId]);
+                }
+            }
             redirect('discipleship.php?action=modules&id=' . ($pid ?: ''), $stmt->rowCount() > 0 ? 'Module deleted.' : 'Module not found.', $stmt->rowCount() > 0 ? 'success' : 'warning');
         }
 
@@ -81,6 +90,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = sanitize($_POST['title'] ?? '');
             $description = sanitize($_POST['description'] ?? '');
             $display_order = (int) ($_POST['display_order'] ?? 0);
+            // Auto-calculate next display_order for new modules if left at 0
+            if (!$mid && $display_order <= 0) {
+                $maxStmt = $db->prepare("SELECT COALESCE(MAX(display_order), 0) + 1 AS next_order FROM discipleship_modules WHERE program_id = ?");
+                $maxStmt->execute([$pid]);
+                $display_order = (int) $maxStmt->fetch()['next_order'];
+            }
             $pass_mark_pct = max(0, min(100, (int) ($_POST['pass_mark_pct'] ?? 70)));
             if ($mid) {
                 $stmt = $db->prepare("UPDATE discipleship_modules SET title=?, description=?, display_order=?, pass_mark_pct=? WHERE id=?");
@@ -539,7 +554,17 @@ if ($action === 'add' || $action === 'edit') {
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Display Order</label>
-                        <input type="number" class="form-control" name="display_order" value="<?php echo (int) ($module['display_order'] ?? 0); ?>" min="0">
+                        <?php
+                        $defaultOrder = (int) ($module['display_order'] ?? 0);
+                        if (empty($module['id'])) {
+                            // Auto-calculate next order for new modules
+                            $nextStmt = $db->prepare("SELECT COALESCE(MAX(display_order), 0) + 1 AS next_order FROM discipleship_modules WHERE program_id = ?");
+                            $nextStmt->execute([$program_id]);
+                            $defaultOrder = (int) $nextStmt->fetch()['next_order'];
+                        }
+                        ?>
+                        <input type="number" class="form-control" name="display_order" value="<?php echo $defaultOrder; ?>" min="1">
+                        <small class="form-text text-muted">Position in the module list. New modules auto-increment.</small>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Pass Mark %</label>

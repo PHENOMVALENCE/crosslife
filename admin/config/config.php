@@ -163,16 +163,20 @@ function verifyCSRFToken($token) {
  * Format date for display
  */
 function formatDate($date, $format = 'F j, Y') {
-    if (empty($date)) return '';
-    return date($format, strtotime($date));
+    if (empty($date) || $date === '0000-00-00' || $date === '0000-00-00 00:00:00') return '';
+    $ts = strtotime($date);
+    if ($ts === false || $ts < 0) return '';
+    return date($format, $ts);
 }
 
 /**
  * Format datetime for display
  */
 function formatDateTime($datetime, $format = 'F j, Y g:i A') {
-    if (empty($datetime)) return '';
-    return date($format, strtotime($datetime));
+    if (empty($datetime) || $datetime === '0000-00-00' || $datetime === '0000-00-00 00:00:00') return '';
+    $ts = strtotime($datetime);
+    if ($ts === false || $ts < 0) return '';
+    return date($format, $ts);
 }
 
 /**

@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'youtube_url' => sanitize($_POST['youtube_url'] ?? ''),
             'audio_url' => sanitize($_POST['audio_url'] ?? ''),
             'thumbnail_url' => sanitize($_POST['thumbnail_url'] ?? ''),
-            'sermon_date' => !empty($_POST['sermon_date']) ? $_POST['sermon_date'] : null,
+            'sermon_date' => (!empty($_POST['sermon_date']) && $_POST['sermon_date'] !== '0000-00-00') ? $_POST['sermon_date'] : null,
             'category' => sanitize($_POST['category'] ?? ''),
             'status' => in_array($_POST['status'] ?? 'draft', ['published', 'draft']) ? $_POST['status'] : 'draft'
         ];
