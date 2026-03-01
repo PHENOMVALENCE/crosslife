@@ -30,6 +30,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect('events.php?action=' . ($id ? 'edit&id=' . $id : 'add'), 'Title and Event Date are required fields.', 'danger');
         }
         
+        // Determine image URL: uploaded file takes priority, then URL input, then keep current
+        $image_url = sanitize($_POST['image_url'] ?? '');
+        $removeImage = ($_POST['remove_image'] ?? '0') === '1';
+
+        if ($removeImage) {
+            $image_url = '';
+        } elseif (!empty($_FILES['image_file']['name']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
+            $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            $ext = strtolower(pathinfo($_FILES['image_file']['name'], PATHINFO_EXTENSION));
+            if (in_array($ext, $allowed)) {
+                $eventsDir = rtrim(UPLOAD_DIR, '/\\') . DIRECTORY_SEPARATOR . 'events';
+                if (!is_dir($eventsDir)) {
+                    mkdir($eventsDir, 0755, true);
+                }
+                $newName = 'event_' . time() . '_' . uniqid() . '.' . $ext;
+                $dest = $eventsDir . DIRECTORY_SEPARATOR . $newName;
+                if (move_uploaded_file($_FILES['image_file']['tmp_name'], $dest)) {
+                    $image_url = UPLOAD_PATH_RELATIVE . 'events/' . $newName;
+                }
+            }
+        } elseif (empty($image_url) && !empty($_POST['current_image_url'])) {
+            $image_url = sanitize($_POST['current_image_url']);
+        }
+
         $data = [
             'title' => sanitize($_POST['title'] ?? ''),
             'description' => sanitize($_POST['description'] ?? ''),
@@ -39,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'end_time' => !empty($_POST['end_time']) ? $_POST['end_time'] : null,
             'location' => sanitize($_POST['location'] ?? ''),
             'event_type' => sanitize($_POST['event_type'] ?? ''),
-            'image_url' => sanitize($_POST['image_url'] ?? ''),
+            'image_url' => $image_url,
             'status' => in_array($_POST['status'] ?? 'upcoming', ['upcoming', 'ongoing', 'completed', 'cancelled']) ? $_POST['status'] : 'upcoming'
         ];
         
@@ -106,7 +130,7 @@ if ($action === 'add' || $action === 'edit') {
         </div>
         <div class="card-body">
 
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 <?php if ($id): ?>
                     <input type="hidden" name="id" value="<?php echo $id; ?>">
                 <?php endif; ?>
@@ -175,7 +199,7 @@ if ($action === 'add' || $action === 'edit') {
                                                 <i class="bi bi-trash"></i> Remove
                                             </button>
                                         </div>
-                                        <img id="imagePreview" src="<?php echo htmlspecialchars($event['image_url'] ?? ''); ?>" alt="Preview" class="img-fluid rounded" style="max-height: 300px; width: 100%; object-fit: contain; background: #f8f9fa;">
+                                        <img id="imagePreview" src="<?php echo htmlspecialchars(image_url_for_display($event['image_url'] ?? '')); ?>" alt="Preview" class="img-fluid rounded" style="max-height: 300px; width: 100%; object-fit: contain; background: #f8f9fa;">
                                     </div>
                                 </div>
                             </div>

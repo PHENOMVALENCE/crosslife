@@ -15,7 +15,16 @@ if (!defined('SITE_NAME')) {
     define('SITE_NAME', 'CrossLife Mission Network');
 }
 if (!defined('SITE_URL')) {
-    define('SITE_URL', 'http://localhost/crosslife');
+    // Auto-detect site URL from server environment (works on localhost + production)
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
+    $projectRoot = realpath(__DIR__ . '/../../');
+    $docRoot = realpath($_SERVER['DOCUMENT_ROOT'] ?? '');
+    $basePath = '';
+    if ($projectRoot && $docRoot && strpos($projectRoot, $docRoot) === 0) {
+        $basePath = str_replace('\\', '/', substr($projectRoot, strlen($docRoot)));
+    }
+    define('SITE_URL', $protocol . '://' . $host . rtrim($basePath, '/'));
 }
 if (!defined('ADMIN_URL')) {
     define('ADMIN_URL', SITE_URL . '/admin');
@@ -243,12 +252,25 @@ function upload_path_to_disk($image_url) {
 
 /**
  * Return URL suitable for img src from DB image_url (handles relative path or full URL).
+ * Also normalizes legacy localhost URLs stored during development.
  */
 function image_url_for_display($image_url) {
     if (empty($image_url)) {
         return '';
     }
-    if (strpos($image_url, 'http') === 0) {
+    // Normalize legacy localhost URLs stored in DB during development
+    // e.g. "http://localhost/crosslife/assets/img/foo.jpg" → "assets/img/foo.jpg"
+    if (preg_match('#^https?://localhost(?::\d+)?/#i', $image_url)) {
+        $path = ltrim((string) parse_url($image_url, PHP_URL_PATH), '/');
+        // Strip leading project subfolder (e.g. "crosslife/") before assets/ or uploads/
+        if (preg_match('#^[^/]+/((?:assets|uploads)/.+)$#', $path, $m)) {
+            $image_url = $m[1];
+        } else {
+            $image_url = $path;
+        }
+    }
+    // External full URL — return as-is
+    if (strpos($image_url, 'http') === 0 || strpos($image_url, 'data:') === 0) {
         return $image_url;
     }
     $base = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';

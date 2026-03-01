@@ -3,6 +3,7 @@
  * Events Page - CrossLife Mission Network
  * Display events from database (managed in Admin → Events)
  */
+require_once __DIR__ . '/admin/config/config.php';
 require_once 'includes/db-functions.php';
 
 $events = getPublicEvents();
@@ -112,10 +113,7 @@ $events = getPublicEvents();
             <?php foreach ($events as $index => $event):
               $eventDate = strtotime($event['event_date']);
               $isPast = ($event['status'] === 'completed' || (date('Y-m-d', $eventDate) < date('Y-m-d')));
-              $imgUrl = !empty($event['image_url']) ? htmlspecialchars($event['image_url']) : '';
-              if ($imgUrl && strpos($imgUrl, 'http') !== 0 && $imgUrl[0] !== '/') {
-                $imgUrl = ltrim($imgUrl, '/');
-              }
+              $imgUrl = !empty($event['image_url']) ? htmlspecialchars(image_url_for_display($event['image_url'])) : '';
             ?>
               <div class="col-lg-6" data-aos="fade-up" data-aos-delay="<?php echo 150 + ($index * 50); ?>" id="event-<?php echo (int)$event['id']; ?>">
                 <div class="event-card">

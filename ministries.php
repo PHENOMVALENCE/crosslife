@@ -119,19 +119,11 @@ $ministries = getActiveMinistries();
             <?php 
             $delay = 150;
             foreach ($ministries as $ministry): 
-              // Handle both full URLs and relative paths
+              // Resolve image URL using central helper (handles relative, localhost legacy, and external URLs)
               if (!empty($ministry['image_url'])) {
-                $image = $ministry['image_url'];
-                // Convert full URL to relative path if needed
-                if (defined('SITE_URL') && strpos($image, SITE_URL) === 0) {
-                  $image = str_replace(SITE_URL . '/', '', $image);
-                } elseif (strpos($image, 'http') === 0) {
-                  // Keep full URL as is (external or absolute URL)
-                } else {
-                  // Already relative path
-                }
+                $image = image_url_for_display($ministry['image_url']);
               } else {
-                $image = 'assets/img/_MG_4880.jpg'; // Fallback when admin does not set an image (layout only)
+                $image = image_url_for_display('assets/img/_MG_4880.jpg'); // Fallback when admin does not set an image
               }
               $image = htmlspecialchars($image);
             ?>

@@ -260,13 +260,23 @@ function discipleship_count_attempts($enrollmentId, $moduleId) {
 }
 
 /**
- * Resolve resource file URL for display (audio/video)
+ * Resolve resource file URL for display (audio/video).
+ * Also normalizes legacy localhost URLs stored during development.
  */
 function discipleship_resource_url($filePath) {
     if (empty($filePath)) {
         return '';
     }
-    if (strpos($filePath, 'http') === 0) {
+    // Normalize legacy localhost URLs stored in DB during development
+    if (preg_match('#^https?://localhost(?::\d+)?/#i', $filePath)) {
+        $path = ltrim((string) parse_url($filePath, PHP_URL_PATH), '/');
+        if (preg_match('#^[^/]+/((?:assets|uploads)/.+)$#', $path, $m)) {
+            $filePath = $m[1];
+        } else {
+            $filePath = $path;
+        }
+    }
+    if (strpos($filePath, 'http') === 0 || strpos($filePath, 'data:') === 0) {
         return $filePath;
     }
     $base = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';
