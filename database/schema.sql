@@ -171,6 +171,7 @@ CREATE TABLE IF NOT EXISTS discipleship_enrollments (
 CREATE TABLE IF NOT EXISTS discipleship_module_progress (
     enrollment_id INT NOT NULL,
     module_id INT NOT NULL,
+    studied_at DATETIME NULL,
     passed_at DATETIME NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

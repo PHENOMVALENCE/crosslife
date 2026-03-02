@@ -202,6 +202,15 @@
   flex: 1;
 }
 .student-portal footer { margin-left: var(--sidebar-width); }
+.student-portal-footer {
+  background: var(--footer-bg, #2c3e50);
+  color: var(--footer-text, #adb5bd);
+  margin-left: var(--sidebar-width);
+}
+
+/* ----------------------------------------------------------------
+   Sidebar responsive – Tablet & mobile
+   ---------------------------------------------------------------- */
 @media (max-width: 991.98px) {
   .student-portal .elms-sidebar {
     transform: translateX(-100%);
@@ -210,6 +219,7 @@
   .student-portal .elms-sidebar.show { transform: translateX(0); }
   .student-portal .elms-main-wrap { margin-left: 0; }
   .student-portal footer { margin-left: 0; }
+  .student-portal .student-portal-footer { margin-left: 0; }
   .student-portal .elms-sidebar-overlay {
     position: fixed;
     inset: 0;
@@ -218,11 +228,48 @@
     display: none;
   }
   .student-portal .elms-sidebar-overlay.show { display: block; }
+  .student-portal .elms-topbar { padding: 0.5rem 1rem; }
 }
 
-/* Touch targets */
 @media (max-width: 767.98px) {
+  /* Tighter content padding on mobile */
+  .student-portal .elms-content { padding: 16px 12px; }
+  .student-portal .elms-topbar { padding: 0.5rem 0.75rem; }
+
+  /* Touch targets */
   .student-portal .btn,
   .student-portal .nav-link,
   .student-portal .form-control { min-height: 44px; }
+
+  /* Sidebar nav items larger tap targets */
+  .student-portal .elms-sidebar .nav-link { padding: 0.75rem 1rem; font-size: 0.95rem; }
+
+  /* Score gauge */
+  .elms-score-gauge {
+    width: 100px;
+    height: 100px;
+    font-size: 1.25rem;
+  }
+
+  /* Certificate card */
+  .elms-certificate-card {
+    padding: 1.5rem 1rem;
+    max-width: 100%;
+  }
+  .elms-certificate-card .h4 { font-size: 1.15rem; }
+
+  /* Breadcrumb compact */
+  .elms-breadcrumb-wrap { padding: 0.35rem 0; }
+  .elms-breadcrumb-wrap .breadcrumb { font-size: 0.8rem; }
+
+  /* Buttons – full width stacking */
+  .btn-elms-accent, .btn-outline-elms {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .student-portal .elms-content { padding: 12px 8px; }
+  .student-portal .elms-sidebar { width: 85vw; max-width: 300px; }
+  .elms-breadcrumb-wrap .breadcrumb { font-size: 0.75rem; }
 }

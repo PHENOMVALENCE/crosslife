@@ -78,11 +78,4 @@ require_once __DIR__ . '/includes/header.php';
     <a href="dashboard.php" class="btn btn-outline-elms">Back to Dashboard</a>
 </div>
 
-<style media="print">
-    .elms-sidebar, .elms-topbar, .elms-breadcrumb-wrap, .breadcrumb, .btn, .student-portal footer, .alert { display: none !important; }
-    .elms-main-wrap { margin-left: 0 !important; }
-    .elms-content { padding: 0 !important; }
-    .elms-certificate-card { box-shadow: none; border: 2px solid #2c3e50 !important; }
-</style>
-
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

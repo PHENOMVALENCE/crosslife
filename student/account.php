@@ -137,14 +137,14 @@ require_once __DIR__ . '/includes/header.php';
             <?php foreach ($enrollments as $e):
                 $isCompleted = isset($e['status']) && $e['status'] === 'completed';
             ?>
-                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                <li class="list-group-item d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 px-0">
                     <span><?php echo htmlspecialchars($e['program_name']); ?></span>
-                    <span>
+                    <span class="d-flex flex-wrap align-items-center gap-2">
                         <?php if ($isCompleted): ?>
-                            <span class="badge badge-status-completed me-2">Completed</span>
+                            <span class="badge badge-status-completed">Completed</span>
                             <a href="certificate.php?enrollment_id=<?php echo (int)$e['id']; ?>" class="btn btn-outline-elms btn-sm">Certificate</a>
                         <?php else: ?>
-                            <span class="badge badge-status-active me-2">Active</span>
+                            <span class="badge badge-status-active">Active</span>
                             <a href="program.php?enrollment_id=<?php echo (int)$e['id']; ?>" class="btn btn-outline-elms btn-sm">Continue</a>
                         <?php endif; ?>
                     </span>

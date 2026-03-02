@@ -1,9 +1,9 @@
         </div><!-- /.elms-content -->
     </div><!-- /.elms-main-wrap -->
-    <footer class="py-3 mt-auto" style="background: var(--footer-bg, #2c3e50); color: var(--footer-text, #adb5bd); margin-left: var(--sidebar-width, 260px);">
+    <footer class="student-portal-footer py-3 mt-auto">
         <div class="container text-center small">
-            <span>© <?php echo date('Y'); ?> <?php echo htmlspecialchars(defined('SITE_NAME') ? SITE_NAME : 'CrossLife'); ?></span>
-            <span class="mx-2">·</span>
+            <span>&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars(defined('SITE_NAME') ? SITE_NAME : 'CrossLife'); ?></span>
+            <span class="mx-2">&middot;</span>
             <a href="../index.html" class="text-decoration-none" style="color: var(--footer-text);">Back to site</a>
         </div>
     </footer>

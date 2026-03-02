@@ -260,6 +260,27 @@ function discipleship_count_attempts($enrollmentId, $moduleId) {
 }
 
 /**
+ * Check if student has marked the module as studied
+ */
+function discipleship_has_studied_module($enrollmentId, $moduleId) {
+    $db = getDB();
+    $stmt = $db->prepare("SELECT 1 FROM discipleship_module_progress WHERE enrollment_id = ? AND module_id = ? AND studied_at IS NOT NULL");
+    $stmt->execute([$enrollmentId, $moduleId]);
+    return (bool) $stmt->fetch();
+}
+
+/**
+ * Mark module as studied (insert or update row)
+ */
+function discipleship_mark_module_studied($enrollmentId, $moduleId) {
+    $db = getDB();
+    $stmt = $db->prepare("INSERT INTO discipleship_module_progress (enrollment_id, module_id, studied_at)
+        VALUES (?, ?, NOW())
+        ON DUPLICATE KEY UPDATE studied_at = COALESCE(studied_at, NOW())");
+    $stmt->execute([$enrollmentId, $moduleId]);
+}
+
+/**
  * Resolve resource file URL for display (audio/video).
  * Also normalizes legacy localhost URLs stored during development.
  */

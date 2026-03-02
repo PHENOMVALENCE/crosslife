@@ -102,27 +102,41 @@ require_once __DIR__ . '/includes/header.php';
             <?php
             $unlocked = $enrollmentId && discipleship_is_module_unlocked($enrollmentId, $mod['id'], $moduleIds);
             $passed = in_array($mod['id'], $passedIds, true);
+            $studied = $enrollmentId ? discipleship_has_studied_module($enrollmentId, $mod['id']) : false;
             $rowClass = 'module-row' . (!$unlocked ? ' locked' : '');
             ?>
             <div class="<?php echo $rowClass; ?>">
-                <div class="d-flex flex-wrap align-items-center gap-2">
+                <div class="d-flex flex-wrap align-items-center gap-2 module-row-info">
                     <span class="module-num"><?php echo $i + 1; ?> of <?php echo $totalMods; ?></span>
                     <?php if ($passed): ?>
                         <i class="bi bi-check-circle-fill module-status-passed" aria-hidden="true"></i>
                         <span class="badge badge-status-active">Passed</span>
+                    <?php elseif ($studied): ?>
+                        <i class="bi bi-book-fill" style="color: var(--accent, #17a2b8);" aria-hidden="true"></i>
+                        <span class="badge badge-status-completed">Studied</span>
                     <?php elseif ($unlocked): ?>
                         <i class="bi bi-circle-fill module-status-unlocked" style="font-size: 0.6rem;" aria-hidden="true"></i>
                     <?php else: ?>
                         <i class="bi bi-lock-fill module-status-locked" aria-hidden="true"></i>
                         <span class="badge badge-status-locked">Locked</span>
                     <?php endif; ?>
-                    <span class="fw-semibold"><?php echo htmlspecialchars($mod['title']); ?></span>
+                    <span class="fw-semibold module-title-text"><?php echo htmlspecialchars($mod['title']); ?></span>
                 </div>
-                <div class="mt-2 mt-md-0 ms-md-auto">
+                <div class="mt-2 mt-md-0 ms-md-auto module-row-actions">
                     <?php if ($unlocked): ?>
-                        <a href="module.php?enrollment_id=<?php echo $enrollmentId; ?>&module_id=<?php echo (int) $mod['id']; ?>" class="btn btn-elms-accent btn-sm">
-                            <?php echo $passed ? 'Review' : 'Start'; ?> <i class="bi bi-arrow-right ms-1"></i>
-                        </a>
+                        <?php if ($passed): ?>
+                            <a href="module.php?enrollment_id=<?php echo $enrollmentId; ?>&module_id=<?php echo (int) $mod['id']; ?>" class="btn btn-outline-elms btn-sm">
+                                Review <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        <?php elseif ($studied): ?>
+                            <a href="test.php?enrollment_id=<?php echo $enrollmentId; ?>&module_id=<?php echo (int) $mod['id']; ?>" class="btn btn-elms-accent btn-sm">
+                                Take test <i class="bi bi-pencil-square ms-1"></i>
+                            </a>
+                        <?php else: ?>
+                            <a href="module.php?enrollment_id=<?php echo $enrollmentId; ?>&module_id=<?php echo (int) $mod['id']; ?>" class="btn btn-elms-accent btn-sm">
+                                Start <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        <?php endif; ?>
                     <?php else: ?>
                         <span class="text-muted small">Complete the previous module to unlock</span>
                     <?php endif; ?>
