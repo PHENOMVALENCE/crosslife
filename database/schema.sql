@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS sermons (
     sermon_type ENUM('video', 'audio') DEFAULT 'video',
     youtube_url VARCHAR(500),
     audio_url VARCHAR(500),
+    spotify_url VARCHAR(500),
     thumbnail_url VARCHAR(500),
     sermon_date DATE,
     category VARCHAR(100),

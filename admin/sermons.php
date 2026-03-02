@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'sermon_type' => in_array($_POST['sermon_type'] ?? 'video', ['video', 'audio']) ? $_POST['sermon_type'] : 'video',
             'youtube_url' => sanitize($_POST['youtube_url'] ?? ''),
             'audio_url' => sanitize($_POST['audio_url'] ?? ''),
+            'spotify_url' => sanitize($_POST['spotify_url'] ?? ''),
             'thumbnail_url' => sanitize($_POST['thumbnail_url'] ?? ''),
             'sermon_date' => (!empty($_POST['sermon_date']) && $_POST['sermon_date'] !== '0000-00-00') ? $_POST['sermon_date'] : null,
             'category' => sanitize($_POST['category'] ?? ''),
@@ -57,8 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 redirect('sermons.php', 'Sermon not found.', 'danger');
             }
             
-            $stmt = $db->prepare("UPDATE sermons SET title = ?, description = ?, speaker = ?, sermon_type = ?, youtube_url = ?, audio_url = ?, thumbnail_url = ?, sermon_date = ?, category = ?, status = ? WHERE id = ?");
-            $stmt->execute([$data['title'], $data['description'], $data['speaker'], $data['sermon_type'], $data['youtube_url'], $data['audio_url'], $data['thumbnail_url'], $data['sermon_date'], $data['category'], $data['status'], $sermonId]);
+            $stmt = $db->prepare("UPDATE sermons SET title = ?, description = ?, speaker = ?, sermon_type = ?, youtube_url = ?, audio_url = ?, spotify_url = ?, thumbnail_url = ?, sermon_date = ?, category = ?, status = ? WHERE id = ?");
+            $stmt->execute([$data['title'], $data['description'], $data['speaker'], $data['sermon_type'], $data['youtube_url'], $data['audio_url'], $data['spotify_url'], $data['thumbnail_url'], $data['sermon_date'], $data['category'], $data['status'], $sermonId]);
             
             if ($stmt->rowCount() > 0) {
                 redirect('sermons.php', 'Sermon updated successfully.');
@@ -66,8 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 redirect('sermons.php', 'No changes were made.', 'info');
             }
         } else {
-            $stmt = $db->prepare("INSERT INTO sermons (title, description, speaker, sermon_type, youtube_url, audio_url, thumbnail_url, sermon_date, category, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$data['title'], $data['description'], $data['speaker'], $data['sermon_type'], $data['youtube_url'], $data['audio_url'], $data['thumbnail_url'], $data['sermon_date'], $data['category'], $data['status']]);
+            $stmt = $db->prepare("INSERT INTO sermons (title, description, speaker, sermon_type, youtube_url, audio_url, spotify_url, thumbnail_url, sermon_date, category, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$data['title'], $data['description'], $data['speaker'], $data['sermon_type'], $data['youtube_url'], $data['audio_url'], $data['spotify_url'], $data['thumbnail_url'], $data['sermon_date'], $data['category'], $data['status']]);
             
             if ($stmt->rowCount() > 0) {
                 redirect('sermons.php', 'Sermon added successfully.');
@@ -156,7 +157,14 @@ if ($action === 'add' || $action === 'edit') {
                         
                         <div class="mb-3">
                             <label class="form-label">Audio URL</label>
-                            <input type="url" class="form-control" name="audio_url" value="<?php echo htmlspecialchars($sermon['audio_url'] ?? ''); ?>">
+                            <input type="url" class="form-control" name="audio_url" value="<?php echo htmlspecialchars($sermon['audio_url'] ?? ''); ?>" placeholder="https://example.com/sermon.mp3">
+                            <div class="form-text">Direct link to an MP3 or audio file.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi bi-spotify me-1 text-success"></i>Spotify URL</label>
+                            <input type="url" class="form-control" name="spotify_url" value="<?php echo htmlspecialchars($sermon['spotify_url'] ?? ''); ?>" placeholder="https://open.spotify.com/episode/...">
+                            <div class="form-text">Spotify episode, track, show, or playlist URL. Will be embedded as a player.</div>
                         </div>
                         
                         <div class="mb-3">

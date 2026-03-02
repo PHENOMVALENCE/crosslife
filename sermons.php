@@ -65,6 +65,8 @@ function sermonFormatDate($date, $format = 'F j, Y') {
     .sermon-video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
     .sermon-audio-player { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 12px; padding: 1.5rem; color: #fff; }
     .sermon-audio-player audio { width: 100%; margin-top: 0.75rem; }
+    .sermon-spotify-embed { border-radius: 12px; overflow: hidden; margin-top: 0.75rem; }
+    .sermon-spotify-embed iframe { border: none; border-radius: 12px; }
     .sermon-thumbnail { width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0; }
     .sermon-type-badge { position: absolute; top: 12px; right: 12px; z-index: 2; }
     .sermon-category-badge { font-size: 0.75rem; }
@@ -225,6 +227,8 @@ function sermonFormatDate($date, $format = 'F j, Y') {
               $delay = 150;
               foreach ($allSermons as $sermon):
                 $youtubeId = getYouTubeId($sermon['youtube_url'] ?? '');
+                $spotifyEmbed = getSpotifyEmbedUrl($sermon['spotify_url'] ?? '');
+                $spotifyType = getSpotifyType($sermon['spotify_url'] ?? '');
                 $isVideo = $sermon['sermon_type'] === 'video';
                 $dateStr = sermonFormatDate($sermon['sermon_date'] ?? '');
                 $thumbnail = '';
@@ -277,7 +281,11 @@ function sermonFormatDate($date, $format = 'F j, Y') {
                       <?php endif; ?>
                     </div>
 
-                    <?php if (!$isVideo && !empty($sermon['audio_url'])): ?>
+                    <?php if ($spotifyEmbed): ?>
+                      <div class="sermon-spotify-embed mt-3">
+                        <iframe src="<?php echo htmlspecialchars($spotifyEmbed); ?>" width="100%" height="<?php echo ($spotifyType === 'episode' || $spotifyType === 'track') ? '152' : '352'; ?>" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                      </div>
+                    <?php elseif (!$isVideo && !empty($sermon['audio_url'])): ?>
                       <div class="sermon-audio-player mt-3">
                         <audio controls preload="none" style="width:100%;">
                           <source src="<?php echo htmlspecialchars($sermon['audio_url']); ?>" type="audio/mpeg">
@@ -357,6 +365,8 @@ function sermonFormatDate($date, $format = 'F j, Y') {
               <?php
               $delay = 150;
               foreach ($audioSermons as $sermon):
+                $spotifyEmbed = getSpotifyEmbedUrl($sermon['spotify_url'] ?? '');
+                $spotifyType = getSpotifyType($sermon['spotify_url'] ?? '');
                 $dateStr = sermonFormatDate($sermon['sermon_date'] ?? '');
               ?>
               <div class="col-lg-6" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
@@ -376,7 +386,11 @@ function sermonFormatDate($date, $format = 'F j, Y') {
                   <?php if (!empty($sermon['description'])): ?>
                     <p style="font-size:0.9rem; opacity:0.85;" class="mb-2"><?php echo htmlspecialchars(mb_strimwidth($sermon['description'], 0, 150, '...')); ?></p>
                   <?php endif; ?>
-                  <?php if (!empty($sermon['audio_url'])): ?>
+                  <?php if ($spotifyEmbed): ?>
+                    <div class="sermon-spotify-embed mt-2">
+                      <iframe src="<?php echo htmlspecialchars($spotifyEmbed); ?>" width="100%" height="<?php echo ($spotifyType === 'episode' || $spotifyType === 'track') ? '152' : '352'; ?>" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                    </div>
+                  <?php elseif (!empty($sermon['audio_url'])): ?>
                     <audio controls preload="none" style="width:100%;">
                       <source src="<?php echo htmlspecialchars($sermon['audio_url']); ?>" type="audio/mpeg">
                       Your browser does not support the audio element.

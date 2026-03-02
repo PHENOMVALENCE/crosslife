@@ -142,12 +142,67 @@ function getEventDateBadge($event) {
 
 /**
  * Extract YouTube video ID from URL
+ * Supports: watch, embed, youtu.be, shorts, live, v/ paths
  */
 function getYouTubeId($url) {
     if (empty($url)) return null;
-    
-    preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $url, $matches);
-    return isset($matches[1]) ? $matches[1] : null;
+
+    $url = trim($url);
+
+    // youtu.be/VIDEO_ID
+    if (preg_match('/youtu\.be\/([^"&?\/\s]{11})/', $url, $m)) return $m[1];
+
+    // youtube.com/shorts/VIDEO_ID
+    if (preg_match('/youtube\.com\/shorts\/([^"&?\/\s]{11})/', $url, $m)) return $m[1];
+
+    // youtube.com/live/VIDEO_ID
+    if (preg_match('/youtube\.com\/live\/([^"&?\/\s]{11})/', $url, $m)) return $m[1];
+
+    // youtube.com/embed/VIDEO_ID or /v/VIDEO_ID
+    if (preg_match('/youtube(?:-nocookie)?\.com\/(?:embed|v)\/([^"&?\/\s]{11})/', $url, $m)) return $m[1];
+
+    // youtube.com/watch?v=VIDEO_ID (anywhere in query string)
+    if (preg_match('/youtube\.com\/watch.*[?&]v=([^"&?\/\s]{11})/', $url, $m)) return $m[1];
+
+    // General catch-all for other youtube.com patterns
+    if (preg_match('/youtube\.com\/(?:[^\/]+\/.+\/|(?:e(?:mbed)?)\/|.*[?&]v=)([^"&?\/\s]{11})/', $url, $m)) return $m[1];
+
+    return null;
+}
+
+/**
+ * Get Spotify embed URL from a Spotify link.
+ * Input:  https://open.spotify.com/episode/ABC123 or /track/... /show/... /playlist/...
+ * Output: https://open.spotify.com/embed/episode/ABC123  (ready for iframe)
+ * Returns null if not a valid Spotify URL.
+ */
+function getSpotifyEmbedUrl($url) {
+    if (empty($url)) return null;
+
+    $url = trim($url);
+
+    // Already an embed URL
+    if (preg_match('#^https?://open\.spotify\.com/embed/(episode|track|show|playlist|album)/([a-zA-Z0-9]+)#', $url, $m)) {
+        return 'https://open.spotify.com/embed/' . $m[1] . '/' . $m[2];
+    }
+
+    // Standard Spotify URL (with optional query params / si tracking)
+    if (preg_match('#^https?://open\.spotify\.com/(episode|track|show|playlist|album)/([a-zA-Z0-9]+)#', $url, $m)) {
+        return 'https://open.spotify.com/embed/' . $m[1] . '/' . $m[2];
+    }
+
+    return null;
+}
+
+/**
+ * Detect the embed type for a Spotify URL (episode, track, show, playlist, album)
+ */
+function getSpotifyType($url) {
+    if (empty($url)) return null;
+    if (preg_match('#open\.spotify\.com/(?:embed/)?(episode|track|show|playlist|album)/#', $url, $m)) {
+        return $m[1];
+    }
+    return null;
 }
 
 /**
