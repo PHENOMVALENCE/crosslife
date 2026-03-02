@@ -1,7 +1,12 @@
 <?php
-$pageTitle = 'Sermons Management';
-require_once 'includes/header.php';
+/**
+ * Sermons Management - Admin
+ * Process POST (and redirects) before any output to avoid "headers already sent" errors.
+ */
+require_once __DIR__ . '/config/config.php';
+requireLogin();
 
+$pageTitle = 'Sermons Management';
 $db = getDB();
 $action = $_GET['action'] ?? 'list';
 $id = $_GET['id'] ?? null;
@@ -92,6 +97,12 @@ if ($action === 'add' || $action === 'edit') {
             redirect('sermons.php', handleDBError($e, 'Error loading sermon.'), 'danger');
         }
     }
+}
+
+// ---- All redirects done; safe to output HTML ----
+require_once 'includes/header.php';
+
+if ($action === 'add' || $action === 'edit') {
     ?>
     <div class="card">
         <div class="card-header">

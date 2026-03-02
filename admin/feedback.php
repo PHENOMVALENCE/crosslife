@@ -1,7 +1,12 @@
 <?php
-$pageTitle = 'Feedback Management';
-require_once 'includes/header.php';
+/**
+ * Feedback Management - Admin
+ * Process POST (and redirects) before any output to avoid "headers already sent" errors.
+ */
+require_once __DIR__ . '/config/config.php';
+requireLogin();
 
+$pageTitle = 'Feedback Management';
 $db = getDB();
 $action = $_GET['action'] ?? 'list';
 $id = $_GET['id'] ?? null;
@@ -70,6 +75,12 @@ if ($action === 'view' && $id) {
     } catch (PDOException $e) {
         redirect('feedback.php', handleDBError($e, 'Error loading feedback.'), 'danger');
     }
+}
+
+// ---- All redirects done; safe to output HTML ----
+require_once 'includes/header.php';
+
+if ($action === 'view' && $id) {
     ?>
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">

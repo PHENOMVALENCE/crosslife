@@ -1,7 +1,12 @@
 <?php
-$pageTitle = 'Contact Inquiries';
-require_once 'includes/header.php';
+/**
+ * Contact Inquiries - Admin
+ * Process POST (and redirects) before any output to avoid "headers already sent" errors.
+ */
+require_once __DIR__ . '/config/config.php';
+requireLogin();
 
+$pageTitle = 'Contact Inquiries';
 $db = getDB();
 $action = $_GET['action'] ?? 'list';
 $id = $_GET['id'] ?? null;
@@ -134,7 +139,7 @@ if ($action === 'view' && $id) {
         $stmt->execute([$id]);
         $inquiry = $stmt->fetch();
         if (!$inquiry) {
-            redirect('contacts.html', 'Inquiry not found.', 'danger');
+            redirect('contacts.php', 'Inquiry not found.', 'danger');
         }
         
         // Mark as read if new
@@ -149,8 +154,14 @@ if ($action === 'view' && $id) {
             }
         }
     } catch (PDOException $e) {
-        redirect('contacts.html', handleDBError($e, 'Error loading inquiry.'), 'danger');
+        redirect('contacts.php', handleDBError($e, 'Error loading inquiry.'), 'danger');
     }
+}
+
+// ---- All redirects done; safe to output HTML ----
+require_once 'includes/header.php';
+
+if ($action === 'view' && $id) {
     ?>
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">

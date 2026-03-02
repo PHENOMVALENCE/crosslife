@@ -2,9 +2,12 @@
 /**
  * User & Student Tracking
  * Lists all admins and discipleship students with studying progress.
+ * Process data-fetching and redirects before any output to avoid "headers already sent" errors.
  */
+require_once __DIR__ . '/config/config.php';
+requireLogin();
+
 $pageTitle = 'Users & Students';
-require_once 'includes/header.php';
 
 require_once __DIR__ . '/../includes/discipleship-functions.php';
 
@@ -12,7 +15,10 @@ $db = getDB();
 $view = $_GET['view'] ?? 'list';
 $studentId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
-// ----- Student detail view -----
+// ----- Student detail view (data fetch + redirect before output) -----
+$student = null;
+$enrollments = [];
+$progressByEnrollment = [];
 if ($view === 'student' && $studentId > 0) {
     $stmt = $db->prepare("SELECT id, email, full_name, phone, status, last_login, created_at FROM discipleship_students WHERE id = ?");
     $stmt->execute([$studentId]);
@@ -30,6 +36,12 @@ if ($view === 'student' && $studentId > 0) {
             'passed_ids' => $passedIds,
         ];
     }
+}
+
+// ---- All redirects done; safe to output HTML ----
+require_once 'includes/header.php';
+
+if ($view === 'student' && $student) {
     ?>
     <div class="d-flex align-items-center gap-2 mb-4">
         <a href="users.php" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Users</a>

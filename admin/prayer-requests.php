@@ -1,9 +1,12 @@
 <?php
-$pageTitle = 'Prayer Requests';
-require_once 'config/config.php';
+/**
+ * Prayer Requests - Admin
+ * Process POST (and redirects) before any output to avoid "headers already sent" errors.
+ */
+require_once __DIR__ . '/config/config.php';
 requireLogin();
-require_once 'includes/header.php';
 
+$pageTitle = 'Prayer Requests';
 $db = getDB();
 $action = $_GET['action'] ?? 'list';
 $id = $_GET['id'] ?? null;
@@ -72,6 +75,12 @@ if ($action === 'view' && $id) {
     } catch (PDOException $e) {
         redirect('prayer-requests.php', handleDBError($e, 'Error loading prayer request.'), 'danger');
     }
+}
+
+// ---- All redirects done; safe to output HTML ----
+require_once 'includes/header.php';
+
+if ($action === 'view' && $id) {
     ?>
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
