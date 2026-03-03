@@ -16,6 +16,25 @@ $db = getDB();
 $view = $_GET['view'] ?? 'list';
 $studentId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
+// ----- Approve/Reject student (POST before output) -----
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['student_action'])) {
+    $sid = (int) ($_POST['student_id'] ?? 0);
+    $action = $_POST['student_action'];
+    if ($sid > 0 && in_array($action, ['approve', 'reject'])) {
+        try {
+            $newStatus = $action === 'approve' ? 'active' : 'inactive';
+            $stmt = $db->prepare("UPDATE discipleship_students SET status = ? WHERE id = ? AND status = 'pending'");
+            $stmt->execute([$newStatus, $sid]);
+            if ($stmt->rowCount() > 0) {
+                redirect('users.php?view=students', $action === 'approve' ? 'Student approved. They can now log in.' : 'Student registration rejected.');
+            }
+            redirect('users.php?view=students', 'Student not found or already processed.', 'warning');
+        } catch (PDOException $e) {
+            redirect('users.php?view=students', 'Database error. Please try again.', 'danger');
+        }
+    }
+}
+
 // ----- Student detail view (data fetch + redirect before output) -----
 $student = null;
 $enrollments = [];
@@ -44,8 +63,20 @@ require_once 'includes/header.php';
 
 if ($view === 'student' && $student) {
     ?>
-    <div class="d-flex align-items-center gap-2 mb-4">
-        <a href="users.php" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Users</a>
+    <div class="d-flex align-items-center gap-2 mb-4 flex-wrap">
+        <a href="users.php?view=students" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Students</a>
+        <?php if ($student['status'] === 'pending'): ?>
+        <form method="POST" class="d-inline">
+            <input type="hidden" name="student_id" value="<?php echo (int)$student['id']; ?>">
+            <input type="hidden" name="student_action" value="approve">
+            <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-check-circle me-1"></i>Approve</button>
+        </form>
+        <form method="POST" class="d-inline" onsubmit="return confirm('Reject this registration?');">
+            <input type="hidden" name="student_id" value="<?php echo (int)$student['id']; ?>">
+            <input type="hidden" name="student_action" value="reject">
+            <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-x-circle me-1"></i>Reject</button>
+        </form>
+        <?php endif; ?>
     </div>
     <div class="card mb-4">
         <div class="card-header">
@@ -58,7 +89,7 @@ if ($view === 'student' && $student) {
                     <p class="mb-1"><strong>Phone:</strong> <?php echo htmlspecialchars($student['phone'] ?? '—'); ?></p>
                 </div>
                 <div class="col-md-6">
-                    <p class="mb-1"><strong>Status:</strong> <span class="badge bg-<?php echo $student['status'] === 'active' ? 'success' : 'secondary'; ?>"><?php echo htmlspecialchars($student['status']); ?></span></p>
+                    <p class="mb-1"><strong>Status:</strong> <span class="badge bg-<?php echo $student['status'] === 'active' ? 'success' : ($student['status'] === 'pending' ? 'warning text-dark' : 'secondary'); ?>"><?php echo ucfirst(htmlspecialchars($student['status'])); ?></span></p>
                     <p class="mb-1"><strong>Last login:</strong> <?php echo $student['last_login'] ? formatDateTime($student['last_login'], 'M j, Y g:i A') : '—'; ?></p>
                     <p class="mb-0"><strong>Registered:</strong> <?php echo formatDateTime($student['created_at'], 'M j, Y'); ?></p>
                 </div>
@@ -242,6 +273,8 @@ foreach ($students as $s) {
                                     <td>
                                         <?php if ($s['status'] === 'active'): ?>
                                             <span class="badge bg-success">Active</span>
+                                        <?php elseif ($s['status'] === 'pending'): ?>
+                                            <span class="badge bg-warning text-dark">Pending Approval</span>
                                         <?php else: ?>
                                             <span class="badge bg-secondary">Inactive</span>
                                         <?php endif; ?>
@@ -250,7 +283,20 @@ foreach ($students as $s) {
                                     <td><?php echo (int) $prog['enrollments']; ?></td>
                                     <td><?php echo (int) $prog['passed']; ?></td>
                                     <td class="text-end">
+                                        <?php if ($s['status'] === 'pending'): ?>
+                                        <form method="POST" class="d-inline">
+                                            <input type="hidden" name="student_id" value="<?php echo (int)$s['id']; ?>">
+                                            <input type="hidden" name="student_action" value="approve">
+                                            <button type="submit" class="btn btn-sm btn-success me-1">Approve</button>
+                                        </form>
+                                        <form method="POST" class="d-inline" onsubmit="return confirm('Reject this registration?');">
+                                            <input type="hidden" name="student_id" value="<?php echo (int)$s['id']; ?>">
+                                            <input type="hidden" name="student_action" value="reject">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Reject</button>
+                                        </form>
+                                        <?php else: ?>
                                         <a href="users.php?view=student&id=<?php echo (int)$s['id']; ?>" class="btn btn-sm btn-outline-primary">View progress</a>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

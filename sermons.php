@@ -12,6 +12,7 @@ $settings = getSiteSettings();
 // Fetch published sermons
 $videoSermons = getPublishedSermons(null, 'video');
 $audioSermons = getPublishedSermons(null, 'audio');
+$pdfSermons   = getPublishedSermons(null, 'pdf');
 $allSermons   = getPublishedSermons();
 
 /**
@@ -189,7 +190,7 @@ function sermonFormatDate($date, $format = 'F j, Y') {
         <!-- Dynamic Sermons from Database -->
         <div class="container section-title" data-aos="fade-up">
           <h3 class="text-center mb-2">Recent Sermons</h3>
-          <p class="text-center text-muted mb-4">Browse our latest video and audio sermon uploads</p>
+          <p class="text-center text-muted mb-4">Browse our latest video, audio, and PDF sermon uploads</p>
         </div>
 
         <!-- Filter Tabs -->
@@ -214,6 +215,13 @@ function sermonFormatDate($date, $format = 'F j, Y') {
               </button>
             </li>
             <?php endif; ?>
+            <?php if (!empty($pdfSermons)): ?>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="pdf-tab" data-bs-toggle="pill" data-bs-target="#pdf-sermons" type="button" role="tab" aria-selected="false">
+                <i class="bi bi-file-earmark-pdf me-1"></i>PDF (<?php echo count($pdfSermons); ?>)
+              </button>
+            </li>
+            <?php endif; ?>
           </ul>
         </div>
 
@@ -230,6 +238,8 @@ function sermonFormatDate($date, $format = 'F j, Y') {
                 $spotifyEmbed = getSpotifyEmbedUrl($sermon['spotify_url'] ?? '');
                 $spotifyType = getSpotifyType($sermon['spotify_url'] ?? '');
                 $isVideo = $sermon['sermon_type'] === 'video';
+                $isPdf = $sermon['sermon_type'] === 'pdf';
+                $pdfUrl = $sermon['pdf_url'] ?? '';
                 $dateStr = sermonFormatDate($sermon['sermon_date'] ?? '');
                 $thumbnail = '';
                 if (!empty($sermon['thumbnail_url'])) {
@@ -250,15 +260,15 @@ function sermonFormatDate($date, $format = 'F j, Y') {
                   <?php elseif ($thumbnail): ?>
                     <div style="position:relative;">
                       <img src="<?php echo htmlspecialchars($thumbnail); ?>" alt="<?php echo htmlspecialchars($sermon['title']); ?>" class="sermon-thumbnail">
-                      <span class="sermon-type-badge badge bg-<?php echo $isVideo ? 'danger' : 'warning text-dark'; ?>">
-                        <i class="bi bi-<?php echo $isVideo ? 'play-circle' : 'headphones'; ?> me-1"></i><?php echo ucfirst($sermon['sermon_type']); ?>
+                      <span class="sermon-type-badge badge bg-<?php echo $isVideo ? 'danger' : ($isPdf ? 'info' : 'warning text-dark'); ?>">
+                        <i class="bi bi-<?php echo $isVideo ? 'play-circle' : ($isPdf ? 'file-earmark-pdf' : 'headphones'); ?> me-1"></i><?php echo ucfirst($sermon['sermon_type']); ?>
                       </span>
                     </div>
                   <?php else: ?>
                     <div style="position:relative; background: linear-gradient(135deg, #1a1a2e, #16213e); height: 180px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
-                      <i class="bi bi-<?php echo $isVideo ? 'camera-video' : 'headphones'; ?>" style="font-size: 3rem; color: rgba(255,255,255,0.3);"></i>
-                      <span class="sermon-type-badge badge bg-<?php echo $isVideo ? 'danger' : 'warning text-dark'; ?>">
-                        <i class="bi bi-<?php echo $isVideo ? 'play-circle' : 'headphones'; ?> me-1"></i><?php echo ucfirst($sermon['sermon_type']); ?>
+                      <i class="bi bi-<?php echo $isVideo ? 'camera-video' : ($isPdf ? 'file-earmark-pdf' : 'headphones'); ?>" style="font-size: 3rem; color: rgba(255,255,255,0.3);"></i>
+                      <span class="sermon-type-badge badge bg-<?php echo $isVideo ? 'danger' : ($isPdf ? 'info' : 'warning text-dark'); ?>">
+                        <i class="bi bi-<?php echo $isVideo ? 'play-circle' : ($isPdf ? 'file-earmark-pdf' : 'headphones'); ?> me-1"></i><?php echo ucfirst($sermon['sermon_type']); ?>
                       </span>
                     </div>
                   <?php endif; ?>
@@ -281,7 +291,11 @@ function sermonFormatDate($date, $format = 'F j, Y') {
                       <?php endif; ?>
                     </div>
 
-                    <?php if ($spotifyEmbed): ?>
+                    <?php if ($isPdf && $pdfUrl): ?>
+                      <a href="<?php echo htmlspecialchars($pdfUrl); ?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-3">
+                        <i class="bi bi-file-earmark-pdf me-2"></i>View / Download PDF
+                      </a>
+                    <?php elseif ($spotifyEmbed): ?>
                       <div class="sermon-spotify-embed mt-3">
                         <iframe src="<?php echo htmlspecialchars($spotifyEmbed); ?>" width="100%" height="<?php echo ($spotifyType === 'episode' || $spotifyType === 'track') ? '152' : '352'; ?>" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                       </div>
@@ -398,6 +412,49 @@ function sermonFormatDate($date, $format = 'F j, Y') {
                   <?php else: ?>
                     <p class="small mt-2 mb-0" style="opacity:0.6;">Audio file not available. <a href="contacts.html" class="text-light">Contact us</a> for access.</p>
                   <?php endif; ?>
+                </div>
+              </div>
+              <?php $delay += 50; endforeach; ?>
+            </div>
+          </div>
+          <?php endif; ?>
+
+          <!-- PDF Sermons Only -->
+          <?php if (!empty($pdfSermons)): ?>
+          <div class="tab-pane fade" id="pdf-sermons" role="tabpanel">
+            <div class="row g-4">
+              <?php $delay = 150; foreach ($pdfSermons as $sermon):
+                $dateStr = sermonFormatDate($sermon['sermon_date'] ?? '');
+                $pdfUrl = $sermon['pdf_url'] ?? '';
+              ?>
+              <div class="col-lg-6 col-xl-4" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
+                <div class="card sermon-card h-100 shadow-sm">
+                  <div style="position:relative; background: linear-gradient(135deg, #1a1a2e, #16213e); height: 180px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                    <i class="bi bi-file-earmark-pdf" style="font-size: 4rem; color: rgba(255,255,255,0.3);"></i>
+                    <span class="sermon-type-badge badge bg-info"><i class="bi bi-file-earmark-pdf me-1"></i>PDF</span>
+                  </div>
+                  <div class="card-body">
+                    <h5 class="sermon-title"><?php echo htmlspecialchars($sermon['title']); ?></h5>
+                    <?php if (!empty($sermon['description'])): ?>
+                      <p class="sermon-desc"><?php echo htmlspecialchars(mb_strimwidth($sermon['description'], 0, 120, '...')); ?></p>
+                    <?php endif; ?>
+                    <div class="sermon-meta d-flex flex-wrap gap-2 mt-2">
+                      <?php if (!empty($sermon['speaker'])): ?>
+                        <span><i class="bi bi-person"></i> <?php echo htmlspecialchars($sermon['speaker']); ?></span>
+                      <?php endif; ?>
+                      <?php if ($dateStr): ?>
+                        <span><i class="bi bi-calendar3"></i> <?php echo htmlspecialchars($dateStr); ?></span>
+                      <?php endif; ?>
+                      <?php if (!empty($sermon['category'])): ?>
+                        <span class="badge bg-light text-dark sermon-category-badge"><?php echo htmlspecialchars($sermon['category']); ?></span>
+                      <?php endif; ?>
+                    </div>
+                    <?php if ($pdfUrl): ?>
+                      <a href="<?php echo htmlspecialchars($pdfUrl); ?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-3">
+                        <i class="bi bi-file-earmark-pdf me-2"></i>View / Download PDF
+                      </a>
+                    <?php endif; ?>
+                  </div>
                 </div>
               </div>
               <?php $delay += 50; endforeach; ?>

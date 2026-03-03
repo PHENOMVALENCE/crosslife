@@ -5,6 +5,20 @@
 require_once __DIR__ . '/../admin/config/config.php';
 require_once __DIR__ . '/../includes/discipleship-functions.php';
 
+$googleEnabled = !empty(GOOGLE_CLIENT_ID) && !empty(GOOGLE_CLIENT_SECRET);
+$googleAuthUrl = '';
+if ($googleEnabled) {
+    $redirectUri = rtrim(SITE_URL, '/') . '/student/google-callback.php';
+    $googleAuthUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query([
+        'scope' => 'email profile',
+        'redirect_uri' => $redirectUri,
+        'response_type' => 'code',
+        'client_id' => GOOGLE_CLIENT_ID,
+        'access_type' => 'online',
+        'prompt' => 'select_account'
+    ]);
+}
+
 if (isStudentLoggedIn()) {
     header('Location: dashboard.php');
     exit;
@@ -21,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $db->prepare("SELECT id, email, password_hash, full_name, status FROM discipleship_students WHERE email = ?");
         $stmt->execute([$email]);
         $student = $stmt->fetch();
-        if ($student && password_verify($password, $student['password_hash'])) {
+        if ($student && ($student['password_hash'] ? password_verify($password, $student['password_hash']) : false)) {
             if ($student['status'] === 'active') {
                 $_SESSION['student_id'] = (int) $student['id'];
                 $_SESSION['student_last_activity'] = time();
@@ -30,6 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
             $error = 'Your account has been deactivated.';
+        } elseif ($student && $student['status'] === 'pending') {
+            $error = 'Your account is pending approval. An admin will review your registration and notify you when you can log in.';
         } else {
             $error = 'Invalid email or password.';
         }
@@ -46,54 +62,83 @@ $siteName = SITE_NAME;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Login - School of Christ Academy - <?php echo htmlspecialchars($siteName); ?></title>
     <link href="../assets/img/logo.png" rel="icon">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="../assets/css/main.css" rel="stylesheet">
     <style>
-        body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1a1715 0%, #000 100%); font-family: var(--default-font); }
-        .login-box { max-width: 420px; width: 100%; background: var(--surface-color); border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.3); overflow: hidden; margin: 20px; }
-        .login-head { background: linear-gradient(135deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color), black 20%) 100%); padding: 2rem; text-align: center; color: var(--contrast-color); }
-        .login-head img { width: 70px; height: 70px; border-radius: 10px; margin-bottom: 0.75rem; }
-        .login-head h1 { font-size: 1.5rem; margin: 0; }
-        .login-head p { margin: 0.25rem 0 0; opacity: 0.9; font-size: 0.95rem; }
-        .login-body { padding: 2rem; }
-        .form-control { padding: 0.75rem 1rem; border-radius: 8px; }
-        .btn-login { width: 100%; padding: 0.75rem; background: var(--accent-color); color: var(--contrast-color); border: none; border-radius: 8px; font-weight: 600; }
-        .btn-login:hover { background: color-mix(in srgb, var(--accent-color), black 10%); color: var(--contrast-color); }
-        .back-link { text-align: center; margin-top: 1.25rem; }
-        .back-link a { color: var(--accent-color); }
+        :root { --brand: #c85716; --brand-dark: #a34612; --bg-dark: #0f0f0f; }
+        * { box-sizing: border-box; }
+        body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg-dark); font-family: 'DM Sans', 'Inter', sans-serif; padding: 20px; }
+        .auth-wrapper { max-width: 440px; width: 100%; }
+        .auth-card { background: #1a1a1a; border-radius: 20px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.06); }
+        .auth-header { padding: 2.5rem 2rem; text-align: center; background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); }
+        .auth-header img { width: 72px; height: 72px; border-radius: 16px; margin-bottom: 1rem; box-shadow: 0 4px 14px rgba(0,0,0,0.2); }
+        .auth-header h1 { font-size: 1.5rem; font-weight: 700; color: #fff; margin: 0; letter-spacing: -0.02em; }
+        .auth-header p { margin: 0.35rem 0 0; color: rgba(255,255,255,0.9); font-size: 0.95rem; }
+        .auth-body { padding: 2rem; }
+        .form-label { font-weight: 500; color: #e5e5e5; margin-bottom: 0.4rem; }
+        .form-control { background: #262626; border: 1px solid #404040; color: #fff; padding: 0.75rem 1rem; border-radius: 10px; }
+        .form-control:focus { background: #2d2d2d; border-color: var(--brand); color: #fff; box-shadow: 0 0 0 3px rgba(200,87,22,0.2); }
+        .form-control::placeholder { color: #737373; }
+        .btn-email { width: 100%; padding: 0.85rem; background: var(--brand); color: #fff; border: none; border-radius: 10px; font-weight: 600; font-size: 1rem; transition: all 0.2s; }
+        .btn-email:hover { background: var(--brand-dark); color: #fff; transform: translateY(-1px); }
+        .divider { display: flex; align-items: center; margin: 1.5rem 0; color: #737373; font-size: 0.85rem; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #404040; }
+        .divider span { padding: 0 1rem; }
+        .btn-google { width: 100%; padding: 0.75rem 1rem; background: #262626; color: #e5e5e5; border: 1px solid #404040; border-radius: 10px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 0.75rem; transition: all 0.2s; }
+        .btn-google:hover { background: #333; color: #fff; border-color: #525252; }
+        .btn-google img { width: 20px; height: 20px; }
+        .auth-footer { text-align: center; margin-top: 1.5rem; }
+        .auth-footer a { color: var(--brand); text-decoration: none; font-weight: 500; }
+        .auth-footer a:hover { color: var(--brand-dark); text-decoration: underline; }
+        .back-link { margin-top: 1rem; }
+        .back-link a { color: #737373; font-size: 0.9rem; text-decoration: none; }
+        .back-link a:hover { color: #a3a3a3; }
+        .alert { border-radius: 10px; font-size: 0.9rem; }
     </style>
 </head>
 <body>
-    <div class="login-box">
-        <div class="login-head">
-            <img src="../assets/img/logo.png" alt="CrossLife">
-            <h1>School of Christ Academy</h1>
-            <p>Student Portal</p>
-        </div>
-        <div class="login-body">
-            <?php if ($error): ?>
-                <div class="alert alert-danger py-2"><i class="bi bi-exclamation-triangle me-2"></i><?php echo htmlspecialchars($error); ?></div>
-            <?php endif; ?>
-            <?php if ($flash): ?>
-                <div class="alert alert-<?php echo $flash['type'] === 'success' ? 'success' : 'danger'; ?> py-2"><?php echo htmlspecialchars($flash['message']); ?></div>
-            <?php endif; ?>
-            <form method="POST">
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" required autofocus value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-header">
+                <img src="../assets/img/logo.png" alt="CrossLife">
+                <h1>School of Christ Academy</h1>
+                <p>Sign in to your student portal</p>
+            </div>
+            <div class="auth-body">
+                <?php if ($error): ?>
+                    <div class="alert alert-danger py-3"><i class="bi bi-exclamation-triangle me-2"></i><?php echo htmlspecialchars($error); ?></div>
+                <?php endif; ?>
+                <?php if ($flash): ?>
+                    <div class="alert alert-<?php echo $flash['type'] === 'success' ? 'success' : ($flash['type'] === 'warning' ? 'warning' : 'danger'); ?> py-3"><?php echo htmlspecialchars($flash['message']); ?></div>
+                <?php endif; ?>
+
+                <?php if ($googleEnabled): ?>
+                <a href="<?php echo htmlspecialchars($googleAuthUrl); ?>" class="btn btn-google mb-3">
+                    <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                    Continue with Google
+                </a>
+                <div class="divider"><span>or sign in with email</span></div>
+                <?php endif; ?>
+
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required autofocus value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" placeholder="you@example.com">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required placeholder="••••••••">
+                        <div class="form-text mt-1"><a href="forgot-password.php" class="text-muted" style="text-decoration:none;">Forgot password?</a></div>
+                    </div>
+                    <button type="submit" class="btn btn-email"><i class="bi bi-box-arrow-in-right me-2"></i>Sign in</button>
+                </form>
+
+                <p class="text-center text-muted small mt-4 mb-0">Don't have an account? <a href="register.php">Create one</a></p>
+                <div class="back-link text-center">
+                    <a href="../index.html"><i class="bi bi-arrow-left me-1"></i>Back to site</a>
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                    <div class="form-text"><a href="forgot-password.php">Forgot password?</a></div>
-                </div>
-                <button type="submit" class="btn btn-login"><i class="bi bi-box-arrow-in-right me-2"></i>Login</button>
-            </form>
-            <p class="text-center text-muted small mt-3 mb-0">Don't have an account? <a href="register.php">Register</a></p>
-            <div class="back-link">
-                <a href="../index.html"><i class="bi bi-arrow-left me-1"></i>Back to site</a>
             </div>
         </div>
     </div>

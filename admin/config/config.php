@@ -45,6 +45,20 @@ if (!defined('STUDENT_LOGIN_URL')) {
     define('STUDENT_LOGIN_URL', (defined('SITE_URL') ? SITE_URL : '') . '/student/login.php');
 }
 
+// Google OAuth (for student sign-in)
+// Create credentials at: https://console.cloud.google.com/apis/credentials
+// Add redirect URI: SITE_URL/student/google-callback.php
+// Optionally create config-google.php (gitignored) or set env vars GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+$googleConfigFile = __DIR__ . '/config-google.php';
+if (file_exists($googleConfigFile)) {
+    require_once $googleConfigFile;
+}
+if (!defined('GOOGLE_CLIENT_ID')) {
+    define('GOOGLE_CLIENT_ID', getenv('GOOGLE_CLIENT_ID') ?: '');
+}
+if (!defined('GOOGLE_CLIENT_SECRET')) {
+    define('GOOGLE_CLIENT_SECRET', getenv('GOOGLE_CLIENT_SECRET') ?: '');
+}
 
 // Security
 define('SESSION_TIMEOUT', 3600); // 1 hour in seconds

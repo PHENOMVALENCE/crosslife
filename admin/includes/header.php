@@ -9,6 +9,14 @@ if (empty($skipRequireLogin)) {
 
 $currentAdmin = getCurrentAdmin();
 $currentPage = basename($_SERVER['PHP_SELF']);
+$pendingStudentsCount = 0;
+if (function_exists('canAccessDiscipleship') && canAccessDiscipleship()) {
+    try {
+        $db = getDB();
+        $stmt = $db->query("SELECT COUNT(*) FROM discipleship_students WHERE status = 'pending'");
+        $pendingStudentsCount = (int) $stmt->fetchColumn();
+    } catch (Exception $e) {}
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -140,6 +148,12 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             margin: 0;
             color: var(--contrast-color);
         }
+        .sidebar-header .badge-new {
+            display: inline-block;
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+        }
         
         .sidebar-menu {
             padding: 1rem 0;
@@ -167,9 +181,14 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             font-weight: 600;
         }
         
+        .menu-item {
+            display: flex;
+            align-items: center;
+        }
         .menu-item i {
             width: 24px;
             margin-right: 0.75rem;
+            flex-shrink: 0;
         }
         
         .menu-section {
@@ -492,8 +511,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <i class="bi bi-x-lg"></i>
             </button>
             <div class="sidebar-header">
-                <img src="../assets/img/logo.png" alt="CrossLife">
+                <a href="index.php" class="d-inline-block">
+                    <img src="../assets/img/logo.png" alt="CrossLife">
+                </a>
                 <h3>Cross Admin</h3>
+                <a href="<?php echo defined('SITE_URL') ? SITE_URL : '../'; ?>" target="_blank" class="text-white-50 small" style="text-decoration:none;">
+                    <i class="bi bi-box-arrow-up-right me-1"></i>View site
+                </a>
             </div>
             
             <nav class="sidebar-menu">
@@ -525,6 +549,9 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </a>
                 <a href="users.php?view=students" class="menu-item <?php echo $currentPage === 'users.php' && (isset($_GET['view']) && $_GET['view'] === 'students') ? 'active' : ''; ?>">
                     <i class="bi bi-person-video3"></i>Students
+                    <?php if ($pendingStudentsCount > 0): ?>
+                    <span class="badge bg-warning text-dark ms-auto" title="<?php echo $pendingStudentsCount; ?> pending approval"><?php echo $pendingStudentsCount; ?></span>
+                    <?php endif; ?>
                 </a>
                 <?php endif; ?>
 
