@@ -40,6 +40,7 @@ $breadcrumb = $breadcrumb ?? [];
         <div class="mt-auto p-2 border-top border-secondary">
             <a class="nav-link text-secondary" href="../discipleship.html"><i class="bi bi-info-circle"></i> About Discipleship</a>
             <a class="nav-link text-secondary" href="../index.html"><i class="bi bi-box-arrow-left"></i> Back to site</a>
+            <a class="nav-link text-secondary" href="logout.php"><i class="bi bi-box-arrow-right"></i> Logout</a>
         </div>
     </aside>
     <div class="elms-main-wrap">
