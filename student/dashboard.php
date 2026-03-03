@@ -35,13 +35,17 @@ require_once __DIR__ . '/includes/header.php';
                     $passed = (int) ($e['modules_passed'] ?? 0);
                     $pct = $total > 0 ? min(100, round(($passed / $total) * 100)) : 0;
                     $isCompleted = isset($e['status']) && $e['status'] === 'completed';
+                    $certIssued = !empty($e['certificate_issued']);
                 ?>
                     <div class="col-12 col-md-6 col-lg-4">
                         <a href="<?php echo $isCompleted ? 'certificate.php?enrollment_id=' . (int)$e['id'] : 'program.php?enrollment_id=' . (int)$e['id']; ?>" class="program-card-link card text-decoration-none">
                             <div class="card-body">
                                 <h2 class="h6 card-title mb-2"><?php echo htmlspecialchars($e['program_name']); ?></h2>
-                                <?php if ($isCompleted): ?>
+                                <?php if ($isCompleted && $certIssued): ?>
+                                    <span class="badge bg-success mb-2"><i class="bi bi-award-fill me-1"></i>Certificate Issued</span>
+                                <?php elseif ($isCompleted): ?>
                                     <span class="badge badge-status-completed mb-2">Completed</span>
+                                    <span class="badge bg-warning text-dark mb-2"><i class="bi bi-clock me-1"></i>Certificate Pending</span>
                                 <?php elseif ($total > 0): ?>
                                     <div class="elms-progress-label mb-1"><?php echo $passed; ?> / <?php echo $total; ?> modules</div>
                                     <div class="elms-progress-bar mb-2">
@@ -49,7 +53,13 @@ require_once __DIR__ . '/includes/header.php';
                                     </div>
                                 <?php endif; ?>
                                 <p class="card-text small text-muted mb-3"><?php echo htmlspecialchars(mb_substr(strip_tags($e['description'] ?? ''), 0, 100)); ?><?php echo mb_strlen($e['description'] ?? '') > 100 ? '…' : ''; ?></p>
-                                <span class="btn btn-elms-accent btn-sm"><?php echo $isCompleted ? 'View certificate' : 'Continue'; ?> <i class="bi bi-arrow-right ms-1"></i></span>
+                                <?php if ($isCompleted && $certIssued): ?>
+                                    <span class="btn btn-elms-accent btn-sm"><i class="bi bi-award me-1"></i>View Certificate <i class="bi bi-arrow-right ms-1"></i></span>
+                                <?php elseif ($isCompleted): ?>
+                                    <span class="btn btn-outline-elms btn-sm"><i class="bi bi-hourglass-split me-1"></i>View Status <i class="bi bi-arrow-right ms-1"></i></span>
+                                <?php else: ?>
+                                    <span class="btn btn-elms-accent btn-sm">Continue <i class="bi bi-arrow-right ms-1"></i></span>
+                                <?php endif; ?>
                             </div>
                         </a>
                     </div>

@@ -311,6 +311,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$qid, $option_text, $is_correct, $feedback_text, $display_order]);
             redirect('discipleship.php?action=questions&module_id=' . ($modId ?: ''), 'Option added.');
         }
+
+        // ---- Certificate: issue
+        if (isset($_POST['issue_certificate']) && !empty($_POST['enrollment_id'])) {
+            $eid = (int) $_POST['enrollment_id'];
+            $admin = getCurrentAdmin();
+            // verify enrollment is completed
+            $stmt = $db->prepare("SELECT e.*, p.program_name FROM discipleship_enrollments e JOIN discipleship_programs p ON p.id = e.program_id WHERE e.id = ? AND e.status = 'completed'");
+            $stmt->execute([$eid]);
+            $enrollment = $stmt->fetch();
+            if (!$enrollment) {
+                redirect('discipleship.php?action=certificates', 'Enrollment not found or not completed.', 'danger');
+            }
+            if ($enrollment['certificate_issued']) {
+                redirect('discipleship.php?action=certificates', 'Certificate already issued.', 'warning');
+            }
+            // Generate unique certificate number: CLMN-YYYY-PROGID-ENRID
+            $certNumber = 'CLMN-' . date('Y') . '-' . str_pad($enrollment['program_id'], 3, '0', STR_PAD_LEFT) . '-' . str_pad($eid, 5, '0', STR_PAD_LEFT);
+            $remarks = sanitize($_POST['certificate_remarks'] ?? '');
+            $stmt = $db->prepare("UPDATE discipleship_enrollments SET certificate_issued = 1, certificate_issued_at = NOW(), certificate_issued_by = ?, certificate_number = ?, certificate_remarks = ? WHERE id = ?");
+            $stmt->execute([$admin['id'], $certNumber, $remarks ?: null, $eid]);
+            redirect('discipleship.php?action=certificates', 'Certificate issued successfully. Certificate #' . $certNumber, 'success');
+        }
+
+        // ---- Certificate: revoke
+        if (isset($_POST['revoke_certificate']) && !empty($_POST['enrollment_id'])) {
+            $eid = (int) $_POST['enrollment_id'];
+            $stmt = $db->prepare("UPDATE discipleship_enrollments SET certificate_issued = 0, certificate_issued_at = NULL, certificate_issued_by = NULL, certificate_number = NULL, certificate_remarks = NULL WHERE id = ?");
+            $stmt->execute([$eid]);
+            redirect('discipleship.php?action=certificates', $stmt->rowCount() > 0 ? 'Certificate revoked.' : 'No changes made.', $stmt->rowCount() > 0 ? 'success' : 'info');
+        }
     } catch (PDOException $e) {
         redirect('discipleship.php', handleDBError($e, 'A database error occurred.'), 'danger');
     } catch (Exception $e) {
@@ -326,6 +356,8 @@ require_once __DIR__ . '/includes/header.php';
 $discBreadcrumb = [['Discipleship', 'discipleship.php']];
 if ($action === 'list' || $action === '') {
     $discBreadcrumb[] = ['Programs', ''];
+} elseif ($action === 'certificates') {
+    $discBreadcrumb[] = ['Certificates', ''];
 } elseif ($action === 'add' || $action === 'edit') {
     $discBreadcrumb[] = [$id ? 'Edit program' : 'Add program', ''];
 } elseif ($action === 'modules' && $currentProgram) {
@@ -1003,6 +1035,205 @@ if ($action === 'add' || $action === 'edit') {
         </div>
     </div>
     <?php
+} elseif ($action === 'certificates') {
+    // ---- Certificates management: view completed enrollments, issue/revoke certificates ----
+    $filterProgram = isset($_GET['program_id']) ? (int) $_GET['program_id'] : 0;
+    $filterStatus = isset($_GET['cert_status']) ? $_GET['cert_status'] : 'all'; // all, issued, pending
+    
+    $sql = "SELECT e.*, p.program_name, s.full_name AS student_name, s.email AS student_email,
+                   a.full_name AS issued_by_name
+            FROM discipleship_enrollments e
+            JOIN discipleship_programs p ON p.id = e.program_id
+            JOIN discipleship_students s ON s.id = e.student_id
+            LEFT JOIN admins a ON a.id = e.certificate_issued_by
+            WHERE e.status = 'completed'";
+    $params = [];
+    if ($filterProgram) {
+        $sql .= " AND e.program_id = ?";
+        $params[] = $filterProgram;
+    }
+    if ($filterStatus === 'issued') {
+        $sql .= " AND e.certificate_issued = 1";
+    } elseif ($filterStatus === 'pending') {
+        $sql .= " AND e.certificate_issued = 0";
+    }
+    $sql .= " ORDER BY e.completed_at DESC";
+    $stmt = $db->prepare($sql);
+    $stmt->execute($params);
+    $completedEnrollments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Get programs for filter
+    $allPrograms = $db->query("SELECT id, program_name FROM discipleship_programs ORDER BY program_name")->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Counts
+    $totalCompleted = count($completedEnrollments);
+    $totalIssued = 0;
+    $totalPending = 0;
+    foreach ($completedEnrollments as $ce) {
+        if ($ce['certificate_issued']) $totalIssued++;
+        else $totalPending++;
+    }
+    ?>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="discipleship.php" class="btn btn-outline-secondary btn-sm mb-2"><i class="bi bi-arrow-left me-1"></i>Programs</a>
+            <h2 class="mb-0"><i class="bi bi-award me-2"></i>Certificate Management</h2>
+            <p class="text-muted small mb-0 mt-1">Review completed enrollments and issue certificates to qualifying students.</p>
+        </div>
+    </div>
+
+    <!-- Stats cards -->
+    <div class="row mb-4 g-3">
+        <div class="col-md-4">
+            <div class="card border-0 bg-light">
+                <div class="card-body text-center py-3">
+                    <div class="h3 mb-0 text-primary"><?php echo $totalCompleted; ?></div>
+                    <small class="text-muted">Completed Programs</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 bg-light">
+                <div class="card-body text-center py-3">
+                    <div class="h3 mb-0 text-success"><?php echo $totalIssued; ?></div>
+                    <small class="text-muted">Certificates Issued</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 bg-light">
+                <div class="card-body text-center py-3">
+                    <div class="h3 mb-0 text-warning"><?php echo $totalPending; ?></div>
+                    <small class="text-muted">Pending Issuance</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body py-2">
+            <form method="GET" class="row g-2 align-items-end">
+                <input type="hidden" name="action" value="certificates">
+                <div class="col-md-4">
+                    <label class="form-label small mb-0">Program</label>
+                    <select class="form-select form-select-sm" name="program_id">
+                        <option value="0">All Programs</option>
+                        <?php foreach ($allPrograms as $ap): ?>
+                            <option value="<?php echo (int) $ap['id']; ?>" <?php echo $filterProgram == $ap['id'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($ap['program_name']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small mb-0">Certificate Status</label>
+                    <select class="form-select form-select-sm" name="cert_status">
+                        <option value="all" <?php echo $filterStatus === 'all' ? 'selected' : ''; ?>>All</option>
+                        <option value="pending" <?php echo $filterStatus === 'pending' ? 'selected' : ''; ?>>Pending issuance</option>
+                        <option value="issued" <?php echo $filterStatus === 'issued' ? 'selected' : ''; ?>>Issued</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-sm btn-outline-primary w-100"><i class="bi bi-funnel me-1"></i>Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Enrollments table -->
+    <div class="card">
+        <div class="card-body">
+            <?php if (empty($completedEnrollments)): ?>
+                <div class="alert alert-info mb-0">No completed enrollments found matching your filters.</div>
+            <?php else: ?>
+                <div class="table-responsive">
+                    <table class="table table-hover datatable">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Program</th>
+                                <th>Completed</th>
+                                <th>Certificate</th>
+                                <th>Certificate #</th>
+                                <th>Issued By</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($completedEnrollments as $ce): ?>
+                            <tr>
+                                <td>
+                                    <strong><?php echo htmlspecialchars($ce['student_name']); ?></strong>
+                                    <br><small class="text-muted"><?php echo htmlspecialchars($ce['student_email']); ?></small>
+                                </td>
+                                <td><?php echo htmlspecialchars($ce['program_name']); ?></td>
+                                <td><?php echo $ce['completed_at'] ? date('M j, Y', strtotime($ce['completed_at'])) : '—'; ?></td>
+                                <td>
+                                    <?php if ($ce['certificate_issued']): ?>
+                                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Issued</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-warning text-dark"><i class="bi bi-clock me-1"></i>Pending</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?php echo $ce['certificate_number'] ? htmlspecialchars($ce['certificate_number']) : '—'; ?></td>
+                                <td><?php echo $ce['issued_by_name'] ? htmlspecialchars($ce['issued_by_name']) : '—'; ?></td>
+                                <td>
+                                    <?php if (!$ce['certificate_issued']): ?>
+                                        <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#issueCertModal<?php echo (int)$ce['id']; ?>">
+                                            <i class="bi bi-award me-1"></i>Issue
+                                        </button>
+                                    <?php else: ?>
+                                        <form method="POST" class="d-inline" onsubmit="return confirm('Revoke this certificate? The student will no longer be able to view or download it.');">
+                                            <input type="hidden" name="enrollment_id" value="<?php echo (int) $ce['id']; ?>">
+                                            <button type="submit" name="revoke_certificate" class="btn btn-sm btn-outline-danger"><i class="bi bi-x-circle me-1"></i>Revoke</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+
+                            <!-- Issue Certificate Modal -->
+                            <?php if (!$ce['certificate_issued']): ?>
+                            <div class="modal fade" id="issueCertModal<?php echo (int)$ce['id']; ?>" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form method="POST">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title"><i class="bi bi-award me-2"></i>Issue Certificate</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" name="enrollment_id" value="<?php echo (int) $ce['id']; ?>">
+                                                <div class="mb-3">
+                                                    <p class="mb-1"><strong>Student:</strong> <?php echo htmlspecialchars($ce['student_name']); ?></p>
+                                                    <p class="mb-1"><strong>Program:</strong> <?php echo htmlspecialchars($ce['program_name']); ?></p>
+                                                    <p class="mb-0"><strong>Completed:</strong> <?php echo $ce['completed_at'] ? date('F j, Y', strtotime($ce['completed_at'])) : 'N/A'; ?></p>
+                                                </div>
+                                                <hr>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Remarks (optional)</label>
+                                                    <textarea class="form-control" name="certificate_remarks" rows="3" placeholder="Any notes or comments about this certification..."></textarea>
+                                                </div>
+                                                <div class="alert alert-info small mb-0">
+                                                    <i class="bi bi-info-circle me-1"></i>
+                                                    A unique certificate number will be generated automatically. The student will be able to view and download the certificate once issued.
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" name="issue_certificate" class="btn btn-success"><i class="bi bi-award me-2"></i>Issue Certificate</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php
 } else {
     // List programs (default)
     $stmt = $db->query("SELECT * FROM discipleship_programs ORDER BY display_order ASC, program_name ASC");
@@ -1010,7 +1241,10 @@ if ($action === 'add' || $action === 'edit') {
     ?>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Discipleship Programs</h2>
-        <a href="discipleship.php?action=add" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Add New Program</a>
+        <div class="d-flex gap-2">
+            <a href="discipleship.php?action=certificates" class="btn btn-outline-success"><i class="bi bi-award me-2"></i>Certificates</a>
+            <a href="discipleship.php?action=add" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Add New Program</a>
+        </div>
     </div>
     <div class="card">
         <div class="card-body">
