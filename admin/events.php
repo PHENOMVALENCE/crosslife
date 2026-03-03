@@ -2,6 +2,7 @@
 $pageTitle = 'Events Management';
 require_once 'config/config.php';
 requireLogin();
+requireRole(['super_admin', 'admin', 'editor']);
 
 $db = getDB();
 $action = $_GET['action'] ?? 'list';

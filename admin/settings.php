@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/config/config.php';
 requireLogin();
+requireRole(['super_admin', 'admin']);
 $db = getDB();
 
 // ----- Admin Account Management: POST handlers (must run before any output) -----
@@ -19,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (strlen($password) < PASSWORD_MIN_LENGTH) {
             redirect('settings.php', 'Password must be at least ' . PASSWORD_MIN_LENGTH . ' characters.', 'danger');
         }
-        $allowed_roles = ['super_admin', 'admin', 'editor'];
+        $allowed_roles = ['super_admin', 'admin', 'editor', 'discipleship_admin'];
         if (!in_array($role, $allowed_roles, true)) {
             $role = 'admin';
         }
@@ -45,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($id < 1 || empty($full_name) || empty($email)) {
             redirect('settings.php', 'Invalid data.', 'danger');
         }
-        $allowed_roles = ['super_admin', 'admin', 'editor'];
+        $allowed_roles = ['super_admin', 'admin', 'editor', 'discipleship_admin'];
         $allowed_status = ['active', 'inactive'];
         if (!in_array($role, $allowed_roles, true)) $role = 'admin';
         if (!in_array($status, $allowed_status, true)) $status = 'active';
@@ -252,6 +253,7 @@ require_once __DIR__ . '/includes/header.php';
                         <select class="form-select" name="role">
                             <option value="admin">Admin</option>
                             <option value="editor">Editor</option>
+                            <option value="discipleship_admin">Discipleship Admin</option>
                             <option value="super_admin">Super Admin</option>
                         </select>
                     </div>
@@ -294,6 +296,7 @@ require_once __DIR__ . '/includes/header.php';
                         <select class="form-select" name="role" id="edit_role">
                             <option value="admin">Admin</option>
                             <option value="editor">Editor</option>
+                            <option value="discipleship_admin">Discipleship Admin</option>
                             <option value="super_admin">Super Admin</option>
                         </select>
                     </div>

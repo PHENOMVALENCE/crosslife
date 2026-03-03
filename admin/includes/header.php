@@ -502,6 +502,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <i class="bi bi-speedometer2"></i>Dashboard
                 </a>
 
+                <?php if (canAccessGeneral()): ?>
                 <div class="menu-section">Content</div>
                 <a href="sermons.php" class="menu-item <?php echo $currentPage === 'sermons.php' ? 'active' : ''; ?>">
                     <i class="bi bi-play-circle"></i>Sermons
@@ -515,12 +516,19 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <a href="leadership.php" class="menu-item <?php echo $currentPage === 'leadership.php' ? 'active' : ''; ?>">
                     <i class="bi bi-people"></i>Leadership
                 </a>
+                <?php endif; ?>
 
+                <?php if (canAccessDiscipleship()): ?>
                 <div class="menu-section">Discipleship</div>
                 <a href="discipleship.php" class="menu-item <?php echo $currentPage === 'discipleship.php' ? 'active' : ''; ?>">
-                    <i class="bi bi-mortarboard"></i>Discipleship
+                    <i class="bi bi-mortarboard"></i>Programs & Modules
                 </a>
+                <a href="users.php?view=students" class="menu-item <?php echo $currentPage === 'users.php' && (isset($_GET['view']) && $_GET['view'] === 'students') ? 'active' : ''; ?>">
+                    <i class="bi bi-person-video3"></i>Students
+                </a>
+                <?php endif; ?>
 
+                <?php if (canAccessGeneral()): ?>
                 <div class="menu-section">Communications</div>
                 <a href="contacts.php" class="menu-item <?php echo $currentPage === 'contacts.php' ? 'active' : ''; ?>">
                     <i class="bi bi-envelope"></i>Contact Inquiries
@@ -534,14 +542,19 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <a href="newsletter.php" class="menu-item <?php echo $currentPage === 'newsletter.php' ? 'active' : ''; ?>">
                     <i class="bi bi-envelope-paper-heart"></i>Newsletter
                 </a>
+                <?php endif; ?>
 
                 <div class="menu-section">System</div>
-                <a href="users.php" class="menu-item <?php echo $currentPage === 'users.php' ? 'active' : ''; ?>">
+                <?php if (canAccessGeneral()): ?>
+                <a href="users.php" class="menu-item <?php echo $currentPage === 'users.php' && (!isset($_GET['view']) || $_GET['view'] !== 'students') ? 'active' : ''; ?>">
                     <i class="bi bi-people-fill"></i>Users & Students
                 </a>
+                <?php endif; ?>
+                <?php if (isSuperAdmin()): ?>
                 <a href="settings.php" class="menu-item <?php echo $currentPage === 'settings.php' ? 'active' : ''; ?>">
                     <i class="bi bi-gear"></i>Settings
                 </a>
+                <?php endif; ?>
                 <a href="logout.php" class="menu-item">
                     <i class="bi bi-box-arrow-right"></i>Logout
                 </a>

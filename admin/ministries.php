@@ -5,6 +5,7 @@
  */
 require_once __DIR__ . '/config/config.php';
 requireLogin();
+requireRole(['super_admin', 'admin', 'editor']);
 
 $pageTitle = 'Ministries Management';
 $db = getDB();

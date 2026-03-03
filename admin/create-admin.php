@@ -104,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <select class="form-control" name="role" required>
                     <option value="admin">Admin</option>
                     <option value="editor">Editor</option>
+                    <option value="discipleship_admin">Discipleship Admin</option>
                     <option value="super_admin">Super Admin</option>
                 </select>
             </div>

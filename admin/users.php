@@ -6,8 +6,9 @@
  */
 require_once __DIR__ . '/config/config.php';
 requireLogin();
+requireRole(['super_admin', 'admin', 'discipleship_admin']);
 
-$pageTitle = 'Users & Students';
+$pageTitle = isDiscipleshipAdmin() ? 'Students' : 'Users & Students';
 
 require_once __DIR__ . '/../includes/discipleship-functions.php';
 
@@ -124,8 +125,10 @@ $students = [];
 $studentProgress = []; // student_id => ['enrollments' => n, 'passed' => n]
 
 try {
-    $stmt = $db->query("SELECT id, username, email, full_name, role, status, last_login, created_at FROM admins ORDER BY full_name ASC");
-    $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (!isDiscipleshipAdmin()) {
+        $stmt = $db->query("SELECT id, username, email, full_name, role, status, last_login, created_at FROM admins ORDER BY full_name ASC");
+        $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 } catch (PDOException $e) {}
 
 try {
@@ -149,6 +152,9 @@ foreach ($students as $s) {
 }
 ?>
 
+<?php if (isDiscipleshipAdmin()): ?>
+<!-- Discipleship admin: Students only, no tabs -->
+<?php else: ?>
 <ul class="nav nav-tabs mb-4" id="usersTabs" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link active" id="admins-tab" data-bs-toggle="tab" data-bs-target="#admins-panel" type="button" role="tab">Admins</button>
@@ -157,8 +163,10 @@ foreach ($students as $s) {
         <button class="nav-link" id="students-tab" data-bs-toggle="tab" data-bs-target="#students-panel" type="button" role="tab">Students</button>
     </li>
 </ul>
+<?php endif; ?>
 
 <div class="tab-content" id="usersTabContent">
+    <?php if (!isDiscipleshipAdmin()): ?>
     <div class="tab-pane fade show active" id="admins-panel" role="tabpanel">
         <div class="card">
             <div class="card-header">
@@ -201,8 +209,9 @@ foreach ($students as $s) {
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
-    <div class="tab-pane fade" id="students-panel" role="tabpanel">
+    <div class="tab-pane fade <?php echo isDiscipleshipAdmin() ? 'show active' : ''; ?>" id="students-panel" role="tabpanel">
         <div class="card">
             <div class="card-header">
                 <h5 class="mb-0"><i class="bi bi-mortarboard me-2"></i>Students (Discipleship)</h5>

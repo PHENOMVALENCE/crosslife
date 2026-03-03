@@ -2,6 +2,13 @@
 $pageTitle = 'Dashboard';
 require_once 'config/config.php';
 requireLogin();
+
+// Discipleship admins go straight to their module
+if (isDiscipleshipAdmin()) {
+    header('Location: discipleship.php');
+    exit;
+}
+
 require_once 'includes/header.php';
 
 $db = getDB();

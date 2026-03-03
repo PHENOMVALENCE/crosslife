@@ -33,7 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $updateStmt = $db->prepare("UPDATE admins SET last_login = NOW() WHERE id = ?");
                 $updateStmt->execute([$admin['id']]);
                 
-                header('Location: index.php');
+                // Redirect discipleship_admin to their dedicated area
+                if ($admin['role'] === 'discipleship_admin') {
+                    header('Location: discipleship.php');
+                } else {
+                    header('Location: index.php');
+                }
                 exit;
             } else {
                 $error = 'Your account has been deactivated.';

@@ -145,6 +145,64 @@ function getCurrentAdmin() {
 }
 
 /**
+ * Get the current admin's role from session (fast, no DB query)
+ */
+function getAdminRole() {
+    return $_SESSION['admin_role'] ?? 'admin';
+}
+
+/**
+ * Check if current admin is a super admin
+ */
+function isSuperAdmin() {
+    return getAdminRole() === 'super_admin';
+}
+
+/**
+ * Check if current admin is a discipleship admin (limited to discipleship management)
+ */
+function isDiscipleshipAdmin() {
+    return getAdminRole() === 'discipleship_admin';
+}
+
+/**
+ * Check if admin has access to discipleship features
+ * (super_admin, admin, and discipleship_admin all have access)
+ */
+function canAccessDiscipleship() {
+    return in_array(getAdminRole(), ['super_admin', 'admin', 'discipleship_admin'], true);
+}
+
+/**
+ * Check if admin has access to general (non-discipleship) features
+ * discipleship_admin does NOT have access to general features
+ */
+function canAccessGeneral() {
+    return in_array(getAdminRole(), ['super_admin', 'admin', 'editor'], true);
+}
+
+/**
+ * Require a specific role or array of roles. Redirects with error if not authorized.
+ */
+function requireRole($roles) {
+    if (!is_array($roles)) {
+        $roles = [$roles];
+    }
+    $currentRole = getAdminRole();
+    if (!in_array($currentRole, $roles, true)) {
+        $_SESSION['flash_message'] = 'You do not have permission to access that page.';
+        $_SESSION['flash_type'] = 'danger';
+        // Redirect discipleship admins to discipleship page, others to dashboard
+        if (isDiscipleshipAdmin()) {
+            header('Location: ' . ADMIN_URL . '/discipleship.php');
+        } else {
+            header('Location: ' . ADMIN_URL . '/index.php');
+        }
+        exit;
+    }
+}
+
+/**
  * Sanitize input
  */
 function sanitize($data) {
