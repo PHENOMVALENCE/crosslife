@@ -537,6 +537,9 @@ if (function_exists('canAccessDiscipleship') && canAccessDiscipleship()) {
                 <a href="ministries.php" class="menu-item <?php echo $currentPage === 'ministries.php' ? 'active' : ''; ?>">
                     <i class="bi bi-building"></i>Ministries
                 </a>
+                <a href="gallery-albums.php" class="menu-item <?php echo $currentPage === 'gallery-albums.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-images"></i>Gallery Albums
+                </a>
                 <a href="leadership.php" class="menu-item <?php echo $currentPage === 'leadership.php' ? 'active' : ''; ?>">
                     <i class="bi bi-people"></i>Leadership
                 </a>
