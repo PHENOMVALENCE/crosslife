@@ -9,7 +9,520 @@
     window.location.replace('galley.php');
   </script>
 </head>
-<body>
-  <p>Redirecting to <a href="galley.php">Gallery</a>...</p>
+
+<body class="index-page">
+
+  <header id="header" class="header fixed-top">
+    <div class="container-fluid container-xl position-relative">
+
+      <div class="top-row d-flex align-items-center justify-content-between">
+        <a href="index.html" class="logo d-flex align-items-center">
+          <img src="assets/img/logo.png" alt="CrossLife Mission Network Logo">
+          <h1 class="sitename">CROSSLIFE</h1>
+        </a>
+      </div>
+
+    </div>
+
+    <div class="nav-wrap">
+      <div class="container d-flex justify-content-center position-relative">
+        <nav id="navmenu" class="navmenu">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#statement-of-faith">Statement of Faith</a></li>
+            <li><a href="leadership.php">Leadership</a></li>
+            <li><a href="ministries.php">Ministries</a></li>
+            <li><a href="sermons.php">Sermons</a></li>
+            <li><a href="discipleship.html">Discipleship</a></li>
+            <li><a href="events.php">Events</a></li>
+            <li><a href="contacts.html">Contact</a></li>
+            <li><a href="galley.html" class="active">Gallery</a></li>
+            <li class="nav-social-search">
+              <div class="nav-icons">
+                <button type="button" class="btn-search" data-bs-toggle="modal" data-bs-target="#searchModal" aria-label="Search">
+                  <i class="bi bi-search"></i>
+                </button>
+               <li><a href="https://www.facebook.com/crosslife_tz" class="facebook" target="_blank" rel="noopener noreferrer"><i class="bi bi-facebook"></i></a></li>
+                <li></li><a href="https://www.instagram.com/crosslife_tz" class="instagram" target="_blank" rel="noopener noreferrer"><i class="bi bi-instagram"></i></a></li>
+               <li></li> <a href="https://www.youtube.com/@CrossLifeTV" class="youtube" target="_blank" rel="noopener noreferrer"><i class="bi bi-youtube"></i></a></li>
+               <li></li> <a href="https://www.tiktok.com/@CrossLife" class="tiktok" target="_blank" rel="noopener noreferrer"><i class="bi bi-tiktok"></i></a></li>
+              </div>
+            </li>
+          </ul>
+        </nav>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </div>
+    </div>
+
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section dark-background">
+
+      <div class="slideshow-background">
+        <div class="slideshow-container">
+          <div class="slide active">
+            <img src="assets/img/slideshow/elikana.jpg" alt="CrossLife Mission Network" class="slide-image">
+          </div>
+          <div class="slide">
+            <img src="assets/img/slideshow/elim0ses.jpg" alt="CrossLife Mission Network" class="slide-image">
+          </div>
+          <div class="slide">
+            <img src="assets/img/slideshow/eliza.jpg" alt="CrossLife Mission Network" class="slide-image">
+          </div>
+          <div class="slide">
+            <img src="assets/img/slideshow/elizab.jpg" alt="CrossLife Mission Network" class="slide-image">
+          </div>
+          <div class="slide">
+            <img src="assets/img/slideshow/grace.jpg" alt="CrossLife Mission Network" class="slide-image">
+          </div>
+          <div class="slide">
+            <img src="assets/img/slideshow/biblec.jpg" alt="CrossLife Mission Network" class="slide-image">
+          </div>
+          <div class="slide">
+            <img src="assets/img/slideshow/kenValence.jpg" alt="CrossLife Mission Network" class="slide-image">
+          </div>
+          <div class="slide">
+            <img src="assets/img/slideshow/lenhard.jpg" alt="CrossLife Mission Network" class="slide-image">
+          </div>
+          <div class="slide">
+            <img src="assets/img/slideshow/sou.jpg" alt="CrossLife Mission Network" class="slide-image">
+          </div>
+          <div class="slide">
+            <img src="assets/img/slideshow/uweponi.jpg" alt="CrossLife Mission Network" class="slide-image">
+          </div>
+          <div class="slide">
+            <img src="assets/img/slideshow/_MG_4997.jpg" alt="CrossLife Mission Network" class="slide-image">
+          </div>
+          <div class="slide">
+            <img src="assets/img/slideshow/venelanda.jpg" alt="CrossLife Mission Network" class="slide-image">
+          </div>
+        </div>
+        <div class="slideshow-overlay"></div>
+      </div>
+
+      <div class="hero-content">
+
+        <div class="container position-relative">
+          <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+              <h1 data-aos="fade-up" data-aos-delay="100">CrossLife Service Gallery</h1>
+              <p data-aos="fade-up" data-aos-delay="200">Every photo 📸 tells a story of faith, joy  and transformation a reminder that God is present not only in the message but in every lifted hand 🙌, every prayer 🙏 and every shared smile 😊. This gallery stands as a testimony 🔥 of what happens when hearts gather in His presence celebrating life, community and the living presence of Elohim among us.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section><!-- /Hero Section -->
+  </main>
+
+  <!-- Search Modal -->
+  <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="searchModalLabel">Search</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="globalSearchForm" class="search-form">
+            <div class="input-group input-group-lg">
+              <input type="text" class="form-control" id="globalSearchInput" placeholder="Search sermons, events, ministries, discipleship programs..." autocomplete="off">
+              <button class="btn btn-primary" type="submit">
+                <i class="bi bi-search"></i>
+              </button>
+            </div>
+          </form>
+          <div id="searchResults" class="search-results mt-4" style="display: none;">
+            <h6 class="mb-3">Search Results:</h6>
+            <ul id="searchResultsList" class="list-unstyled">
+              <!-- Search results will be populated here -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<section id="what-we-do" class="what-we-do section">
+      <div class="container section-title" data-aos="fade-up">
+        <span class="subtitle">Rising Sons, Revealing Christ</span>
+        <h2><span style="letter-spacing: 5px;">YEAR OF MELCHIZEDEK ORDER</span> </h2>
+        <p> 2026 is our divinely appointed year to walk as kings and priests, revealing Christ, representing His Kingdom, manifesting spiritual authority, and experiencing supernatural realities as our natural daily life fully. </p>
+      <section>
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row g-4">
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="150">
+            <div class="feature-card activity-card h-100">
+              <img src="assets/img/sonship.png" class="card-img-top" alt="Sermon and Teaching">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <i class="bi bi-book"></i> Sonship Order
+                </h5>
+                <p class="card-text">
+This is a Month which everything is drawn from the Order of Identity (Sonship).
+Romans 8:16-17 TPT
+                </p>
+              </div>
+              <div class="card-footer text-center">
+                <a href="https://photos.app.goo.gl/bQJTRH2rUN8Qs7TZ8" target="_blank" class="btn btn-activity">Download
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="feature-card activity-card h-100">
+              <img src="assets/img/authority.png" class="card-img-top" alt="Worship">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <i class="bi bi-heart"></i>Sovereign Authority.
+                </h5>
+                <p class="card-text">
+                  The LORD has established His throne in Heaven, and His Kingdom rules over all. - Psalms 103:19
+              </div>
+              <div class="card-footer text-center">
+                <a href="https://photos.app.goo.gl/LFkg2KPAg9H9xNDu9" target="_blank" class="btn btn-activity">Download</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="250">
+            <div class="feature-card activity-card h-100">
+              <img src="assets/img/royal.png" class="card-img-top" alt="Fellowship">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <i class="bi bi-people"></i>Royar Pristhood order
+                </h5>
+                <p class="card-text">
+                This is a Month which everything is drawn from A ROYAL PRIESTHOOD ORDER.
+.
+1 Peter 2:9 KJV
+                </p>
+              </div>
+              <div class="card-footer text-center">
+                <a href="https://photos.app.goo.gl/g2KM1eNAeLKPgubUA" target="_blank" class="btn btn-activity">Download</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      </section>
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row g-4">
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="150">
+            <div class="feature-card activity-card h-100">
+              <img src="assets/img/WhatsApp Image 2026-04-15 at 10.33.23 AM.jpeg" class="card-img-top" alt="Sermon and Teaching">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <i class="bi bi-book"></i> Kingdom Servanthood
+                </h5>
+                <p class="card-text">
+           God has mandated us that April is our Month of Kingdom Servanthood. In this Monthis less ofus andmore ofGod, the Kingdom Mandateisour priority. Matthew 6:33 KJV
+                </p>
+              </div>
+              <div class="card-footer text-center">
+                <a href="https://photos.app.goo.gl/21njK8r6UfNzu7yF9" target="_blank" class="btn btn-activity">Download</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="feature-card activity-card h-100">
+              <img src="assets/img/melchezed order.jpeg" class="card-img-top" alt="Worship">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <i class="bi bi-heart"></i> Loading....
+                </h5>
+                <p class="card-text">
+                 Stay Tuned and be connected with Us We loves you Receive life and receive it in abundance Amen
+                </p>
+              </div>
+              <div class="card-footer text-center">
+                <a href="contacts.html" class="btn btn-activity">Download</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="250">
+            <div class="feature-card activity-card h-100">
+              <img src="assets/img/melchezed order.jpeg" class="card-img-top" alt="Fellowship">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <i class="bi bi-people"></i> Loading....
+                </h5>
+                <p class="card-text">
+                  Stay Tuned and be connected with Us We loves you Receive life and receive it in abundance Amen
+              </div>
+              <div class="card-footer text-center">
+                <a href="contacts.html" class="btn btn-activity">Download</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+</section>
+  <footer id="footer" class="footer dark-background">
+
+    <div class="container">
+      <div class="row gy-5">
+
+        <div class="col-lg-4">
+          <div class="footer-content">
+            <a href="index.html" class="logo d-flex align-items-center mb-4">
+              <span class="sitename">CrossLife Mission Network</span>
+            </a>
+            <p class="mb-4">A non-denominational and inter-denominational Christian ministry in Dar es Salaam, Tanzania. We exist to manifest Sons of God who understand their identity in Christ and what Christ can accomplish through them.</p>
+
+            <div class="newsletter-form">
+              <h5>Stay Updated</h5>
+              <form action="forms/newsletter.php" method="post" class="php-email-form">
+                <div class="input-group">
+                  <input type="email" name="email" class="form-control" placeholder="Enter your email" required="">
+                  <button type="submit" class="btn-subscribe">
+                    <i class="bi bi-send"></i>
+                  </button>
+                </div>
+                <div class="loading">Loading</div>
+                <div class="error-message"></div>
+                <div class="sent-message">Thank you for subscribing!</div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-6">
+          <div class="footer-links">
+            <h4>Ministry</h4>
+            <ul>
+              <li><a href="#about"><i class="bi bi-chevron-right"></i> About Us</a></li>
+              <li><a href="#statement-of-faith"><i class="bi bi-chevron-right"></i> Statement of Faith</a></li>
+              <li><a href="#contact"><i class="bi bi-chevron-right"></i> Contact</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-6">
+          <div class="footer-links">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="https://www.youtube.com/@CrossLifeTV" target="_blank" rel="noopener noreferrer"><i class="bi bi-chevron-right"></i> CrossLife TV</a></li>
+              <li><a href="https://www.youtube.com/@PastorLenhardKyamba" target="_blank" rel="noopener noreferrer"><i class="bi bi-chevron-right"></i> Pastor Lenhard Kyamba</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="footer-contact">
+            <h4>Get in Touch</h4>
+            <div class="contact-item">
+              <div class="contact-icon">
+                <i class="bi bi-geo-alt"></i>
+              </div>
+              <div class="contact-info">
+                <p>Dar es Salaam<br>Tanzania</p>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <div class="contact-icon">
+                <i class="bi bi-telephone"></i>
+              </div>
+              <div class="contact-info">
+                <p>+255 (0)6 531 265 83<br>+255 (0)7 100 738 60</p>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <div class="contact-icon">
+                <i class="bi bi-envelope"></i>
+              </div>
+              <div class="contact-info">
+                <p>karibu@crosslife.org<br>lenhard.kyamba@crosslife.org</p>
+              </div>
+            </div>
+
+            <div class="social-links">
+              <a href="https://www.facebook.com/crosslife_tz" target="_blank" rel="noopener noreferrer"><i class="bi bi-facebook"></i></a>
+              <a href="https://www.instagram.com/crosslife_tz" target="_blank" rel="noopener noreferrer"><i class="bi bi-instagram"></i></a>
+              <a href="https://www.youtube.com/@CrossLifeTV" target="_blank" rel="noopener noreferrer"><i class="bi bi-youtube"></i></a>
+              <a href="https://t.me/PastorLenhardKyamba" target="_blank" rel="noopener noreferrer"><i class="bi bi-telegram"></i></a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <div class="copyright">
+              <p>© <span>Copyright</span> <strong class="px-1 sitename">CrossLife Mission Network</strong> <span>All Rights Reserved</span></p>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="footer-bottom-links">
+              <a href="admin/login.php"><i class="bi bi-shield-lock me-1"></i>Admin</a>
+              <a href="#">Privacy Policy</a>
+              <a href="#">Terms of Service</a>
+              <a href="#">Cookie Policy</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+  <!-- Global Search Script -->
+  <script>
+    // Global Search Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchForm = document.getElementById('globalSearchForm');
+      const searchInput = document.getElementById('globalSearchInput');
+      const searchResults = document.getElementById('searchResults');
+      const searchResultsList = document.getElementById('searchResultsList');
+
+      // Searchable content sections
+      const searchableSections = [
+        { id: 'hero', title: 'Home', keywords: 'home welcome introduction vision mission', page: 'index.html' },
+        { id: 'about', title: 'About Us', keywords: 'about mandate vision mission history', page: 'index.html' },
+        { id: 'statement-of-faith', title: 'Statement of Faith', keywords: 'faith beliefs doctrine scripture godhead jesus holy spirit', page: 'index.html' },
+        { id: 'statement-of-faith', title: 'Statement of Faith', keywords: 'statement of faith convictions beliefs doctrine scripture godhead jesus holy spirit', page: 'index.html' },
+        { id: 'leadership', title: 'Leadership', keywords: 'leadership pastor lenhard kyamba executive board', page: 'index.html' },
+        { id: 'ministries', title: 'Ministries', keywords: 'ministries teaching discipleship prayer outreach worship fellowship', page: 'ministries.php' },
+        { id: 'sermons', title: 'Sermons', keywords: 'sermons teaching video audio youtube crosslife tv', page: 'sermons.php' },
+        { id: 'discipleship', title: 'Discipleship', keywords: 'discipleship school of christ academy foundation leadership ministry sonship', page: 'discipleship.html' },
+        { id: 'events', title: 'Events', keywords: 'events calendar services bible study prayer meetings', page: 'events.php' },
+        { id: 'what-we-do', title: 'What We Do', keywords: 'activities programs worship teaching ministry outreach', page: 'index.html' },
+        { id: 'giving', title: 'Giving', keywords: 'giving offering support ministry donation', page: 'index.html' },
+        { id: 'contact', title: 'Contact', keywords: 'contact inquiry prayer request feedback', page: 'contacts.html' }
+      ];
+
+      if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          performSearch();
+        });
+
+        searchInput.addEventListener('input', function() {
+          if (this.value.length > 2) {
+            performSearch();
+          } else {
+            searchResults.style.display = 'none';
+          }
+        });
+      }
+
+      function performSearch() {
+        const query = searchInput.value.toLowerCase().trim();
+        if (query.length < 2) {
+          searchResults.style.display = 'none';
+          return;
+        }
+
+        const results = searchableSections.filter(section => {
+          return section.title.toLowerCase().includes(query) || 
+                 section.keywords.toLowerCase().includes(query) ||
+                 section.id.toLowerCase().includes(query);
+        });
+
+        displayResults(results, query);
+      }
+
+      function displayResults(results, query) {
+        searchResultsList.innerHTML = '';
+        
+        if (results.length === 0) {
+          searchResultsList.innerHTML = '<li class="text-muted">No results found. Try different keywords.</li>';
+          searchResults.style.display = 'block';
+          return;
+        }
+
+        results.forEach(result => {
+          const li = document.createElement('li');
+          li.className = 'mb-2';
+          const href = result.page === window.location.pathname.split('/').pop() || result.page === 'index.html' && window.location.pathname === '/' 
+            ? `#${result.id}` 
+            : `${result.page}${result.id ? '#' + result.id : ''}`;
+          li.innerHTML = `
+            <a href="${href}" class="search-result-link text-decoration-none" data-bs-dismiss="modal">
+              <i class="bi bi-arrow-right me-2"></i>
+              <strong>${result.title}</strong>
+            </a>
+          `;
+          searchResultsList.appendChild(li);
+        });
+
+        searchResults.style.display = 'block';
+      }
+    });
+  </script>
+
+  <!-- Slideshow Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const slides = document.querySelectorAll('.slideshow-container .slide');
+      let currentSlide = 0;
+      let slideInterval;
+      
+      if (slides.length > 0) {
+        function showSlide(index) {
+          // Remove active class from all slides
+          slides.forEach((slide, i) => {
+            slide.classList.remove('active');
+            if (i === index) {
+              slide.classList.add('active');
+            }
+          });
+          
+          currentSlide = index;
+        }
+        
+        function nextSlide() {
+          currentSlide = (currentSlide + 1) % slides.length;
+          showSlide(currentSlide);
+        }
+        
+        function startSlideshow() {
+          // Auto-advance every 8 seconds for slow, smooth transitions
+          slideInterval = setInterval(nextSlide, 8000);
+        }
+        
+        // Initialize
+        showSlide(0);
+        startSlideshow();
+      }
+    });
+  </script>
+
 </body>
 </html>
